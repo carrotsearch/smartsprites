@@ -1,4 +1,4 @@
-package org.carrot2.labs.simplesprites.css;
+package org.carrot2.labs.smartsprites.css;
 
 import java.util.Collection;
 import java.util.Map;
@@ -6,9 +6,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.carrot2.labs.simplesprites.message.Message;
-import org.carrot2.labs.simplesprites.message.MessageLog;
-import org.carrot2.labs.simplesprites.message.Message.MessageType;
+import org.carrot2.labs.smartsprites.message.Message;
+import org.carrot2.labs.smartsprites.message.MessageLog;
+import org.carrot2.labs.smartsprites.message.Message.MessageType;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

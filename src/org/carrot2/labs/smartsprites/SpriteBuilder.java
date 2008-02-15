@@ -1,12 +1,12 @@
-package org.carrot2.labs.simplesprites;
+package org.carrot2.labs.smartsprites;
 
 import java.io.*;
 import java.util.Collection;
 import java.util.Map;
 
-import org.carrot2.labs.simplesprites.message.MessageLog;
-import org.carrot2.labs.simplesprites.message.PrintStreamMessageSink;
-import org.carrot2.labs.simplesprites.message.Message.MessageType;
+import org.carrot2.labs.smartsprites.message.MessageLog;
+import org.carrot2.labs.smartsprites.message.PrintStreamMessageSink;
+import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 
@@ -30,8 +30,8 @@ public class SpriteBuilder
                 .getCanonicalOrAbsolutePath(dir));
             return;
         }
-        
-        long start = System.currentTimeMillis();
+
+        final long start = System.currentTimeMillis();
 
         // Identify css files.
         final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(dir,
@@ -64,8 +64,8 @@ public class SpriteBuilder
         // Rewrite the CSS
         rewriteCssFiles(spriteImageOccurrencesByFile, spriteReplacementsByFile,
             cssFileSuffix, cssIndent, messageLog);
-        
-        long stop = System.currentTimeMillis();
+
+        final long stop = System.currentTimeMillis();
         messageLog.logInfo(MessageType.PROCESSING_COMPLETED, (stop - start));
     }
 
@@ -249,7 +249,7 @@ public class SpriteBuilder
             cssIndent = "  ";
         }
 
-        String rootDir = System.getProperty("root.dir.path");
+        final String rootDir = System.getProperty("root.dir.path");
         if (rootDir == null)
         {
             System.out

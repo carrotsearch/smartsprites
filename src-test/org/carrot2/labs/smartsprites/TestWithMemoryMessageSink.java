@@ -1,8 +1,8 @@
-package org.carrot2.labs.simplesprites;
+package org.carrot2.labs.smartsprites;
 
 import java.util.List;
 
-import org.carrot2.labs.simplesprites.message.*;
+import org.carrot2.labs.smartsprites.message.*;
 import org.junit.Before;
 
 /**

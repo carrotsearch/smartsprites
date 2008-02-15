@@ -1,4 +1,4 @@
-package org.carrot2.labs.simplesprites.css;
+package org.carrot2.labs.smartsprites.css;
 
 /**
  * @author Stanislaw Osinski

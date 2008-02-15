@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="SimpleSprites build script" default="process">
-  <target name="build" description="Builds SimpleSprites binaries">
+<project name="SmartSprites CSS Sprite Generator" default="process">
+  <target name="build" description="Builds SmartSprites binaries">
     <mkdir dir="tmp/classes" />
     <javac destdir     = "tmp/classes"
            encoding	   = "UTF-8"
@@ -17,7 +17,7 @@
     </javac>
   </target>
 
-  <target name="test" description="Executes SimpleSprites unit tests" depends="build">
+  <target name="test" description="Executes SmartSprites unit tests" depends="build">
     <mkdir dir="tmp/test-results" />
     <junit printsummary="yes" fork="yes" haltonfailure="yes"
            dir="${basedir}">
@@ -38,9 +38,9 @@
     </junit>
   </target>
 
-  <target name="process" description="Performes sprite processing" depends="build">
-    <property file="simplesprites.properties" />
-    <java classname="org.carrot2.labs.simplesprites.SpriteBuilder">
+  <target name="process" description="Performs CSS sprite processing" depends="build">
+    <property file="smartsprites.properties" />
+    <java classname="org.carrot2.labs.smartsprites.SpriteBuilder">
       <classpath>
         <pathelement location="tmp/classes"/>
         <fileset dir="lib">

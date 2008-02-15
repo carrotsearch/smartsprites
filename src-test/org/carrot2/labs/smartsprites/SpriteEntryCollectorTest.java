@@ -1,11 +1,11 @@
-package org.carrot2.labs.simplesprites;
+package org.carrot2.labs.smartsprites;
 
 import static junit.framework.Assert.assertEquals;
 import static org.carrot2.labs.test.TestEqualsHelper.wrap;
 import static org.fest.assertions.Assertions.assertThat;
 
-import org.carrot2.labs.simplesprites.message.Message;
-import org.carrot2.labs.simplesprites.message.MessageLog;
+import org.carrot2.labs.smartsprites.message.Message;
+import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.junit.Test;
 
 /**

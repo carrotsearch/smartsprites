@@ -1,4 +1,4 @@
-package org.carrot2.labs.simplesprites;
+package org.carrot2.labs.smartsprites;
 
 import java.io.*;
 import java.util.Collection;
@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.carrot2.labs.simplesprites.css.CssRule;
-import org.carrot2.labs.simplesprites.css.CssSyntaxUtils;
-import org.carrot2.labs.simplesprites.message.MessageLog;
-import org.carrot2.labs.simplesprites.message.Message.MessageType;
+import org.carrot2.labs.smartsprites.css.CssRule;
+import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
+import org.carrot2.labs.smartsprites.message.MessageLog;
+import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.CloseableUtils;
 
 import com.google.common.collect.Lists;
@@ -80,7 +80,7 @@ public class SpriteDirectiveOccurrenceCollector
             while ((line = reader.readLine()) != null)
             {
                 messageLog.setLine(++lineNumber);
-                
+
                 final String directiveString = extractSpriteReferenceDirectiveString(line);
                 if (directiveString == null)
                 {

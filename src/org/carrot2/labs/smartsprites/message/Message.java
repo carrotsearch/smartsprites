@@ -1,7 +1,7 @@
-package org.carrot2.labs.simplesprites.message;
+package org.carrot2.labs.smartsprites.message;
 
-import org.carrot2.labs.simplesprites.SpriteImageDirective;
-import org.carrot2.labs.simplesprites.SpriteReferenceDirective;
+import org.carrot2.labs.smartsprites.SpriteImageDirective;
+import org.carrot2.labs.smartsprites.SpriteReferenceDirective;
 
 /**
  * @author Stanislaw Osinski

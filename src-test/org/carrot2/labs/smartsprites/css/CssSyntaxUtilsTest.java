@@ -1,4 +1,4 @@
-package org.carrot2.labs.simplesprites.css;
+package org.carrot2.labs.smartsprites.css;
 
 import static org.carrot2.labs.test.TestEqualsHelper.wrap;
 import static org.fest.assertions.Assertions.assertThat;
@@ -6,8 +6,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
 
-import org.carrot2.labs.simplesprites.TestWithMemoryMessageSink;
-import org.carrot2.labs.simplesprites.message.Message;
+import org.carrot2.labs.smartsprites.TestWithMemoryMessageSink;
+import org.carrot2.labs.smartsprites.message.Message;
 import org.junit.Test;
 
 /**

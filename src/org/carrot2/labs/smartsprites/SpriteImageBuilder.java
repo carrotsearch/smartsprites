@@ -1,4 +1,4 @@
-package org.carrot2.labs.simplesprites;
+package org.carrot2.labs.smartsprites;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -10,10 +10,10 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.math.util.MathUtils;
-import org.carrot2.labs.simplesprites.SpriteImageDirective.SpriteImageLayout;
-import org.carrot2.labs.simplesprites.SpriteReferenceDirective.SpriteAlignment;
-import org.carrot2.labs.simplesprites.message.MessageLog;
-import org.carrot2.labs.simplesprites.message.Message.MessageType;
+import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
+import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
+import org.carrot2.labs.smartsprites.message.MessageLog;
+import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.FileUtils;
 
 import com.google.common.collect.*;

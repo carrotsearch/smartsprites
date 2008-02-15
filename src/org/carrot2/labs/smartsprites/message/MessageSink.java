@@ -1,4 +1,4 @@
-package org.carrot2.labs.simplesprites.message;
+package org.carrot2.labs.smartsprites.message;
 
 /**
  * @author Stanislaw Osinski

@@ -14,7 +14,7 @@ public class FileUtils
         {
             return file.getCanonicalPath();
         }
-        catch (IOException e)
+        catch (final IOException e)
         {
             return file.getAbsolutePath();
         }

@@ -1,4 +1,4 @@
-package org.carrot2.labs.simplesprites.message;
+package org.carrot2.labs.smartsprites.message;
 
 /**
  * @author Stanislaw Osinski
@@ -28,7 +28,7 @@ public class MessageLog
     {
         log(Message.MessageLevel.INFO, type, arguments);
     }
-    
+
     public void logWarning(Message.MessageType type, Object... arguments)
     {
         log(Message.MessageLevel.WARN, type, arguments);

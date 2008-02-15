@@ -1,11 +1,11 @@
-package org.carrot2.labs.simplesprites;
+package org.carrot2.labs.smartsprites;
 
 import static junit.framework.Assert.*;
 import static org.carrot2.labs.test.TestEqualsHelper.wrap;
 import static org.fest.assertions.Assertions.assertThat;
 
-import org.carrot2.labs.simplesprites.message.Message;
-import org.carrot2.labs.simplesprites.message.MessageLog;
+import org.carrot2.labs.smartsprites.message.Message;
+import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.junit.Test;
 
 /**
@@ -116,10 +116,9 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
     @Test
     public void testUnsupportedLayout()
     {
-        final SpriteImageDirective directive = SpriteImageDirective
-            .parse(
-                "sprite: sprite; sprite-image: url('../sprite.jpg'); sprite-layout: other",
-                messageLog);
+        final SpriteImageDirective directive = SpriteImageDirective.parse(
+            "sprite: sprite; sprite-image: url('../sprite.jpg'); sprite-layout: other",
+            messageLog);
 
         assertNotNull(directive);
         assertEquals(directive.spriteId, "sprite");

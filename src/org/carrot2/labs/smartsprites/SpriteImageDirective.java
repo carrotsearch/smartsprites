@@ -1,11 +1,11 @@
-package org.carrot2.labs.simplesprites;
+package org.carrot2.labs.smartsprites;
 
 import java.util.Map;
 
-import org.carrot2.labs.simplesprites.css.CssRule;
-import org.carrot2.labs.simplesprites.css.CssSyntaxUtils;
-import org.carrot2.labs.simplesprites.message.MessageLog;
-import org.carrot2.labs.simplesprites.message.Message.MessageType;
+import org.carrot2.labs.smartsprites.css.CssRule;
+import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
+import org.carrot2.labs.smartsprites.message.MessageLog;
+import org.carrot2.labs.smartsprites.message.Message.MessageType;
 
 /**
  * @author Stanislaw Osinski
