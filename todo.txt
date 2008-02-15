@@ -4,7 +4,7 @@ Refactorings:
 
 Website:
 
-* why simplesprites is better:
+* why smartsprites is better:
   * transparent, easily add/remove images from sprites, minimum maintenance
   * natural integration with build scripts
   * allows new scenarios:
@@ -16,7 +16,7 @@ Website:
   * supports creating multiple sprites
   * open source BSD license
 
-* what simplesprites doesn't do at the moment
+* what smartsprites doesn't do at the moment
   * intelligently handle original background-position and background-repeat
     (infer values from it)
   * always creates a new css file, could have one css file mode too
@@ -25,7 +25,7 @@ Website:
     refactor your CSS to have one reference to the image or the image will
 	get repeated in the sprite
 
-* what simplesprites will never do (CSS limitations)
+* what smartsprites will never do (CSS limitations)
 
 * tips:
   * other bits of the sprite show through (image!) -- add exact size to the
