@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="SimpleSprites build script" default="process">
+  <target name="build" description="Builds SimpleSprites binaries">
+    <mkdir dir="tmp/classes" />
+    <javac destdir     = "tmp/classes"
+           encoding	   = "UTF-8"
+           source      = "1.5" 
+           target      = "1.5"
+    >
+        <classpath>
+          <fileset dir="lib">
+            <include name="**/*.jar" />
+          </fileset>
+        </classpath>
+        <src path="src" />
+        <src path="src-test" />
+    </javac>
+  </target>
+
+  <target name="test" description="Executes SimpleSprites unit tests" depends="build">
+    <mkdir dir="tmp/test-results" />
+    <junit printsummary="yes" fork="yes" haltonfailure="yes"
+           dir="${basedir}">
+      <classpath>
+        <fileset dir="lib">
+          <include name="**/*.jar" />
+        </fileset>
+        <pathelement location="tmp/classes"/>
+        <pathelement location="resources"/>
+      </classpath>
+          
+      <formatter type="plain" />
+      <batchtest fork="yes" todir="tmp/test-results">
+        <fileset dir="src-test">
+          <include name="**/*Test.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="process" description="Performes sprite processing" depends="build">
+    <property file="simplesprites.properties" />
+    <java classname="org.carrot2.labs.simplesprites.SpriteBuilder">
+      <classpath>
+        <pathelement location="tmp/classes"/>
+        <fileset dir="lib">
+          <include name="**/*.jar" />
+        </fileset>
+      </classpath>
+      <syspropertyset>
+        <propertyref prefix="root.dir.path" />
+        <propertyref prefix="css.file.suffix" />
+        <propertyref prefix="css.rule.indent" />
+      </syspropertyset>
+    </java>
+  </target>
+
+  <target name="clean" description="Deletes all temporary files">
+    <delete dir="tmp" />
+  </target>
+</project>
+

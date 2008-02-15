@@ -1,0 +1,9 @@
+# Path to the directory that contains the css files to be processed.
+# Note that directories containing CSS and image files must be writeable
+root.dir.path=E:/repositories/carrot2-labs/simplesprites/test
+
+# Suffix to be appended to the processed CSS file name
+css.file.suffix=-sprite
+
+# How generated CSS rules should be indentend (default: two spaces)
+css.rule.indent=  
