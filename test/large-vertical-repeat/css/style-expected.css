@@ -1,0 +1,16 @@
+/**
+ * Horizontal sprites with nasty combination of repeats causing a fairly large
+ * sprite height (lowest common multiply of heights of all repeated images).
+ */
+
+div.web {
+  background-repeat: repeat-y;
+  background-image: url('../img/sprite.png');
+  background-position: -0px top;
+}
+
+div.pubmed {
+  background-repeat: repeat-y;
+  background-image: url('../img/sprite.png');
+  background-position: -17px top;
+}

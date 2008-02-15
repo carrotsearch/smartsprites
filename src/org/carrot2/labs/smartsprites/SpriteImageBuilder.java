@@ -96,6 +96,11 @@ public class SpriteImageBuilder
         // Save the image to the disk
         final File mergedImageFile = new File(firstSpriteEntry.cssFile.getParentFile(),
             spriteImageDirective.imagePath);
+        if (!mergedImageFile.getParentFile().exists())
+        {
+            mergedImageFile.getParentFile().mkdirs();
+        }
+        
         try
         {
             messageLog.logInfo(MessageType.CREATING_SPRITE_IMAGE, mergedImage.getWidth(),
