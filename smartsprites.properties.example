@@ -7,5 +7,5 @@ root.dir.path=test/real-world-example
 # Suffix to be appended to the processed CSS file name
 css.file.suffix=-sprite
 
-# How generated CSS properties should be indentend (default: two spaces)
+# How generated CSS properties should be indented (default: two spaces)
 css.property.indent=  

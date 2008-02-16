@@ -1,38 +1,35 @@
-/*#############################################################
-Name: Blackbox
-Date: 2006-06-01
-Author: Viktor Persson
-URL: http://arcsin.se
-
-Feel free to use and modify but please provide credits.
-#############################################################*/
-
-/* Standard elements */
+/**
+ * Design based on the Blackbox design by Viktor Persson (http://arcsin.se).
+ */
 * {
 	margin: 0;
 	padding: 0;
 }
-a {
-	color: #FFA650;
-}
+
 body {
-	background: #000 url(img/bg.png) repeat-x fixed left bottom;
+	background: #000 url(../img/bg.png) repeat-x fixed left bottom;
 	color: #b0b0b0;
 	margin: 20px 0;
 	text-align: center;
 	font-family: Tahoma,sans-serif;
   font-size: 12px;
 }
+
+a {
+	color: #FFA650;
+}
+
 ul {
 	margin: 12px 0;
 }
+
 li {
 	margin-left: 36px;
   margin-bottom: 2ex;
 }
 
 ul li {
-	list-style: url(img/li.gif);
+	list-style: url(../img/li.gif);
 }
 
 ol ol {
@@ -43,6 +40,7 @@ code, tt {
 	font-family: "Lucida Sans Unicode", monospace;
   font-size: 13px;
 }
+
 code {
   color: #e0e0e0;
 	display: block;
@@ -73,7 +71,7 @@ tt {
 }
 
 code span.nobreak {
-  background-image: url('img/arrow_undo.png');
+  background-image: url('../img/arrow_undo.png');
   background-repeat: no-repeat;
   float: right;
   position: relative;
@@ -86,16 +84,14 @@ strong {
   color: #f0f0f0;
 }
 
-/* Misc */
 div.quote {
 	margin-bottom: 12px;
   margin-left: 8px;
 	font: normal 1.1em "Lucida Sans Unicode",serif;
-	background: url(img/quote.gif) no-repeat;
+	background: url(../img/quote.gif) no-repeat;
 	padding-left: 28px;
 	color: #666;
 }
-
 
 /* Main structure */
 .main {
@@ -107,11 +103,10 @@ div.quote {
 	width: 750px; 
 }
 
-
 /* Header */
 .gfx {
 	background-color: #000;
-  background-image: url(img/dark_pixel.jpg);
+  background-image: url(../img/dark_pixel.jpg);
   background-repeat: no-repeat;
   background-position: 160px bottom;
 	height: 230px;
@@ -154,7 +149,7 @@ ul.menu {
 ul.menu li {
   padding: 0;
   margin: 0;
-	background: #000 url(img/bgmenu.png) repeat-x;
+	background: #000 url(../img/bgmenu.png) repeat-x;
 	border-right: 1px solid #222;
 	border-top: 1px solid #1A1A1A;
 	color: #444;
@@ -183,21 +178,25 @@ ul.menu li a {
 	border-top: 1px solid #1A1A1A;
 	background: #1A1A1A;
 	clear: both;
-  margin: 0 10px;
 }
 .content h1 {
   font-variant: small-caps;
   font-weight: normal;
   font-size: 16px;
-	margin: 10px 0;
+	margin: 10px 10px;
   font-weight: bold;
   color: #d0d0d0;
 }
 .content p {
-	margin: 10px 0;
+	margin: 10px;
 }
+
+.content li p {
+  margin: 10px 0px;
+}
+
 .item {
-	background: #030303 url(img/bgitem.gif) repeat-x;
+	background: #030303 url(../img/bgitem.gif) repeat-x;
 	padding: 8px 10px;
 }
 

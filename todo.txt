@@ -2,20 +2,6 @@ Refactorings:
 
 * Introduce a mechanism for parameters
 
-Website:
-
-* why smartsprites is better:
-  * transparent, easily add/remove images from sprites, minimum maintenance
-  * natural integration with build scripts
-  * allows new scenarios:
-    * verical / horizontal sprites
-	* spriting x- and y-repeated images
-	* spriting images positioned to the right/ bottom
-	* customized margins of images within sprite -- good for positioning
-  * supports multiple css files
-  * supports creating multiple sprites
-  * open source BSD license
-
 * what smartsprites doesn't do at the moment
   * intelligently handle original background-position and background-repeat
     (infer values from it)

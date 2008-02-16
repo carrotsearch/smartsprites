@@ -1,31 +1,31 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
 <meta name="description" content="description"/>
 <meta name="keywords" content="keywords"/> 
-<meta name="author" content="author"/> 
-<link rel="stylesheet" type="text/css" href="default.css"/>
-<title>Blackbox</title>
+<meta name="author" content="Stanis³aw Osiñski"/> 
+<link rel="stylesheet" type="text/css" href="css/default.css"/>
+<title>SmartSprites: CSS Sprite Generator Done Right</title>
 </head>
 <body>
 <div class="main">
 	<div class="gfx">
-    <h1><span id="smart">Smart</span>Sprites<span id="alpha"> (Alpha)</span></h1>
+    <h1><span id="smart">Smart</span>Sprites<span id="alpha"> (Alpha!)</span></h1>
     <h2><span id="css-sprite-gen">CSS Sprite Generator</span> <span id="done-right">Done Right</span></h2>
   </div>
 
 	<ul class="menu">
-		<li><a href="index.html">About</a></li>
-		<li><a href="index.html">FAQ</a></li>
-		<li><a href="index.html">Bugs</a></li>
-		<li><a href="index.html">Contact</a></li>
+		<li><a href="#about">About</a></li>
+		<li><a href="#usage">Usage</a></li>
+		<li><a href="#bugs">Bugs</a></li>
+		<li><a href="#contact">Contact</a></li>
 		<li id="last"></li>
 	</ul>
 
 	<div class="content">
 		<div class="item">
+      <a name="about"></a>
 			<h1>What is SmartSprites?</h1>
       <p>
         SmartSprites is a tool that will let you <strong>easily introduce and
@@ -34,16 +34,16 @@
         directives you can insert into your original CSS to mark individual
         images to be turned into sprites. It then builds sprite images from the
         collected images and automatically inserts the required CSS properties to
-        your stylesheet, so that the sprites are used instead of the
+        your style sheet, so that the sprites are used instead of the
         individual images.
       </p>
 
       <p style="text-align: center">
-        <img src="img/how-smartsprites-works.jpg" />
+        <img src="img/how-smartsprites-works.jpg" alt="SmartSprites parses special directives you can insert into your original CSS to mark individual images to be turned into sprites. It then builds sprite images from the collected images and automatically inserts the required CSS properties to your style sheet, so that the sprites are used instead of the individual images." />
       </p>
 
       <p>
-        In other words, <strong>no tedious copying & pasting to your
+        In other words, <strong>no tedious copying &amp; pasting to your
         CSS</strong> when adding, removing or changing sprited images. Just
         work with your CSS and original images as usual and have SmartSprites
         automatically transform them to the sprite-powered version when
@@ -77,7 +77,7 @@
 
         <li>
           <strong>Customized sprite margins</strong>: With SmartSprites you can
-          customize left, right, top and bottom margins of each idividual
+          customize left, right, top and bottom margins of each individual
           sprite for pixel perfect positioning.
         </li>
 
@@ -94,7 +94,7 @@
         </li>
 
         <li>
-          <strong>Open Source BSD License</strong>: You can use and contribute
+          <strong>Open Source BSD-ish License</strong>: You can use and contribute
           to SmartSprites no matter whether you're doing an Open Source or a
           commercial project.
         </li>
@@ -102,7 +102,8 @@
 		</div>
 
 		<div class="item">
-			<h1>Using SimpleSprites</h1>
+      <a name="usage"></a>
+			<h1>Using SmartSprites</h1>
       <ol>
         <li>
           <strong>Start with preparing your design (HTML, CSS, images) the
@@ -129,7 +130,7 @@
   background-image: url(../img/top-frame.gif);
 }</code>
 
-          When you've verified the original design works as indended, you're ready
+          When you've verified the original design works as indented, you're ready
           to annotate it with SmartSprite's directives.
         </li>
 
@@ -163,7 +164,7 @@
   background-repeat: repeat-x;
   background-position: 5px left;
   background-image: url(../img/top-frame.gif); <strong>/** sprite-ref: mysprite; sprite-alignment: repeat; <span class="nobreak"></span> 
-                                                                                   sprite-margin-top: 5px */</strong>
+                                                                                 sprite-margin-top: 5px */</strong>
 }</code>
 
           <p>
@@ -192,7 +193,7 @@
 
           <p>
             Finally, the directive for the <tt>#main-box</tt> rule instructs
-            SmartSprites to repeate the <tt>../img/top-frame.png</tt> across
+            SmartSprites to repeat the <tt>../img/top-frame.png</tt> across
             the full width of the sprite image, so that the effect of
             <tt>background-repeat: repeat-x</tt> can be preserved.
             Additionally, SmartSprites will offset the image from the bottom
@@ -204,123 +205,123 @@
             Below is a detailed description of SmartSprites directives, which
             you may a little heavy, but it will allow you to use all the power
             of SmartSprites. There are two types of SmartSprites directives:
-
-            <ol>
-              <li>
-                <p>
-                  <strong>Sprite Image Directive</strong>, marked in <span
-                  class="red">red</span>, is used to declare one sprite image,
-                  which merges some number of individual images. Sprite image
-                  directive must start with <tt>/** sprite:</tt> and must be
-                  contained in a single line. A single CSS file can contain any
-                  number of sprite image directives. The sprite image directive
-                  specifies the following properties:
-                </p>
-
-                <ul>
-                  <li><strong>Sprite ID</strong>, syntax: <tt>sprite:
-                  unique-id</tt>, required. A unique identifier by which the
-                  sprite image will be referred to. For each unique sprite id,
-                  SmartSprites will create one sprite image. </li>
-                </ul>
-
-                <ul>
-                  <li><strong>Sprite image location</strong>, syntax:
-                  <tt>sprite-image: url('path/name.(png | gif | jpg)')</tt>,
-                  required.  CSS file-relative path to the sprite image to be
-                  created.  SmartSprites will infer the format of the image
-                  based on the extension used.  Currently supported are:
-                  gif, png and jpg.
-                  </li>
-                </ul>
-
-                <ul>
-                  <li><strong>Sprite image layout</strong>, syntax:
-                  <tt>sprite-layout: vertical | horizontal')</tt>, optional,
-                  default value: <tt>horizontal</tt>. Specifies whether the
-                  individual images should be laid out in the sprite image
-                  vertically (on top of each other) or horizontally (next to
-                  each other).
-                  </li>
-                </ul>
-              </li>
-
-              <li>
-                <strong>Sprite Reference Directive</strong>, marked in <span
-                class="orange">orange</span>, is used to tell SmartSprites that
-                a specific individual image should be placed in the specified
-                sprite image. The sprite reference directive must contain
-                <strong>in one line</strong>, a <tt>background-image</tt> CSS
-                property specifying a CSS file-relative path to the individual
-                image and a CSS comment starting with <tt>/** sprite-ref:
-                </tt>. The sprite reference directive specifies the following
-                properties:
-
-                <ul>
-                  <li><strong>Sprite Reference</strong>, syntax:
-                  <tt>sprite-ref: sprite-id</tt>, required. A reference to one
-                  of the sprites declared by the sprite image directives.
-                  The individual image will be placed in the sprite with the
-                  provided identifier.</li>
-                </ul>
-
-                <ul>
-                  <li>
-                    <p>
-                      <strong>Sprite Alignment</strong>, syntax:
-                      <tt>sprite-alignment: left | right | top | bottom |
-                      repeat</tt>, optional, default value: <tt>left</tt> for
-                      sprites with vertical layout, <tt>top</tt> for sprites
-                      with horizontal layout. Defines the edge of the sprite
-                      image to which this individual image will be aligned. For
-                      vertically aligned sprites, the allowed values are
-                      <tt>left</tt> and <tt>right</tt>, while for horizontally
-                      aligned ones -- <tt>top</tt> and <tt>bottom</tt>.  Sprite
-                      alignment can come in handy when the original background
-                      image was positioned towards the right or bottom of the
-                      box (e.g. <tt>background-position: top right</tt>).
-                    </p>
-
-                    <p>
-                      One special alignment value is <tt>repeat</tt>. In this
-                      case, the contents of the individual image will be
-                      repeated across the whole width of a vertical sprite or
-                      the whole height of a horizontal sprite. This will
-                      allow you to use sprites for backgrounds that have
-                      <tt>background-repeat</tt> set to <tt>repeat-x</tt> or
-                      <tt>repeat-y</tt>. 
-                    </p>
-
-                    <p>
-                      <strong>Warning</strong>: the width (height) of the
-                      resulting sprite will be not smaller than the least
-                      common multiple of the widths of all individual images
-                      with alignment set to <tt>repeat</tt> in that vertical
-                      (horizontal) sprite. For example, if you have "repeated"
-                      individual images of widths (heights) 3px, 5px, 7px and
-                      11px in one vertical (horizontal) sprite, the width
-                      (height) of that sprite will be 1155px. Therefore, use
-                      <tt>sprite-alignment: repeat</tt> with caution.
-                    </p>
-                  </li>
-                </ul>
-
-                <ul>
-                  <li><strong>Sprite margins</strong>, syntax:
-                  <tt>sprite-margin-(left | right | top | bottom):
-                  OFFSETpx</tt>, optional, default value: <tt>0px</tt>. The
-                  offset of this image from the left, right, top and bottom
-                  edge or the neighbouring image in the sprite. This property
-                  may be useful when the original image was not positioned
-                  exactly on the edge of the box, but had e.g.
-                  <tt>background-position: 5px left</tt>. Note: only pixel
-                  values are allowed. Shorthand version of margins property
-                  known from CSS is <strong>not</strong> yet supported here.
-                  </li>
-                </ul>
-              </li>
-            </ol>
           </p>
+
+          <ol>
+            <li>
+              <p>
+                <strong>Sprite Image Directive</strong>, marked in <span
+                class="red">red</span>, is used to declare one sprite image,
+                which merges some number of individual images. Sprite image
+                directive must start with <tt>/** sprite:</tt> and must be
+                contained in a single line. A single CSS file can contain any
+                number of sprite image directives. The sprite image directive
+                specifies the following properties:
+              </p>
+
+              <ul>
+                <li><strong>Sprite ID</strong>, syntax: <tt>sprite:
+                unique-id</tt>, required. A unique identifier by which the
+                sprite image will be referred to. For each unique sprite id,
+                SmartSprites will create one sprite image. </li>
+              </ul>
+
+              <ul>
+                <li><strong>Sprite image location</strong>, syntax:
+                <tt>sprite-image: url('path/name.(png | gif | jpg)')</tt>,
+                required.  CSS file-relative path to the sprite image to be
+                created.  SmartSprites will infer the format of the image
+                based on the extension used.  Currently supported are:
+                gif, png and jpg.
+                </li>
+              </ul>
+
+              <ul>
+                <li><strong>Sprite image layout</strong>, syntax:
+                <tt>sprite-layout: vertical | horizontal')</tt>, optional,
+                default value: <tt>horizontal</tt>. Specifies whether the
+                individual images should be laid out in the sprite image
+                vertically (on top of each other) or horizontally (next to
+                each other).
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <strong>Sprite Reference Directive</strong>, marked in <span
+              class="orange">orange</span>, is used to tell SmartSprites that
+              a specific individual image should be placed in the specified
+              sprite image. The sprite reference directive must contain
+              <strong>in one line</strong>, a <tt>background-image</tt> CSS
+              property specifying a CSS file-relative path to the individual
+              image and a CSS comment starting with <tt>/** sprite-ref:
+              </tt>. The sprite reference directive specifies the following
+              properties:
+
+              <ul>
+                <li><strong>Sprite Reference</strong>, syntax:
+                <tt>sprite-ref: sprite-id</tt>, required. A reference to one
+                of the sprites declared by the sprite image directives.
+                The individual image will be placed in the sprite with the
+                provided identifier.</li>
+              </ul>
+
+              <ul>
+                <li>
+                  <p>
+                    <strong>Sprite Alignment</strong>, syntax:
+                    <tt>sprite-alignment: left | right | top | bottom |
+                    repeat</tt>, optional, default value: <tt>left</tt> for
+                    sprites with vertical layout, <tt>top</tt> for sprites
+                    with horizontal layout. Defines the edge of the sprite
+                    image to which this individual image will be aligned. For
+                    vertically aligned sprites, the allowed values are
+                    <tt>left</tt> and <tt>right</tt>, while for horizontally
+                    aligned ones -- <tt>top</tt> and <tt>bottom</tt>.  Sprite
+                    alignment can come in handy when the original background
+                    image was positioned towards the right or bottom of the
+                    box (e.g. <tt>background-position: top right</tt>).
+                  </p>
+
+                  <p>
+                    One special alignment value is <tt>repeat</tt>. In this
+                    case, the contents of the individual image will be
+                    repeated across the whole width of a vertical sprite or
+                    the whole height of a horizontal sprite. This will
+                    allow you to use sprites for backgrounds that have
+                    <tt>background-repeat</tt> set to <tt>repeat-x</tt> or
+                    <tt>repeat-y</tt>. 
+                  </p>
+
+                  <p>
+                    <strong>Warning</strong>: the width (height) of the
+                    resulting sprite will be not smaller than the least
+                    common multiple of the widths of all individual images
+                    with alignment set to <tt>repeat</tt> in that vertical
+                    (horizontal) sprite. For example, if you have "repeated"
+                    individual images of widths (heights) 3px, 5px, 7px and
+                    11px in one vertical (horizontal) sprite, the width
+                    (height) of that sprite will be 1155px. Therefore, use
+                    <tt>sprite-alignment: repeat</tt> with caution.
+                  </p>
+                </li>
+              </ul>
+
+              <ul>
+                <li><strong>Sprite margins</strong>, syntax:
+                <tt>sprite-margin-(left | right | top | bottom):
+                OFFSETpx</tt>, optional, default value: <tt>0px</tt>. The
+                offset of this image from the left, right, top and bottom
+                edge or the neighbouring image in the sprite. This property
+                may be useful when the original image was not positioned
+                exactly on the edge of the box, but had e.g.
+                <tt>background-position: 5px left</tt>. Note: only pixel
+                values are allowed. Shorthand version of margins property
+                known from CSS is <strong>not</strong> yet supported here.
+                </li>
+              </ul>
+            </li>
+          </ol>
 
           <p>
             When you've finished annotating your CSS with SmartSprites
@@ -332,142 +333,143 @@
         </li>
 
         <li>
-          <strong>Obtain SmartSprites and the software it requires</strong>.
           <p>
-            <ol>
-              <li>
-                Download and install Java JDK version 5 or above (<a
-                href="http://java.sun.com/javase/downloads/index.jsp">JDK 6</a>
-                recommended).
-              </li>
-
-              <li>
-                Download and install <a
-                href="http://www.apache.org/dist/ant/binaries/apache-ant-1.7.0-bin.zip">Apache
-                Ant version 1.7 or above</a>.
-              </li>
-
-              <li>
-                Check out SmartSprites source code from the repository (no
-                distribution yet, but, hey, it's alpha :-).
-
-                <code>svn co https://carrot2.svn.sourceforge.net/svnroot/carrot2/labs/smartsprites</code>
-              </li>
-
-              <li>
-                Create your local settings file based on the example:
-
-                <code>cp simplesprites.properties.example simplesprites.properties</code>
-              </li>
-            </ol>
+            <strong>Obtain SmartSprites and the software it requires</strong>.
           </p>
 
+          <ol>
+            <li>
+              Download and install Java JDK version 5 or above (<a
+              href="http://java.sun.com/javase/downloads/index.jsp">JDK 6</a>
+              recommended).
+            </li>
+
+            <li>
+              Download and install <a
+              href="http://www.apache.org/dist/ant/binaries/apache-ant-1.7.0-bin.zip">Apache
+              Ant version 1.7 or above</a>.
+            </li>
+
+            <li>
+              Check out SmartSprites source code from the repository (no
+              distribution yet, but, hey, it's alpha :-).
+
+              <code>svn co https://carrot2.svn.sourceforge.net/svnroot/carrot2/labs/smartsprites</code>
+            </li>
+
+            <li>
+              Create your local settings file based on the example from the repository:
+
+              <code>cp smartsprites.properties.example smartsprites.properties</code>
+            </li>
+          </ol>
+
           <p>
-            Now you're really ready to run SimpleSprites.
+            Now you're really ready to run SmartSprites.
           </p>
         </li>
 
         <li>
           <p>
-            <strong>Run SimpleSprites</strong>. 
+            <strong>Run SmartSprites</strong>. 
+          </p>
 
-            <ol>
-              <li>
-                Edit <tt>simplesprites.properties</tt> so that the
-                <tt>root.dir.path</tt> points to the main directory of your
-                design. It's easiest to provide an absolute path, e.g.:
+          <ol>
+            <li>
+              Edit <tt>smartsprites.properties</tt> so that the
+              <tt>root.dir.path</tt> points to the main directory of your
+              design. It's easiest to provide an absolute path, e.g.:
 
-                <code># Path to the directory that contains the css files to be processed.
+              <code># Path to the directory that contains the CSS files to be processed.
 root.dir.path=c:/html/sprite-design
 
 # Suffix to be appended to the processed CSS file name
 css.file.suffix=-sprite
 
-# How generated CSS properties should be indentend (default: two spaces)
+# How generated CSS properties should be indented (default: two spaces)
 css.property.indent=  </code>
 
-                You can keep the default values for the other options for now.
-              </li>
-              
-              <li>
-                Make the checkout directory your current directory and run SmartSprites on your design:
+              You can keep the default values for the other options for now.
+            </li>
+            
+            <li>
+              Make the checkout directory your current directory and run SmartSprites on your design:
 
-                <code>ant process</code>
+              <code>ant process</code>
 
-                <p>
-                  After processing completes you should see on the screen messages similar to:
-                </p>
+              <p>
+                After processing completes you should see on the screen messages similar to:
+              </p>
 
-                <code> process:
-     [java] INFO: Reading image from: C:\example\img\web.gif
-     [java] INFO: Reading image from: C:\example\img\logo.png
-     [java] INFO: Reading image from: C:\example\img\top-frame.gif
-     [java] INFO: Creating sprite image of size 48 x 75 for mysprite
-     [java] INFO: Creating CSS style sheet: C:\example\css\style-sprite.css
-     [java] INFO: Processing completed in 328 ms</code>
+              <code> process:
+   [java] INFO: Reading image from: C:\example\img\web.gif
+   [java] INFO: Reading image from: C:\example\img\logo.png
+   [java] INFO: Reading image from: C:\example\img\top-frame.gif
+   [java] INFO: Creating sprite image of size 48 x 75 for mysprite
+   [java] INFO: Creating CSS style sheet: C:\example\css\style-sprite.css
+   [java] INFO: Processing completed in 328 ms</code>
 
-                <p>
-                  If you notice any line containing a warning (<tt>WARN:</tt>),
-                  please read it carefully and correct the problem. Otherwise,
-                  your design may not look like the original version.
-                </p>
+              <p>
+                If you notice any line containing a warning (<tt>WARN:</tt>),
+                please read it carefully and correct the problem. Otherwise,
+                your design may not look like the original version.
+              </p>
 
-                <p>
-                  Upon successful completion, SimpleSprites will create all the
-                  sprite images in the locations specified by the sprite image
-                  directives. Also, next to each processed CSS file,
-                  SmartSprites will create a corresponding CSS file with a
-                  <tt>-sprite</tt> suffix. The original CSS files will remain
-                  unchanged. To switch your design to CSS sprites, link these
-                  CSS files instead of the original ones in your HTML.
-                </p>
+              <p>
+                Upon successful completion, SmartSprites will create all the
+                sprite images in the locations specified by the sprite image
+                directives. Also, next to each processed CSS file,
+                SmartSprites will create a corresponding CSS file with a
+                <tt>-sprite</tt> suffix. The original CSS files will remain
+                unchanged. To switch your design to CSS sprites, link these
+                CSS files instead of the original ones in your HTML.
+              </p>
 
-                <p>
-                  For our example, the generated CSS would look similar to this:
-                </p>
+              <p>
+                For our example, the generated CSS would look similar to this:
+              </p>
 
-                <code>#web { 
-  width: 17px; height: 17px; 
-  background-repeat: no-repeat; 
-  background-image: url('../img/mysprite.png');
-  background-position: left -0px;
+              <code>#web { 
+width: 17px; height: 17px; 
+background-repeat: no-repeat; 
+background-image: url('../img/mysprite.png');
+background-position: left -0px;
 } 
 
 #logo { 
-  width: 50px; height: 50px; 
-  background-repeat: no-repeat; 
-  background-position: top right; 
-  background-image: url('../img/mysprite.png');
-  background-position: right -17px;
+width: 50px; height: 50px; 
+background-repeat: no-repeat; 
+background-position: top right; 
+background-image: url('../img/mysprite.png');
+background-position: right -17px;
 } 
 
 #main-box { 
-  background-repeat: repeat-x; 
-  background-position: 5px left; 
-  background-image: url('../img/mysprite.png');
-  background-position: left -64px;
+background-repeat: repeat-x; 
+background-position: 5px left; 
+background-image: url('../img/mysprite.png');
+background-position: left -64px;
 }</code>
 
-                <p>
-                  Notice that all of the SmartSprites directives have been
-                  omitted in the generated CSS file. If you still see any of
-                  them in the output file, it means these specific directives
-                  had some syntactic or semantic errors and have been ignored.
-                  Warning messages should help you to pinpoint the problems.
-                </p>
+              <p>
+                Notice that all of the SmartSprites directives have been
+                omitted in the generated CSS file. If you still see any of
+                them in the output file, it means these specific directives
+                had some syntactic or semantic errors and have been ignored.
+                Warning messages should help you to pinpoint the problems.
+              </p>
 
-                <p>
-                  Also notice that SmartSprites currently doesn't remove the
-                  original <tt>background-position</tt> properties, but appends
-                  its own ones below to shadow them. Your design may break if
-                  you have <tt>background-position</tt> or
-                  <tt>background-image</tt> properties appearing
-                  <strong>below</strong> the line with SmartSprite's sprite
-                  reference directive.
-                </p>
-              </li>
-            </ol>
-          </p>
+              <p>
+                Also notice that SmartSprites currently doesn't remove the
+                original <tt>background-position</tt> properties, but appends
+                its own ones below to shadow them. Your design may break if
+                you have <tt>background-position</tt> or
+                <tt>background-image</tt> properties appearing
+                <strong>below</strong> the line with SmartSprite's sprite
+                reference directive.
+              </p>
+            </li>
+          </ol>
         </li>
 
         <li>
@@ -536,6 +538,29 @@ css.property.indent=  </code>
         </li>
       </ol>
 		</div>
+
+		<div class="item">
+      <a name="bugs"></a>
+			<h1>Bugs</h1>
+
+      <p>
+        I'm sure SmartSprites has at least a few bugs and many missing
+        features.  Feel free to report them in our <a
+        href="http://issues.carrot2.org/browse/SMARTSPRITES">issue tracker</a>.
+      </p>
+    </div>
+
+		<div class="item">
+      <a name="contact"></a>
+			<h1>Contact</h1>
+
+      <p>
+        If you have some specific questions or problems with SmartSprites, feel
+        free to <a href="mailto:stanislaw@osinski.name">e-mail me directly</a>.
+        If SmartSprites attracts more interest, I'll set up a dedicated mailing
+        list.
+      </p>
+    </div>
 	</div>
 	<div class="footer">&copy; 2008 <a href="http:stanislaw.osinski.name">Stanislaw Osinski</a>. Design by <a href="http://arcsin.se">Arcsin</a></div>
 </div>
