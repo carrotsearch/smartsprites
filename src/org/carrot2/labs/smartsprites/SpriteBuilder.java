@@ -278,7 +278,7 @@ public class SpriteBuilder
             cssFileSuffix = DEFAULT_CSS_FILE_SUFFIX;
         }
 
-        String cssIndent = System.getProperty("css.rule.indent");
+        String cssIndent = System.getProperty("css.properti.indent");
         if (cssIndent == null)
         {
             cssIndent = DEFAULT_CSS_INDENT;

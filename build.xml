@@ -50,7 +50,7 @@
       <syspropertyset>
         <propertyref prefix="root.dir.path" />
         <propertyref prefix="css.file.suffix" />
-        <propertyref prefix="css.rule.indent" />
+        <propertyref prefix="css.property.indent" />
       </syspropertyset>
     </java>
   </target>
