@@ -137,10 +137,10 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     }
 
     @Test
-    public void testOverridingBackgroundPosition() throws FileNotFoundException,
+    public void testOverridingCssProperties() throws FileNotFoundException,
         IOException
     {
-        final File testDir = testDir("overriding-background-position");
+        final File testDir = testDir("overriding-css-properties");
         SpriteBuilder.buildSprites(testDir, messageLog);
 
         assertThat(expectedCss(testDir)).hasSameContentAs(

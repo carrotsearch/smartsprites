@@ -8,6 +8,7 @@ div.web {
   height: 17px;
   background-position: 0px 0px;
   background-image: url(../img/web.gif); /** sprite-ref: test */
+  background-image: url(../img/webz.gif);
 }
 
 div.other-rule {
