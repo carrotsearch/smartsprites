@@ -9,9 +9,9 @@ import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.junit.Test;
 
 /**
- * @author Stanislaw Osinski
+ * Test cases for {@link SpriteDirectiveOccurrenceCollector}.
  */
-public class SpriteEntryCollectorTest extends TestWithMemoryMessageSink
+public class SpriteDirectiveOccurrenceCollectorTest extends TestWithMemoryMessageSink
 {
     @Test
     public void testSpriteImageDirectiveExtractionOneDirectiveComplex()

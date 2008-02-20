@@ -3,7 +3,7 @@ package org.carrot2.labs.smartsprites;
 import java.io.File;
 
 /**
- * @author Stanislaw Osinski
+ * Describes an occurrence of a {@link SpriteImageDirective} in a specific CSS file.
  */
 public class SpriteImageOccurrence extends SpriteDirectiveOccurrence
 {

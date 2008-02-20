@@ -5,10 +5,13 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 /**
- * @author Stanislaw Osinski
+ * Colects messages in a {@list Link}, see {@link #messages}.
  */
 public class MemoryMessageSink implements MessageSink
 {
+    /**
+     * Contains collected messages.
+     */
     public final List<Message> messages = Lists.newArrayList();
 
     @Override

@@ -5,18 +5,16 @@ import static org.carrot2.labs.test.TestEqualsHelper.wrap;
 import static org.fest.assertions.Assertions.assertThat;
 
 import org.carrot2.labs.smartsprites.message.Message;
-import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.junit.Test;
 
 /**
- * @author Stanislaw Osinski
+ * Test cases for {@link SpriteImageDirective}.
  */
 public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
 {
     @Test
     public void testEmpty()
     {
-        final MessageLog messageLog = new MessageLog();
         final SpriteImageDirective directive = SpriteImageDirective.parse("", messageLog);
         assertNull(directive);
     }
@@ -24,7 +22,6 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
     @Test
     public void testIdUrlLayoutProvided()
     {
-        final MessageLog messageLog = new MessageLog();
         final SpriteImageDirective directive = SpriteImageDirective
             .parse(
                 "sprite: sprite; sprite-image: url('../sprite.png'); sprite-layout: horizontal",
@@ -40,7 +37,6 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
     @Test
     public void testIdUrlProvided()
     {
-        final MessageLog messageLog = new MessageLog();
         final SpriteImageDirective directive = SpriteImageDirective.parse(
             "sprite: sprite; sprite-image: url('../sprite.png')", messageLog);
 
@@ -129,5 +125,22 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertThat(wrap(messages)).contains(
             wrap(new Message(Message.MessageLevel.WARN,
                 Message.MessageType.UNSUPPORTED_LAYOUT, null, 0, "other")));
+    }
+
+    @Test
+    public void testUnsupportedProperties()
+    {
+        final SpriteImageDirective directive = SpriteImageDirective
+            .parse(
+                "sprite: sprite; sprites-image: url('../sprite.png'); sprites-layout: horizontal",
+                messageLog);
+
+        assertNull(directive);
+        assertThat(wrap(messages)).contains(
+            wrap(new Message(Message.MessageLevel.WARN,
+                Message.MessageType.UNSUPPORTED_PROPERTIES_FOUND, null, 0,
+                "sprites-image, sprites-layout")),
+            wrap(new Message(Message.MessageLevel.WARN,
+                Message.MessageType.SPRITE_IMAGE_URL_NOT_FOUND, null, 0)));
     }
 }

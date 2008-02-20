@@ -14,22 +14,28 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
- * @author Stanislaw Osinski
+ * A few utility methods for processing CSS syntax.
  */
 public class CssSyntaxUtils
 {
     private static final Pattern URL_PATTERN = Pattern
         .compile("[uU][rR][lL]\\((['\"]?)([^'\"]*)\\1\\)");
 
-    public static Collection<CssRule> extractRules(String text)
+    /**
+     * Extracts CSS properties from the provided {@link String}.
+     */
+    public static Collection<CssProperty> extractProperties(String text)
     {
         return extractRules(text, null);
     }
 
-    public static Collection<CssRule> extractRules(String text,
-        MessageLog messageCollector)
+    /**
+     * Extracts CSS properties from the provided {@link String} and logs warnings to the
+     * provided {@link MessageLog}.
+     */
+    public static Collection<CssProperty> extractRules(String text, MessageLog messageLog)
     {
-        final Collection<CssRule> rules = Lists.newArrayList();
+        final Collection<CssProperty> rules = Lists.newArrayList();
 
         final String [] chunks = text.split(";");
         for (final String chunk : chunks)
@@ -38,14 +44,15 @@ public class CssSyntaxUtils
 
             if (parts.length == 2)
             {
-                rules.add(new CssRule(parts[0].trim().toLowerCase(), parts[1].trim()));
+                rules
+                    .add(new CssProperty(parts[0].trim().toLowerCase(), parts[1].trim()));
             }
             else
             {
-                if (messageCollector != null)
+                if (messageLog != null)
                 {
-                    messageCollector.logWarning(Message.MessageType.MALFORMED_CSS_RULE,
-                        chunk.trim());
+                    messageLog.logWarning(Message.MessageType.MALFORMED_CSS_RULE, chunk
+                        .trim());
                 }
             }
         }
@@ -53,34 +60,53 @@ public class CssSyntaxUtils
         return rules;
     }
 
-    public static Map<String, CssRule> rulesAsMap(Collection<CssRule> rules)
+    /**
+     * Converts the provided collection of CSS properties to a {@link Map} with keys being
+     * property names and values being {@link CssProperty} objects.
+     */
+    public static Map<String, CssProperty> propertiesAsMap(Collection<CssProperty> rules)
     {
-        final Map<String, CssRule> result = Maps.newHashMap();
-        for (final CssRule cssRule : rules)
+        final Map<String, CssProperty> result = Maps.newHashMap();
+        for (final CssProperty cssProperty : rules)
         {
-            result.put(cssRule.rule, cssRule);
+            result.put(cssProperty.rule, cssProperty);
         }
         return result;
     }
 
-    public static boolean hasNonBlankValue(Map<String, CssRule> rules, String rule)
+    /**
+     * Returns <code>true</code> if the the provided map contains a property with the
+     * specified name that has a non-blank value.
+     */
+    public static boolean hasNonBlankValue(Map<String, CssProperty> properties,
+        String propertyName)
     {
-        return rules.containsKey(rule) && !StringUtils.isBlank(rules.get(rule).value);
+        return properties.containsKey(propertyName)
+            && !StringUtils.isBlank(properties.get(propertyName).value);
     }
 
+    /**
+     * Extracts the actual url from the CSS url expression like
+     * <code>url('actua_url')</code>.
+     */
     public static String unpackUrl(String urlValue)
     {
         return unpackUrl(urlValue, null);
     }
 
-    public static String unpackUrl(String urlValue, MessageLog messageCollector)
+    /**
+     * Extracts the actual url from the CSS url expression like
+     * <code>url('actua_url')</code> and logs warnings to the provided
+     * {@link MessageLog}.
+     */
+    public static String unpackUrl(String urlValue, MessageLog messageLog)
     {
         final Matcher matcher = URL_PATTERN.matcher(urlValue);
         if (!matcher.matches())
         {
-            if (messageCollector != null)
+            if (messageLog != null)
             {
-                messageCollector.logWarning(MessageType.MALFORMED_URL, urlValue);
+                messageLog.logWarning(MessageType.MALFORMED_URL, urlValue);
             }
             return null;
         }

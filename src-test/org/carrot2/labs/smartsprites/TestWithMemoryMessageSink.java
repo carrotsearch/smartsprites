@@ -6,7 +6,7 @@ import org.carrot2.labs.smartsprites.message.*;
 import org.junit.Before;
 
 /**
- * @author Stanislaw Osinski
+ * A base class for tests checking logged messages.
  */
 public class TestWithMemoryMessageSink
 {

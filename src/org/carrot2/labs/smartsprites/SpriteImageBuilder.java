@@ -19,10 +19,13 @@ import org.carrot2.util.FileUtils;
 import com.google.common.collect.*;
 
 /**
- * @author Stanislaw Osinski
+ * Lays out and build sprite images based on the collected SmartSprites directives.
  */
 public class SpriteImageBuilder
 {
+    /**
+     * Builds all sprite images based on the collected directives.
+     */
     static Multimap<File, SpriteReferenceReplacement> buildSpriteImages(
         Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId,
         Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId,
@@ -50,6 +53,9 @@ public class SpriteImageBuilder
         return spriteReplacementsByFile;
     }
 
+    /**
+     * Builds sprite image for a single sprite image directive.
+     */
     static Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> buildSpriteReplacements(
         SpriteImageDirective spriteImageDirective,
         Collection<SpriteReferenceOccurrence> spriteReferenceOccurrences,
@@ -67,6 +73,10 @@ public class SpriteImageBuilder
             final File imageFile = new File(spriteReferenceOccurrence.cssFile
                 .getParentFile(), spriteReferenceOccurrence.imagePath);
 
+            messageLog.setCssPath(FileUtils
+                .getCanonicalOrAbsolutePath(spriteReferenceOccurrence.cssFile));
+            messageLog.setLine(spriteReferenceOccurrence.line);
+
             // Load image
             BufferedImage image;
             try
@@ -81,6 +91,8 @@ public class SpriteImageBuilder
                     .getCanonicalOrAbsolutePath(imageFile), e.getMessage());
                 continue;
             }
+
+            messageLog.setCssPath(null);
 
             images.put(spriteReferenceOccurrence, image);
         }
@@ -100,7 +112,7 @@ public class SpriteImageBuilder
         {
             mergedImageFile.getParentFile().mkdirs();
         }
-        
+
         try
         {
             messageLog.logInfo(MessageType.CREATING_SPRITE_IMAGE, mergedImage.getWidth(),
@@ -117,6 +129,9 @@ public class SpriteImageBuilder
         return spriteImageProperties.spriteReferenceReplacements;
     }
 
+    /**
+     * Calculates total dimensions and lays out a single sprite image.
+     */
     static SpriteImageProperties buildSpriteImageProperties(
         SpriteImageDirective spriteImageDirective,
         Map<SpriteReferenceOccurrence, BufferedImage> images)
@@ -196,6 +211,9 @@ public class SpriteImageBuilder
             spriteReplacements);
     }
 
+    /**
+     * Calculates the width/ height of "repeated" sprites.
+     */
     static int calculateLeastCommonMultiple(
         Map<SpriteReferenceOccurrence, BufferedImage> images, final boolean verticalSprite)
     {
@@ -222,6 +240,9 @@ public class SpriteImageBuilder
         return leastCommonMultiple;
     }
 
+    /**
+     * Builds the actual sprite image.
+     */
     static BufferedImage buildMergedSpriteImage(
         Map<SpriteReferenceOccurrence, BufferedImage> images,
         SpriteImageProperties spriteImageProperties)
@@ -304,6 +325,10 @@ public class SpriteImageBuilder
         return mergedImage;
     }
 
+    /**
+     * Groups {@link SpriteReferenceReplacement}s by the line number of their
+     * corresponding directives.
+     */
     static Map<Integer, SpriteReferenceReplacement> getSpriteReplacementsByLineNumber(
         Collection<SpriteReferenceReplacement> spriteReferenceReplacements)
     {
@@ -318,6 +343,10 @@ public class SpriteImageBuilder
         return result;
     }
 
+    /**
+     * Groups {@link SpriteImageOccurrence}s by the line number of their corresponding
+     * directives.
+     */
     static Map<Integer, SpriteImageOccurrence> getSpriteImageOccurrencesByLineNumber(
         Collection<SpriteImageOccurrence> spriteImageOccurrences)
     {

@@ -41,7 +41,6 @@
       // Bind listener to tab structure change events
       $tabContainer.bind("tabsChanged", updateTabs);
       $tabContainer.find("a").bind("tabActivated", copyTabInfo);
-      $tabContainer.find(".active a").trigger("tabActivated");
     });
   };
 
@@ -62,7 +61,7 @@
   {
     var $tabContainer = $(e.target);
     var $tabs = $tabContainer.find("li:visible:not(.drag)");
-    $tabs.removeClass("passive-first active-first active-middle passive-middle active-last passive-last before-active");
+    $tabs.removeClass("passive-first active-first passive-last active-last before-active");
 
     $.each($tabs, function(i, tab) {
       $tab = $(tab);
@@ -79,8 +78,6 @@
         }
       } else if (i == $tabs.length - 1) {
         orderSuffix = "-last";
-      } else {
-        orderSuffix = "-middle";
       }
 
       $tab.addClass(status + orderSuffix);
@@ -101,6 +98,6 @@
   };
 
   copyTabInfo = function(e) {
-    $("#tab-info").html($(e.target).siblings("span.tab-info").clone().removeClass("bare"));
+    $("#tab-info").html($(e.target).siblings("span.tab-info").clone().removeClass("hide"));
   }
 })(jQuery);

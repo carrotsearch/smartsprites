@@ -8,7 +8,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
- * @author Stanislaw Osinski
+ * A helper class for testing collections of classes that do not need to define
+ * {@link Object#equals(Object)} and {@link Object#hashCode()} at runtime, but would be
+ * much easier to test if such methods were defined. This class implements a
+ * reflection-based versions of these methods.
  */
 public class TestEqualsHelper
 {

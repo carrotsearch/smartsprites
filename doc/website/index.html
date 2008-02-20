@@ -18,7 +18,8 @@
 	<ul class="menu">
 		<li><a href="#about">About</a></li>
 		<li><a href="#usage">Usage</a></li>
-		<li><a href="#bugs">Bugs</a></li>
+		<li><a href="download.html">download</a></li>
+		<li><a href="#faq">FAQ</a></li>
 		<li><a href="#contact">Contact</a></li>
 		<li id="last"></li>
 	</ul>
@@ -54,7 +55,7 @@
 
       <ul>
         <li>
-          <strong>Alpha release</strong>: Please bear with, or better -- report, any issues you have.
+          <strong>Alpha release</strong>: Please bear with, or better -- <a href="http://issues.carrot2.org/browse/SMARTSPRITES">report</a>, any issues you have.
         </li>
 
         <li>
@@ -84,7 +85,7 @@
         <li>
           <strong>Multiple sprite images and CSS files</strong>: SmartSprites
           can process multiple CSS files and produce many different sprites in
-          one step (e.g. one vertical for icons, another one for tabs).
+          one step (e.g. one vertical for icons, another horizontal one for tabs).
         </li>
 
         <li>
@@ -107,7 +108,7 @@
       <ol>
         <li>
           <strong>Start with preparing your design (HTML, CSS, images) the
-          usual way.</strong> Use <tt>background-image</tt> to add attach
+          usual way.</strong> Use <tt>background-image</tt> to attach
           images like icons, logos or e.g. x- or y-repeated backgrounds. You'll
           probably end up with a CSS pattern along the lines of this:
 
@@ -130,7 +131,7 @@
   background-image: url(../img/top-frame.gif);
 }</code>
 
-          When you've verified the original design works as indented, you're ready
+          When you've verified that the original design works as indented, you're ready
           to annotate it with SmartSprite's directives.
         </li>
 
@@ -203,7 +204,7 @@
 
           <p>
             Below is a detailed description of SmartSprites directives, which
-            you may a little heavy, but it will allow you to use all the power
+            you may find a little heavy, but it will allow you to use all the power
             of SmartSprites. There are two types of SmartSprites directives:
           </p>
 
@@ -351,8 +352,8 @@
             </li>
 
             <li>
-              Check out SmartSprites source code from the repository (no
-              distribution yet, but, hey, it's alpha :-).
+              <a href="download.html">Download SmartSprites</a>
+              or check out the latest version from the repository:
 
               <code>svn co https://carrot2.svn.sourceforge.net/svnroot/carrot2/labs/smartsprites</code>
             </li>
@@ -407,7 +408,7 @@ css.property.indent=  </code>
    [java] INFO: Reading image from: C:\example\img\top-frame.gif
    [java] INFO: Creating sprite image of size 48 x 75 for mysprite
    [java] INFO: Creating CSS style sheet: C:\example\css\style-sprite.css
-   [java] INFO: Processing completed in 328 ms</code>
+   [java] SmartSprites processing completed in 328 ms</code>
 
               <p>
                 If you notice any line containing a warning (<tt>WARN:</tt>),
@@ -430,25 +431,25 @@ css.property.indent=  </code>
               </p>
 
               <code>#web { 
-width: 17px; height: 17px; 
-background-repeat: no-repeat; 
-background-image: url('../img/mysprite.png');
-background-position: left -0px;
+  width: 17px; height: 17px; 
+  background-repeat: no-repeat; 
+  background-image: url('../img/mysprite.png');
+  background-position: left -0px;
 } 
 
 #logo { 
-width: 50px; height: 50px; 
-background-repeat: no-repeat; 
-background-position: top right; 
-background-image: url('../img/mysprite.png');
-background-position: right -17px;
+  width: 50px; height: 50px; 
+  background-repeat: no-repeat; 
+  background-position: top right; 
+  background-image: url('../img/mysprite.png');
+  background-position: right -17px;
 } 
 
 #main-box { 
-background-repeat: repeat-x; 
-background-position: 5px left; 
-background-image: url('../img/mysprite.png');
-background-position: left -64px;
+  background-repeat: repeat-x; 
+  background-position: 5px left; 
+  background-image: url('../img/mysprite.png');
+  background-position: left -64px;
 }</code>
 
               <p>
@@ -474,80 +475,95 @@ background-position: left -64px;
 
         <li>
           <strong>Check if your design still looks the same</strong>. Chances
-          are, it won't. Here's a few things to check:
-
-          <ul>
-            <li>
-              <p>
-                <strong>My design doesn't resemble the original at
-                all</strong>.  This may happen :-) First of all, check for
-                SmartSprites warning messages, these indicate that some of the
-                directives have been ignored due to syntactic or semantic
-                errors. Before further investigation, make sure you don't get
-                any warnings.
-              </p>
-
-              <p>
-                Secondly, make sure each SmartSprites directive fits entirely
-                in one line, including the <tt>*/</tt> sequence closing the
-                comment. Otherwise, you may get unpredictable results.
-              </p>
-
-              <p>
-                Thirdly, as shown in the previous section, SmartSprites for the
-                time being doesn't remove the original
-                <tt>background-position</tt> properties, but appends its own
-                ones below to shadow them. Your design may break if you have
-                <tt>background-position</tt> or <tt>background-image</tt>
-                properties appearing <strong>below</strong> the line with
-                SmartSprite's sprite reference directive. In such cases, move
-                such properties <strong>before</strong> the sprite reference
-                directive in your original CSS file and run SmartSprites again.
-              </p>
-            </li>
-
-            <li>
-              <p>
-                <strong>Other images from the sprite "show through"</strong>.
-                This can happen when the box you applied a sprited image to is
-                larger than the sprited image itself. In this situation, other
-                images in the sprite that are below or to the right of it will
-                also be visible. 
-              </p>
-              
-              <p>
-                To fix this you can size the box to make its dimensions equal
-                to the dimensions of the image. If this is impossible, use
-                sprite margins (e.g. <tt>sprite-margin-bottom</tt>) to create
-                some empty space around the image in the sprite, so that the
-                other images below it (or right of it) don't show through.
-              </p>
-            </li>
-
-            <li>
-              <strong>Repeating images in sprites doesn't work</strong>.
-              Remember that images repeated horizontally
-              (<tt>background-repeat: repeat-x</tt>) must be added to a
-              vertically laid out sprite (<tt>sprite-layout: vertical</tt>),
-              and images repeated vertically (<tt>background-repeat:
-              repeat-y</tt>) must be in a horizontally laid out sprite
-              (<tt>sprite-layout: horizontal</tt>). There is no way they can
-              work otherwise, hence two sprite image layouts in SmartSprites.
-            </li>
-          </ul>
+          are, it won't right away. See <a href="#faq">FAQ</a> for some tips.
         </li>
       </ol>
 		</div>
 
 		<div class="item">
-      <a name="bugs"></a>
-			<h1>Bugs</h1>
+      <a name="faq"></a>
+			<h1>Frequently Asked Questions</h1>
 
-      <p>
-        I'm sure SmartSprites has at least a few bugs and many missing
-        features.  Feel free to report them in our <a
-        href="http://issues.carrot2.org/browse/SMARTSPRITES">issue tracker</a>.
-      </p>
+      <ol>
+        <li>
+          <p>
+            <strong>After conversion to sprites, my design doesn't resemble the
+            original at all. What's wrong?</strong>.  This may happen :-) First
+            of all, check for SmartSprites warning messages, these indicate
+            that some of the directives have been ignored due to syntactic or
+            semantic errors. Before further investigation, make sure you don't
+            get any warnings.
+          </p>
+
+          <p>
+            Secondly, make sure each SmartSprites directive fits entirely
+            in one line, including the <tt>*/</tt> sequence closing the
+            comment. Otherwise, you may get unpredictable results.
+          </p>
+
+          <p>
+            Thirdly, as shown in the previous section, SmartSprites for the
+            time being doesn't remove the original <tt>background-position</tt>
+            properties, but appends its own ones below to shadow them. Your
+            design may break if you have <tt>background-position</tt> or
+            <tt>background-image</tt> properties appearing
+            <strong>below</strong> the line with SmartSprite's sprite reference
+            directive. SmartSprites outputs a warning in such cases. If this
+            happens, move the overriding properties <strong>before</strong> the
+            sprite reference directive in your original CSS file and run
+            SmartSprites again.
+          </p>
+        </li>
+
+        <li>
+          <p>
+            <strong>Other images from the sprite "show through" at places.
+            Why?</strong>.  This can happen when the box you applied a sprited
+            image to is larger than the sprited image itself. In this
+            situation, other images in the sprite that are below or to the
+            right of it will also be visible. 
+          </p>
+          
+          <p>
+            To fix this you can size the box to make its dimensions equal
+            to the dimensions of the image. If this is impossible, use
+            sprite margins (e.g. <tt>sprite-margin-bottom</tt>) to create
+            some empty space around the image in the sprite, so that the
+            other images below it (or right of it) don't show through.
+          </p>
+        </li>
+
+        <li>
+          <strong>Repeating images in sprites doesn't work. Is it a
+          bug?</strong>.  Remember that images repeated horizontally
+          (<tt>background-repeat: repeat-x</tt>) must be added to a vertically
+          laid out sprite (<tt>sprite-layout: vertical</tt>), and images
+          repeated vertically (<tt>background-repeat: repeat-y</tt>) must be in
+          a horizontally laid out sprite (<tt>sprite-layout: horizontal</tt>).
+          There is no way they can work otherwise, hence two sprite image
+          layouts in SmartSprites.
+        </li>
+       
+        <li>
+          <strong>Is there any bigger example of using SmartsSprites I can take
+          a look at?</strong> Yes, look in the <tt>test/ real-world-example</tt>
+          directory of the distribution. This is the original design I was
+          working on when I came up with the idea of SmartSprites.
+        </li>
+        
+        <li>
+          <strong>I've found a bug, how can I report it?</strong> Please use
+          our <a href="http://issues.carrot2.org/browse/SMARTSPRITES">issue
+          tracker</a>.
+        </li>
+        
+        <li>
+          <strong>Do you plan any new features for SmartSprites?</strong>
+          Yes, please see our <a
+          href="http://issues.carrot2.org/browse/SMARTSPRITES?report=com.atlassian.jira.plugin.system.project:roadmap-panel">road map</a> for
+          more information.
+        </li>
+      </ol>
     </div>
 
 		<div class="item">
@@ -562,7 +578,7 @@ background-position: left -64px;
       </p>
     </div>
 	</div>
-	<div class="footer">&copy; 2008 <a href="http:stanislaw.osinski.name">Stanislaw Osinski</a>. Design by <a href="http://arcsin.se">Arcsin</a></div>
+	<div class="footer">&copy; 2008 <a href="http://stanislaw.osinski.name">Stanislaw Osinski</a>. Design by <a href="http://arcsin.se">Arcsin</a></div>
 </div>
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

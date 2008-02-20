@@ -16,7 +16,7 @@ import org.junit.Test;
 import com.google.common.collect.Maps;
 
 /**
- * @author Stanislaw Osinski
+ * Test cases for {@link SpriteReferenceDirective}
  */
 public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
 {
@@ -53,6 +53,8 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(0, directive.marginRight);
         assertEquals(0, directive.marginTop);
         assertEquals(0, directive.marginBottom);
+
+        assertThat(messages).isEmpty();
     }
 
     @Test
@@ -69,6 +71,8 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(0, directive.marginRight);
         assertEquals(0, directive.marginTop);
         assertEquals(0, directive.marginBottom);
+
+        assertThat(messages).isEmpty();
     }
 
     @Test
@@ -99,6 +103,8 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(0, directive.marginRight);
         assertEquals(0, directive.marginTop);
         assertEquals(0, directive.marginBottom);
+
+        assertThat(messages).isEmpty();
     }
 
     @Test
@@ -158,6 +164,8 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(20, directive.marginRight);
         assertEquals(30, directive.marginTop);
         assertEquals(40, directive.marginBottom);
+
+        assertThat(messages).isEmpty();
     }
 
     @Test
@@ -179,5 +187,21 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
         assertThat(wrap(messages)).contains(
             wrap(new Message(Message.MessageLevel.WARN,
                 Message.MessageType.CANNOT_PARSE_MARGIN_VALUE, null, 0, "10zpx")));
+    }
+
+    @Test
+    public void testUnsupportedProperties()
+    {
+        final SpriteReferenceDirective directive = SpriteReferenceDirective.parse(
+            "sprite-ref: sprite; sprites-alignment: repeat; sprites-margin-left: 10px",
+            SPRITE_IMAGE_DIRECTIVES, messageLog);
+
+        assertNotNull(directive);
+        assertEquals("sprite", directive.spriteRef);
+
+        assertThat(wrap(messages)).contains(
+            wrap(new Message(Message.MessageLevel.WARN,
+                Message.MessageType.UNSUPPORTED_PROPERTIES_FOUND, null, 0,
+                "sprites-alignment, sprites-margin-left")));
     }
 }
