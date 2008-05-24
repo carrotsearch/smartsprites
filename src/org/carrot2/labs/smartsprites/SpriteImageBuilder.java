@@ -1,6 +1,6 @@
 package org.carrot2.labs.smartsprites;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.math.util.MathUtils;
+import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -207,7 +208,7 @@ public class SpriteImageBuilder
             spriteReplacements.put(entry.getKey(), spriteReferenceReplacement);
         }
 
-        return new SpriteImageProperties(spriteWidth, spriteHeight, verticalSprite,
+        return new SpriteImageProperties(spriteWidth, spriteHeight, spriteImageDirective,
             spriteReplacements);
     }
 
@@ -252,8 +253,19 @@ public class SpriteImageBuilder
         final boolean verticalSprite = spriteImageProperties.vertical;
         final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReferenceReplacements = spriteImageProperties.spriteReferenceReplacements;
 
-        final BufferedImage mergedImage = new BufferedImage(spriteWidth, spriteHeight,
-            BufferedImage.TYPE_4BYTE_ABGR);
+        final BufferedImage mergedImage;
+        if (!SpriteImageFormat.GIF
+            .equals(spriteImageProperties.spriteImageDirective.format))
+        {
+            mergedImage = new BufferedImage(spriteWidth, spriteHeight,
+                BufferedImage.TYPE_4BYTE_ABGR);
+        }
+        else
+        {
+            mergedImage = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice().getDefaultConfiguration()
+                .createCompatibleImage(spriteWidth, spriteHeight, Transparency.BITMASK);
+        }
 
         final Graphics mergedGraphics = mergedImage.getGraphics();
 

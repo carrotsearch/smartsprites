@@ -73,6 +73,16 @@
     </zip>
   </target>
 
+  <target name="jar" depends="build, test" description="Builds SmartSprites JAR">
+    <property file="smartsprites.version" />
+    <mkdir dir="tmp/dist" />
+
+    <jar destfile="tmp/dist/smartsprites-${smartsprites.version}.jar"
+         basedir="tmp/classes"
+         excludes="**/Test.class"
+    />
+  </target>
+
   <target name="clean" description="Deletes all temporary files">
     <delete dir="tmp" />
   </target>

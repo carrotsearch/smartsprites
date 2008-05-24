@@ -2,6 +2,8 @@ package org.carrot2.labs.smartsprites;
 
 import java.util.Map;
 
+import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
+
 /**
  * Properties of a single sprite image.
  */
@@ -22,12 +24,22 @@ public class SpriteImageProperties
      */
     public final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReferenceReplacements;
 
-    public SpriteImageProperties(int width, int height, boolean vertical,
+    /**
+     * {@link SpriteImageDirective} for which this {@link SpriteImageProperties} has been
+     * built. We need this reference here to properly save GIF transparency (sic!), see
+     * {@link SpriteImageBuilder#buildMergedSpriteImage(Map, SpriteImageProperties)}.
+     */
+    public final SpriteImageDirective spriteImageDirective;
+
+    public SpriteImageProperties(int width, int height,
+        SpriteImageDirective spriteImageDirective,
         Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReplacements)
     {
         this.width = width;
         this.height = height;
-        this.vertical = vertical;
         this.spriteReferenceReplacements = spriteReplacements;
+        this.spriteImageDirective = spriteImageDirective;
+        
+        this.vertical = SpriteImageLayout.VERTICAL.equals(spriteImageDirective.layout);
     }
 }
