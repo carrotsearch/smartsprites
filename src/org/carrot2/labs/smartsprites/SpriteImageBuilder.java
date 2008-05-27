@@ -334,6 +334,9 @@ public class SpriteImageBuilder
                 }
             }
         }
+        
+        mergedGraphics.dispose();
+        
         return mergedImage;
     }
 

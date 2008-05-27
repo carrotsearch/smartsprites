@@ -155,7 +155,7 @@ ul.menu li {
 	color: #444;
 	float: left;
 	padding-top: 8px;
-	width: 90px; height: 32px;
+	width: 93px; height: 32px;
   list-style: none;
   text-align: center;
 }
@@ -169,7 +169,7 @@ ul.menu li a {
 }
 .menu li#last {
 	border-right: none;
-  width: 295px;
+  width: 186px;
 }
 
 
