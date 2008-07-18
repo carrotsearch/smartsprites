@@ -13,7 +13,6 @@ public class LevelCounterMessageSink implements MessageSink
     /** Number of warning messages */
     private int warnCount = 0;
 
-    @Override
     public void add(Message message)
     {
         if (MessageLevel.INFO.equals(message.level))

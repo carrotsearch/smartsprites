@@ -49,6 +49,8 @@
       </classpath>
       <syspropertyset>
         <propertyref prefix="root.dir.path" />
+        <propertyref prefix="document.root.dir.path" />
+        <propertyref prefix="output.dir.path" />
         <propertyref prefix="css.file.suffix" />
         <propertyref prefix="css.property.indent" />
         <propertyref prefix="log.level" />

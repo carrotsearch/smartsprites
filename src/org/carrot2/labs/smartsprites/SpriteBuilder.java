@@ -3,6 +3,7 @@ package org.carrot2.labs.smartsprites;
 import java.io.*;
 import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
 import org.carrot2.labs.smartsprites.message.*;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
@@ -38,7 +39,8 @@ public class SpriteBuilder
     public static void buildSprites(File dir, MessageLog messageLog)
         throws FileNotFoundException, IOException
     {
-        buildSprites(dir, DEFAULT_CSS_FILE_SUFFIX, DEFAULT_CSS_INDENT, messageLog);
+        buildSprites(dir, messageLog, DEFAULT_CSS_FILE_SUFFIX, DEFAULT_CSS_INDENT, null,
+            null);
     }
 
     /**
@@ -47,8 +49,9 @@ public class SpriteBuilder
      * parameters will be used.
      */
     @SuppressWarnings("unchecked")
-    public static void buildSprites(File dir, String cssFileSuffix, String cssIndent,
-        MessageLog messageLog) throws FileNotFoundException, IOException
+    public static void buildSprites(File dir, MessageLog messageLog,
+        String cssFileSuffix, String cssIndent, File outputDir, File documentRootDir)
+        throws FileNotFoundException, IOException
     {
         if (!dir.isDirectory())
         {
@@ -85,11 +88,12 @@ public class SpriteBuilder
         messageLog.setCssPath(null);
         final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile = SpriteImageBuilder
             .buildSpriteImages(spriteImageDirectivesBySpriteId,
-                spriteReferenceOccurrencesBySpriteId, messageLog);
+                spriteReferenceOccurrencesBySpriteId, dir, outputDir, documentRootDir,
+                messageLog);
 
         // Rewrite the CSS
         rewriteCssFiles(spriteImageOccurrencesByFile, spriteReplacementsByFile,
-            cssFileSuffix, cssIndent, messageLog);
+            cssFileSuffix, cssIndent, dir, outputDir, messageLog);
 
     }
 
@@ -99,8 +103,8 @@ public class SpriteBuilder
     private static void rewriteCssFiles(
         final Multimap<File, SpriteImageOccurrence> spriteImageOccurrencesByFile,
         final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile,
-        String cssFileSuffix, String cssRuleIndent, MessageLog messageLog)
-        throws IOException
+        String cssFileSuffix, String cssRuleIndent, File rootDir, File outputDir,
+        MessageLog messageLog) throws IOException
     {
         if (spriteReplacementsByFile.isEmpty())
         {
@@ -115,7 +119,7 @@ public class SpriteBuilder
                     .getSpriteImageOccurrencesByLineNumber(spriteImageOccurrencesByFile
                         .get(cssFile)),
                     new HashMap<Integer, SpriteReferenceReplacement>(), cssFileSuffix,
-                    cssRuleIndent, messageLog);
+                    cssRuleIndent, rootDir, outputDir, messageLog);
             }
         }
         else
@@ -130,7 +134,7 @@ public class SpriteBuilder
                 createProcessedCss(cssFile, SpriteImageBuilder
                     .getSpriteImageOccurrencesByLineNumber(spriteImageOccurrencesByFile
                         .get(cssFile)), spriteReplacementsByLineNumber, cssFileSuffix,
-                    cssRuleIndent, messageLog);
+                    cssRuleIndent, rootDir, outputDir, messageLog);
             }
         }
     }
@@ -141,10 +145,15 @@ public class SpriteBuilder
     private static void createProcessedCss(File originalCssFile,
         Map<Integer, SpriteImageOccurrence> spriteImageOccurrencesByLineNumber,
         Map<Integer, SpriteReferenceReplacement> spriteReplacementsByLineNumber,
-        String cssFileSuffix, String cssRuleIndent, MessageLog messageLog)
-        throws IOException
+        String cssFileSuffix, String cssRuleIndent, File rootDir, File outputDir,
+        MessageLog messageLog) throws IOException
     {
-        final File processedCssFile = getProcessedCssFile(originalCssFile, cssFileSuffix);
+        final File processedCssFile = getProcessedCssFile(originalCssFile, cssFileSuffix,
+            rootDir, outputDir);
+        if (!processedCssFile.getParentFile().exists())
+        {
+            processedCssFile.getParentFile().mkdirs();
+        }
 
         final BufferedReader originalCssReader = new BufferedReader(new FileReader(
             originalCssFile));
@@ -225,13 +234,14 @@ public class SpriteBuilder
      */
     static File getProcessedCssFile(File originalCssFile)
     {
-        return getProcessedCssFile(originalCssFile, DEFAULT_CSS_FILE_SUFFIX);
+        return getProcessedCssFile(originalCssFile, DEFAULT_CSS_FILE_SUFFIX, null, null);
     }
 
     /**
      * Gets the name of the processed CSS file.
      */
-    static File getProcessedCssFile(File originalCssFile, String cssFileSuffix)
+    static File getProcessedCssFile(File originalCssFile, String cssFileSuffix,
+        File rootDir, File outputDir)
     {
         final String originalCssFileName = originalCssFile.getName();
         final String processedCssFileName = originalCssFileName.substring(0,
@@ -240,7 +250,15 @@ public class SpriteBuilder
 
         final File processedCssFile = new File(originalCssFile.getParentFile(),
             processedCssFileName);
-        return processedCssFile;
+
+        if (outputDir != null)
+        {
+            return FileUtils.changeRoot(processedCssFile, rootDir, outputDir);
+        }
+        else
+        {
+            return processedCssFile;
+        }
     }
 
     /**
@@ -248,24 +266,18 @@ public class SpriteBuilder
      */
     public static void main(String [] args) throws FileNotFoundException, IOException
     {
-        String cssFileSuffix = System.getProperty("css.file.suffix");
-        if (cssFileSuffix == null)
-        {
-            cssFileSuffix = DEFAULT_CSS_FILE_SUFFIX;
-        }
-
-        String cssIndent = System.getProperty("css.properti.indent");
-        if (cssIndent == null)
+        String cssIndent = System.getProperty("css.property.indent");
+        if (StringUtils.isBlank(cssIndent))
         {
             cssIndent = DEFAULT_CSS_INDENT;
         }
 
         String logLevel = System.getProperty("log.level");
-        if (logLevel == null)
+        if (StringUtils.isBlank(logLevel))
         {
             logLevel = DEFAULT_LOGGING_LEVEL;
         }
-        
+
         MessageLevel level;
         try
         {
@@ -277,22 +289,66 @@ public class SpriteBuilder
         }
 
         final String rootDir = System.getProperty("root.dir.path");
-        if (rootDir == null)
+        if (StringUtils.isBlank(rootDir))
         {
             System.out
                 .println("Please privide root dir in root.dir.path system property.");
             return;
         }
 
+        final String outputDir = System.getProperty("output.dir.path");
+        File outputDirFile = null;
+        if (StringUtils.isNotBlank(outputDir))
+        {
+            outputDirFile = new File(outputDir);
+            if (outputDirFile.exists())
+            {
+                if (assertIsDirectory(outputDir, "output.dir.path") == null)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                outputDirFile.mkdirs();
+            }
+        }
+
+        final String documentRootDir = System.getProperty("document.root.dir.path");
+        File documentRootDirFile = null;
+        if (StringUtils.isNotBlank(documentRootDir)
+            && (documentRootDirFile = assertExistsAndIsDirectory(documentRootDir,
+                "document.root.dir.path")) == null)
+        {
+            return;
+        }
+
+        String cssFileSuffix = System.getProperty("css.file.suffix");
+        if (StringUtils.isBlank(cssFileSuffix))
+        {
+            if (outputDirFile == null)
+            {
+                // If there is not output dir, we must have some suffix
+                cssFileSuffix = DEFAULT_CSS_FILE_SUFFIX;
+            }
+            else
+            {
+                // If we have an output dir, we can have an empty suffix
+                cssFileSuffix = "";
+            }
+        }
+
         final LevelCounterMessageSink levelCounter = new LevelCounterMessageSink();
         final MessageLog messageLog = new MessageLog(new PrintStreamMessageSink(
             System.out, level), levelCounter);
-        
+
         final long start = System.currentTimeMillis();
-        buildSprites(new File(rootDir), cssFileSuffix, cssIndent, messageLog);
+        buildSprites(new File(rootDir), messageLog, cssFileSuffix, cssIndent,
+            outputDirFile, documentRootDirFile);
         final long stop = System.currentTimeMillis();
 
-        System.out.print("SmartSprites processing completed in " + (stop - start) + " ms");
+        System.out
+            .print("SmartSprites processing completed in " + (stop - start) + " ms");
         if (levelCounter.getWarnCount() > 0)
         {
             System.out.println(" with " + levelCounter.getWarnCount() + " warning(s)");
@@ -301,5 +357,34 @@ public class SpriteBuilder
         {
             System.out.println();
         }
+    }
+
+    private static File assertExistsAndIsDirectory(final String dir,
+        final String propertyName)
+    {
+        final File outputDirFile;
+        outputDirFile = new File(dir);
+        if (!outputDirFile.exists())
+        {
+            System.out.println("The provided " + propertyName + " (" + dir
+                + ") must exist.");
+            return null;
+        }
+
+        return assertIsDirectory(dir, propertyName);
+    }
+
+    private static File assertIsDirectory(final String dir, final String propertyName)
+    {
+        final File outputDirFile;
+        outputDirFile = new File(dir);
+        if (!outputDirFile.isDirectory())
+        {
+            System.out.println("The provided " + propertyName + " (" + dir
+                + ") must be a directory.");
+            return null;
+        }
+
+        return outputDirFile;
     }
 }

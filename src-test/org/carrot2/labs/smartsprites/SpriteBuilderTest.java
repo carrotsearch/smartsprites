@@ -137,8 +137,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     }
 
     @Test
-    public void testOverridingCssProperties() throws FileNotFoundException,
-        IOException
+    public void testOverridingCssProperties() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("overriding-css-properties");
         SpriteBuilder.buildSprites(testDir, messageLog);
@@ -159,6 +158,52 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
                 "background-position", 20)));
 
         cleanUp(testDir);
+    }
+
+    @Test
+    public void testAbsoluteImageUrl() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("absolute-image-url");
+        final File documentRootDir = testDir("absolute-image-url/absolute-path");
+        SpriteBuilder.buildSprites(testDir, messageLog,
+            SpriteBuilder.DEFAULT_CSS_FILE_SUFFIX, SpriteBuilder.DEFAULT_CSS_INDENT,
+            null, documentRootDir);
+
+        assertThat(expectedCss(testDir)).hasSameContentAs(
+            SpriteBuilder.getProcessedCssFile(sourceCss(testDir)));
+        final File spriteFile = new File(documentRootDir, "img/sprite.png");
+        assertThat(spriteFile).exists();
+        assertThat(ImageIO.read(spriteFile)).hasSize(new Dimension(17, 17));
+
+        cleanUp(testDir);
+        spriteFile.delete();
+    }
+
+    @Test
+    public void testNonDefaultOutputDir() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("non-default-output-dir");
+        final File documentRootDir = testDir("non-default-output-dir/absolute-path");
+        final File outputDir = testDir("non-default-output-dir/output-dir");
+        outputDir.mkdirs();
+        SpriteBuilder.buildSprites(testDir, messageLog,
+            SpriteBuilder.DEFAULT_CSS_FILE_SUFFIX, SpriteBuilder.DEFAULT_CSS_INDENT,
+            outputDir, documentRootDir);
+
+        assertThat(expectedCss(testDir)).hasSameContentAs(
+            SpriteBuilder.getProcessedCssFile(sourceCss(testDir),
+                SpriteBuilder.DEFAULT_CSS_FILE_SUFFIX, testDir, outputDir));
+
+        final File absoluteSpriteFile = new File(documentRootDir, "img/absolute.png");
+        assertThat(absoluteSpriteFile).exists();
+        assertThat(ImageIO.read(absoluteSpriteFile)).hasSize(new Dimension(17, 17));
+
+        final File relativeSpriteFile = new File(outputDir, "img/relative.png");
+        assertThat(relativeSpriteFile).exists();
+        assertThat(ImageIO.read(relativeSpriteFile)).hasSize(new Dimension(15, 16));
+
+        FileUtils.deleteDirectory(outputDir);
+        FileUtils.deleteDirectory(absoluteSpriteFile.getParentFile());
     }
 
     private File testDir(String test)

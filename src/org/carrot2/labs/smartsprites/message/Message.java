@@ -26,14 +26,13 @@ public class Message
 
         public final static Comparator<MessageLevel> COMPARATOR = new Comparator<MessageLevel>()
         {
-            @Override
             public int compare(MessageLevel levelA, MessageLevel levelB)
             {
                 if (levelA.equals(levelB))
                 {
                     return 0;
                 }
-                
+
                 if (levelA.equals(INFO))
                 {
                     return -1;
@@ -82,7 +81,9 @@ public class Message
         PROCESSING_COMPLETED("Processing completed in %d ms"),
         UNSUPPORTED_PROPERTIES_FOUND("Unsupported properties found: %s"),
         OVERRIDING_PROPERTY_FOUND(
-            "Found a '%s' property that overrides the generated one. Move it before the sprite reference directive on line %d.");
+            "Found a '%s' property that overrides the generated one. Move it before the sprite reference directive on line %d."),
+        ABSOLUTE_PATH_AND_NO_DOCUMENT_ROOT(
+            "Found an absolute image path '%s' and no document.root.dir.path was defined. Taking relative to the CSS file.");
 
         /**
          * Human readable text of the message.

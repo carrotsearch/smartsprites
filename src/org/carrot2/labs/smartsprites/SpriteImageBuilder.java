@@ -30,7 +30,7 @@ public class SpriteImageBuilder
     static Multimap<File, SpriteReferenceReplacement> buildSpriteImages(
         Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId,
         Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId,
-        MessageLog messageLog)
+        File rootDir, File outputDir, File documentRootDir, MessageLog messageLog)
     {
         final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile = Multimaps
             .newArrayListMultimap();
@@ -40,7 +40,7 @@ public class SpriteImageBuilder
             final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReferenceReplacements = SpriteImageBuilder
                 .buildSpriteReplacements(spriteImageDirectivesBySpriteId
                     .get(spriteReferenceOccurrences.getKey()), spriteReferenceOccurrences
-                    .getValue(), messageLog);
+                    .getValue(), rootDir, outputDir, documentRootDir, messageLog);
 
             for (final SpriteReferenceReplacement spriteReferenceReplacement : spriteReferenceReplacements
                 .values())
@@ -59,8 +59,8 @@ public class SpriteImageBuilder
      */
     static Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> buildSpriteReplacements(
         SpriteImageDirective spriteImageDirective,
-        Collection<SpriteReferenceOccurrence> spriteReferenceOccurrences,
-        MessageLog messageLog)
+        Collection<SpriteReferenceOccurrence> spriteReferenceOccurrences, File rootDir,
+        File outputDir, File documentRootDir, MessageLog messageLog)
     {
         // Take SpriteImageDescriptor from the first entry, they should be the same
         final SpriteReferenceOccurrence firstSpriteEntry = spriteReferenceOccurrences
@@ -71,12 +71,13 @@ public class SpriteImageBuilder
             .newLinkedHashMap();
         for (final SpriteReferenceOccurrence spriteReferenceOccurrence : spriteReferenceOccurrences)
         {
-            final File imageFile = new File(spriteReferenceOccurrence.cssFile
-                .getParentFile(), spriteReferenceOccurrence.imagePath);
-
             messageLog.setCssPath(FileUtils
                 .getCanonicalOrAbsolutePath(spriteReferenceOccurrence.cssFile));
             messageLog.setLine(spriteReferenceOccurrence.line);
+
+            final File imageFile = getImageFile(spriteReferenceOccurrence.cssFile,
+                spriteReferenceOccurrence.imagePath, documentRootDir, messageLog, null,
+                null);
 
             // Load image
             BufferedImage image;
@@ -107,8 +108,10 @@ public class SpriteImageBuilder
             images, spriteImageProperties);
 
         // Save the image to the disk
-        final File mergedImageFile = new File(firstSpriteEntry.cssFile.getParentFile(),
-            spriteImageDirective.imagePath);
+        final File mergedImageFile = getImageFile(firstSpriteEntry.cssFile,
+            spriteImageDirective.imagePath, documentRootDir, messageLog, rootDir,
+            outputDir);
+
         if (!mergedImageFile.getParentFile().exists())
         {
             mergedImageFile.getParentFile().mkdirs();
@@ -128,6 +131,38 @@ public class SpriteImageBuilder
         }
 
         return spriteImageProperties.spriteReferenceReplacements;
+    }
+
+    /**
+     * Returns the {@link File} for an imagePath. If the imagePath is relative, it's taken
+     * relative to the cssFile. If imagePath is absolute (starts with '/') and
+     * documentRootDir is not null, it's taken relative to documentRootDir.
+     */
+    static File getImageFile(File cssFile, String imagePath, File documentRootDir,
+        MessageLog log, File oldRoot, File newRoot)
+    {
+        if (imagePath.startsWith("/"))
+        {
+            if (documentRootDir != null)
+            {
+                return new File(documentRootDir, imagePath.substring(1));
+            }
+            else
+            {
+                log.logWarning(MessageType.ABSOLUTE_PATH_AND_NO_DOCUMENT_ROOT, imagePath);
+            }
+        }
+
+        final File file = new File(cssFile.getParentFile(), imagePath);
+
+        if (!imagePath.startsWith("/") && newRoot != null)
+        {
+            return FileUtils.changeRoot(file, oldRoot, newRoot);
+        }
+        else
+        {
+            return file;
+        }
     }
 
     /**
@@ -334,9 +369,9 @@ public class SpriteImageBuilder
                 }
             }
         }
-        
+
         mergedGraphics.dispose();
-        
+
         return mergedImage;
     }
 

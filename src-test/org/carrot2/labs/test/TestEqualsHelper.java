@@ -13,6 +13,7 @@ import com.google.common.collect.Sets;
  * much easier to test if such methods were defined. This class implements a
  * reflection-based versions of these methods.
  */
+// TODO: Refactor this to use custom Message assertions plugin
 public class TestEqualsHelper
 {
     @SuppressWarnings("unused")

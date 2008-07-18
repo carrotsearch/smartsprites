@@ -35,7 +35,6 @@ public class PrintStreamMessageSink implements MessageSink
         this.level = level;
     }
 
-    @Override
     public void add(Message message)
     {
         if (MessageLevel.COMPARATOR.compare(message.level, level) >= 0)
