@@ -126,19 +126,19 @@ public class SpriteImageDirective
         properties.removeAll(ALLOWED_PROPERTIES);
         if (!properties.isEmpty())
         {
-            messageCollector.logWarning(MessageType.UNSUPPORTED_PROPERTIES_FOUND,
+            messageCollector.warning(MessageType.UNSUPPORTED_PROPERTIES_FOUND,
                 CollectionUtils.toString(properties));
         }
 
         if (!CssSyntaxUtils.hasNonBlankValue(rules, PROPERTY_SPRITE_ID))
         {
-            messageCollector.logWarning(MessageType.SPRITE_ID_NOT_FOUND);
+            messageCollector.warning(MessageType.SPRITE_ID_NOT_FOUND);
             return null;
         }
 
         if (!CssSyntaxUtils.hasNonBlankValue(rules, PROPERTY_SPRITE_IMAGE_URL))
         {
-            messageCollector.logWarning(MessageType.SPRITE_IMAGE_URL_NOT_FOUND);
+            messageCollector.warning(MessageType.SPRITE_IMAGE_URL_NOT_FOUND);
             return null;
         }
 
@@ -157,7 +157,7 @@ public class SpriteImageDirective
             }
             catch (final IllegalArgumentException e)
             {
-                messageCollector.logWarning(MessageType.UNSUPPORTED_LAYOUT, layoutValue);
+                messageCollector.warning(MessageType.UNSUPPORTED_LAYOUT, layoutValue);
                 layout = SpriteImageLayout.VERTICAL;
             }
         }
@@ -171,7 +171,7 @@ public class SpriteImageDirective
         final int lastDotIndex = imagePath.lastIndexOf('.');
         if ((lastDotIndex < 0) || (lastDotIndex == imagePath.length() - 1))
         {
-            messageCollector.logWarning(MessageType.CANNOT_DETERMINE_IMAGE_FORMAT,
+            messageCollector.warning(MessageType.CANNOT_DETERMINE_IMAGE_FORMAT,
                 imagePath);
             format = SpriteImageFormat.PNG;
         }
@@ -184,7 +184,7 @@ public class SpriteImageDirective
             }
             catch (final IllegalArgumentException e)
             {
-                messageCollector.logWarning(MessageType.UNSUPPORTED_FORMAT, formatValue);
+                messageCollector.warning(MessageType.UNSUPPORTED_FORMAT, formatValue);
                 format = SpriteImageFormat.PNG;
             }
         }

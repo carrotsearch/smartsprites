@@ -3,7 +3,6 @@ package org.carrot2.labs.smartsprites;
 import java.io.*;
 import java.util.*;
 
-import org.apache.commons.lang.StringUtils;
 import org.carrot2.labs.smartsprites.message.*;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
@@ -14,7 +13,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 /**
- * The entry class for SmartSprites.
+ * Performs all stages of sprite building.
  */
 public class SpriteBuilder
 {
@@ -39,8 +38,8 @@ public class SpriteBuilder
     public static void buildSprites(File dir, MessageLog messageLog)
         throws FileNotFoundException, IOException
     {
-        buildSprites(dir, messageLog, DEFAULT_CSS_FILE_SUFFIX, DEFAULT_CSS_INDENT, null,
-            null);
+        buildSprites(new SmartSpritesParameters(dir, null, null, MessageLevel.INFO,
+            DEFAULT_CSS_FILE_SUFFIX, DEFAULT_CSS_INDENT), messageLog);
     }
 
     /**
@@ -49,20 +48,23 @@ public class SpriteBuilder
      * parameters will be used.
      */
     @SuppressWarnings("unchecked")
-    public static void buildSprites(File dir, MessageLog messageLog,
-        String cssFileSuffix, String cssIndent, File outputDir, File documentRootDir)
-        throws FileNotFoundException, IOException
+    public static void buildSprites(SmartSpritesParameters parameters,
+        MessageLog messageLog) throws FileNotFoundException, IOException
     {
-        if (!dir.isDirectory())
+        parameters.validate(messageLog);
+        
+        final long start = System.currentTimeMillis();
+        final LevelCounterMessageSink levelCounter = new LevelCounterMessageSink();
+        messageLog.addMessageSink(levelCounter);
+
+        if (parameters.outputDir != null && !parameters.outputDir.exists())
         {
-            messageLog.logWarning(MessageType.NOT_A_DIRECTORY_ON_INPUT, FileUtils
-                .getCanonicalOrAbsolutePath(dir));
-            return;
+            parameters.outputDir.mkdirs();
         }
 
         // Identify css files.
-        final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(dir,
-            new String []
+        final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
+            parameters.rootDir, new String []
             {
                 "css"
             }, true);
@@ -88,13 +90,25 @@ public class SpriteBuilder
         messageLog.setCssPath(null);
         final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile = SpriteImageBuilder
             .buildSpriteImages(spriteImageDirectivesBySpriteId,
-                spriteReferenceOccurrencesBySpriteId, dir, outputDir, documentRootDir,
-                messageLog);
+                spriteReferenceOccurrencesBySpriteId, parameters.rootDir,
+                parameters.outputDir, parameters.documentRootDir, messageLog);
 
         // Rewrite the CSS
         rewriteCssFiles(spriteImageOccurrencesByFile, spriteReplacementsByFile,
-            cssFileSuffix, cssIndent, dir, outputDir, messageLog);
+            parameters.cssFileSuffix, parameters.cssPropertyIndent, parameters.rootDir,
+            parameters.outputDir, messageLog);
 
+        final long stop = System.currentTimeMillis();
+
+        if (levelCounter.getWarnCount() > 0)
+        {
+            messageLog.status(MessageType.PROCESSING_COMPLETED_WITH_WARNINGS,
+                (stop - start), levelCounter.getWarnCount());
+        }
+        else
+        {
+            messageLog.status(MessageType.PROCESSING_COMPLETED, (stop - start));
+        }
     }
 
     /**
@@ -166,7 +180,7 @@ public class SpriteBuilder
 
         try
         {
-            messageLog.logInfo(MessageType.CREATING_CSS_STYLE_SHEET, FileUtils
+            messageLog.info(MessageType.CREATING_CSS_STYLE_SHEET, FileUtils
                 .getCanonicalOrAbsolutePath(processedCssFile));
             messageLog.setCssPath(FileUtils.getCanonicalOrAbsolutePath(originalCssFile));
 
@@ -210,7 +224,7 @@ public class SpriteBuilder
                     {
                         if (originalCssLine.contains(property))
                         {
-                            messageLog.logWarning(MessageType.OVERRIDING_PROPERTY_FOUND,
+                            messageLog.warning(MessageType.OVERRIDING_PROPERTY_FOUND,
                                 property, lastReferenceReplacementLine);
                         }
                     }
@@ -259,132 +273,5 @@ public class SpriteBuilder
         {
             return processedCssFile;
         }
-    }
-
-    /**
-     * Entry point to SmartSprites. All parameters are passed as JVM properties.
-     */
-    public static void main(String [] args) throws FileNotFoundException, IOException
-    {
-        String cssIndent = System.getProperty("css.property.indent");
-        if (StringUtils.isBlank(cssIndent))
-        {
-            cssIndent = DEFAULT_CSS_INDENT;
-        }
-
-        String logLevel = System.getProperty("log.level");
-        if (StringUtils.isBlank(logLevel))
-        {
-            logLevel = DEFAULT_LOGGING_LEVEL;
-        }
-
-        MessageLevel level;
-        try
-        {
-            level = MessageLevel.valueOf(logLevel);
-        }
-        catch (Exception e)
-        {
-            level = MessageLevel.INFO;
-        }
-
-        final String rootDir = System.getProperty("root.dir.path");
-        if (StringUtils.isBlank(rootDir))
-        {
-            System.out
-                .println("Please privide root dir in root.dir.path system property.");
-            return;
-        }
-
-        final String outputDir = System.getProperty("output.dir.path");
-        File outputDirFile = null;
-        if (StringUtils.isNotBlank(outputDir))
-        {
-            outputDirFile = new File(outputDir);
-            if (outputDirFile.exists())
-            {
-                if (assertIsDirectory(outputDir, "output.dir.path") == null)
-                {
-                    return;
-                }
-            }
-            else
-            {
-                outputDirFile.mkdirs();
-            }
-        }
-
-        final String documentRootDir = System.getProperty("document.root.dir.path");
-        File documentRootDirFile = null;
-        if (StringUtils.isNotBlank(documentRootDir)
-            && (documentRootDirFile = assertExistsAndIsDirectory(documentRootDir,
-                "document.root.dir.path")) == null)
-        {
-            return;
-        }
-
-        String cssFileSuffix = System.getProperty("css.file.suffix");
-        if (StringUtils.isBlank(cssFileSuffix))
-        {
-            if (outputDirFile == null)
-            {
-                // If there is not output dir, we must have some suffix
-                cssFileSuffix = DEFAULT_CSS_FILE_SUFFIX;
-            }
-            else
-            {
-                // If we have an output dir, we can have an empty suffix
-                cssFileSuffix = "";
-            }
-        }
-
-        final LevelCounterMessageSink levelCounter = new LevelCounterMessageSink();
-        final MessageLog messageLog = new MessageLog(new PrintStreamMessageSink(
-            System.out, level), levelCounter);
-
-        final long start = System.currentTimeMillis();
-        buildSprites(new File(rootDir), messageLog, cssFileSuffix, cssIndent,
-            outputDirFile, documentRootDirFile);
-        final long stop = System.currentTimeMillis();
-
-        System.out
-            .print("SmartSprites processing completed in " + (stop - start) + " ms");
-        if (levelCounter.getWarnCount() > 0)
-        {
-            System.out.println(" with " + levelCounter.getWarnCount() + " warning(s)");
-        }
-        else
-        {
-            System.out.println();
-        }
-    }
-
-    private static File assertExistsAndIsDirectory(final String dir,
-        final String propertyName)
-    {
-        final File outputDirFile;
-        outputDirFile = new File(dir);
-        if (!outputDirFile.exists())
-        {
-            System.out.println("The provided " + propertyName + " (" + dir
-                + ") must exist.");
-            return null;
-        }
-
-        return assertIsDirectory(dir, propertyName);
-    }
-
-    private static File assertIsDirectory(final String dir, final String propertyName)
-    {
-        final File outputDirFile;
-        outputDirFile = new File(dir);
-        if (!outputDirFile.isDirectory())
-        {
-            System.out.println("The provided " + propertyName + " (" + dir
-                + ") must be a directory.");
-            return null;
-        }
-
-        return outputDirFile;
     }
 }

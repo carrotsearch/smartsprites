@@ -1,5 +1,9 @@
 package org.carrot2.labs.smartsprites.message;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 /**
  * Gathers {@link Message}s during the runtime of the applications.
  */
@@ -12,14 +16,14 @@ public class MessageLog
     private String cssPath = null;
 
     /** Sinks for messages */
-    private final MessageSink [] sinks;
+    private final List<MessageSink> sinks;
 
     /**
      * Creates a {@link MessageLog} with the provided {@link MessageSink}s.
      */
     public MessageLog(MessageSink... sinks)
     {
-        this.sinks = sinks;
+        this.sinks = Lists.newArrayList(sinks);
     }
 
     /**
@@ -37,7 +41,7 @@ public class MessageLog
     /**
      * Logs an information message to this log.
      */
-    public void logInfo(Message.MessageType type, Object... arguments)
+    public void info(Message.MessageType type, Object... arguments)
     {
         log(Message.MessageLevel.INFO, type, arguments);
     }
@@ -45,9 +49,25 @@ public class MessageLog
     /**
      * Logs a warning message to this log.
      */
-    public void logWarning(Message.MessageType type, Object... arguments)
+    public void warning(Message.MessageType type, Object... arguments)
     {
         log(Message.MessageLevel.WARN, type, arguments);
+    }
+
+    /**
+     * Logs an error message to this log.
+     */
+    public void error(Message.MessageType type, Object... arguments)
+    {
+        log(Message.MessageLevel.ERROR, type, arguments);
+    }
+
+    /**
+     * Logs a status message to this log.
+     */
+    public void status(Message.MessageType type, Object... arguments)
+    {
+        log(Message.MessageLevel.STATUS, type, arguments);
     }
 
     /**
@@ -64,5 +84,13 @@ public class MessageLog
     public void setCssPath(String cssPath)
     {
         this.cssPath = cssPath;
+    }
+
+    /**
+     * Adds a {@link MessageSink} to this log.
+     */
+    public void addMessageSink(MessageSink sink)
+    {
+        this.sinks.add(sink);
     }
 }

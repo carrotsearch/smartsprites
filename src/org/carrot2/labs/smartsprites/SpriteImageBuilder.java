@@ -83,13 +83,13 @@ public class SpriteImageBuilder
             BufferedImage image;
             try
             {
-                messageLog.logInfo(MessageType.READING_IMAGE, FileUtils
+                messageLog.info(MessageType.READING_IMAGE, FileUtils
                     .getCanonicalOrAbsolutePath(imageFile));
                 image = ImageIO.read(imageFile);
             }
             catch (final IOException e)
             {
-                messageLog.logWarning(MessageType.CANNOT_NOT_LOAD_IMAGE, FileUtils
+                messageLog.warning(MessageType.CANNOT_NOT_LOAD_IMAGE, FileUtils
                     .getCanonicalOrAbsolutePath(imageFile), e.getMessage());
                 continue;
             }
@@ -119,14 +119,14 @@ public class SpriteImageBuilder
 
         try
         {
-            messageLog.logInfo(MessageType.CREATING_SPRITE_IMAGE, mergedImage.getWidth(),
+            messageLog.info(MessageType.CREATING_SPRITE_IMAGE, mergedImage.getWidth(),
                 mergedImage.getHeight(), spriteImageDirective.spriteId);
             ImageIO.write(mergedImage, spriteImageDirective.format.toString(),
                 mergedImageFile);
         }
         catch (final IOException e)
         {
-            messageLog.logInfo(MessageType.CANNOT_WRITE_SPRITE_IMAGE, FileUtils
+            messageLog.info(MessageType.CANNOT_WRITE_SPRITE_IMAGE, FileUtils
                 .getCanonicalOrAbsolutePath(mergedImageFile), e.getMessage());
         }
 
@@ -149,7 +149,7 @@ public class SpriteImageBuilder
             }
             else
             {
-                log.logWarning(MessageType.ABSOLUTE_PATH_AND_NO_DOCUMENT_ROOT, imagePath);
+                log.warning(MessageType.ABSOLUTE_PATH_AND_NO_DOCUMENT_ROOT, imagePath);
             }
         }
 

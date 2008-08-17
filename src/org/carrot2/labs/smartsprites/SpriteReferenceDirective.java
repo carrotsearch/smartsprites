@@ -121,14 +121,14 @@ public class SpriteReferenceDirective
         properties.removeAll(ALLOWED_PROPERTIES);
         if (!properties.isEmpty())
         {
-            messageCollector.logWarning(MessageType.UNSUPPORTED_PROPERTIES_FOUND,
+            messageCollector.warning(MessageType.UNSUPPORTED_PROPERTIES_FOUND,
                 CollectionUtils.toString(properties));
         }
 
         // Sprite-ref is required
         if (!CssSyntaxUtils.hasNonBlankValue(rules, PROPERTY_SPRITE_REF))
         {
-            messageCollector.logWarning(MessageType.SPRITE_REF_NOT_FOUND);
+            messageCollector.warning(MessageType.SPRITE_REF_NOT_FOUND);
             return null;
         }
 
@@ -140,7 +140,7 @@ public class SpriteReferenceDirective
         // Referenced sprite not found
         if (spriteImageDirective == null)
         {
-            messageCollector.logWarning(MessageType.REFERENCED_SPRITE_NOT_FOUND,
+            messageCollector.warning(MessageType.REFERENCED_SPRITE_NOT_FOUND,
                 spriteRef);
             return null;
         }
@@ -157,7 +157,7 @@ public class SpriteReferenceDirective
             }
             catch (final IllegalArgumentException e)
             {
-                messageCollector.logWarning(MessageType.UNSUPPORTED_ALIGNMENT,
+                messageCollector.warning(MessageType.UNSUPPORTED_ALIGNMENT,
                     alignmentValue);
                 alignment = getDefaultAlignment(spriteImageDirective);
             }
@@ -194,7 +194,7 @@ public class SpriteReferenceDirective
             if (alignment.equals(SpriteAlignment.LEFT)
                 || alignment.equals(SpriteAlignment.RIGHT))
             {
-                messageCollector.logWarning(
+                messageCollector.warning(
                     MessageType.ONLY_TOP_OR_BOTTOM_ALIGNMENT_ALLOWED, alignment.value);
                 return SpriteAlignment.TOP;
             }
@@ -204,7 +204,7 @@ public class SpriteReferenceDirective
             if (alignment.equals(SpriteAlignment.TOP)
                 || alignment.equals(SpriteAlignment.LEFT))
             {
-                messageCollector.logWarning(
+                messageCollector.warning(
                     MessageType.ONLY_LEFT_OR_RIGHT_ALIGNMENT_ALLOWED, alignment.value);
                 return SpriteAlignment.LEFT;
             }
@@ -249,7 +249,7 @@ public class SpriteReferenceDirective
             }
             catch (final NumberFormatException e)
             {
-                messageLog.logWarning(MessageType.CANNOT_PARSE_MARGIN_VALUE,
+                messageLog.warning(MessageType.CANNOT_PARSE_MARGIN_VALUE,
                     rawMarginValue);
                 return 0;
             }

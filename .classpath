@@ -10,5 +10,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/compile-time/fest-assert-1.0a1.jar"/>
 	<classpathentry kind="lib" path="lib/compile-time/fest-util-0.4.jar"/>
+	<classpathentry kind="var" path="ANT_HOME/lib/ant.jar"/>
 	<classpathentry kind="output" path="tmp/eclipse"/>
 </classpath>

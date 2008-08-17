@@ -17,30 +17,36 @@ public class Message
         /**
          * Information message, can be ignored.
          */
-        INFO,
+        INFO(1),
 
         /**
          * Warning messages, ignoring can lead to the converted designs looking broken.
          */
-        WARN;
+        WARN(2),
+
+        /**
+         * Error messages, SmartSpricess cannot perform processing.
+         */
+        ERROR(3),
+        
+        /**
+         * Status messages displayed at the end of processing.
+         */
+        STATUS(4);
+
+        /** Numeric level for comparisons */
+        final private int level;
+
+        private MessageLevel(int level)
+        {
+            this.level = level;
+        }
 
         public final static Comparator<MessageLevel> COMPARATOR = new Comparator<MessageLevel>()
         {
             public int compare(MessageLevel levelA, MessageLevel levelB)
             {
-                if (levelA.equals(levelB))
-                {
-                    return 0;
-                }
-
-                if (levelA.equals(INFO))
-                {
-                    return -1;
-                }
-                else
-                {
-                    return 1;
-                }
+                return levelA.level - levelB.level;
             }
         };
     }
@@ -62,7 +68,11 @@ public class Message
             "Found more than one CSS rule next to sprite reference comment: %s"),
         NO_BACKGROUND_IMAGE_RULE_NEXT_TO_SPRITE_REFERENCE_DIRECTIVE(
             "No 'background-image' CSS rule next to sprite reference comment: %s"),
-        NOT_A_DIRECTORY_ON_INPUT("Not a directory: %s"),
+        ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY(
+            "Root directory must exist and be a directory: %s"),
+        OUTPUT_DIR_IS_NOT_DIRECTORY("Output directory must be a directory: %s"),
+        DOCUMENT_ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY(
+            "Document root directory must exist and be a directory: %s"),
         ONLY_LEFT_OR_RIGHT_ALIGNMENT_ALLOWED(
             "Only 'left' or 'right' alignment allowed on vertical sprites, found: %s. Using 'left'."),
         ONLY_TOP_OR_BOTTOM_ALIGNMENT_ALLOWED(
@@ -78,7 +88,8 @@ public class Message
         UNSUPPORTED_ALIGNMENT("Unsupported alignment: %s"),
         UNSUPPORTED_FORMAT("Unsupported format: %s"),
         UNSUPPORTED_LAYOUT("Unsupported layout: %s"),
-        PROCESSING_COMPLETED("Processing completed in %d ms"),
+        PROCESSING_COMPLETED("SmartSprites processing completed in %d ms"),
+        PROCESSING_COMPLETED_WITH_WARNINGS("SmartSprites processing completed in %d ms with %d warning(s)"),
         UNSUPPORTED_PROPERTIES_FOUND("Unsupported properties found: %s"),
         OVERRIDING_PROPERTY_FOUND(
             "Found a '%s' property that overrides the generated one. Move it before the sprite reference directive on line %d."),

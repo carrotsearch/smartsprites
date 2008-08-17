@@ -51,7 +51,7 @@ public class CssSyntaxUtils
             {
                 if (messageLog != null)
                 {
-                    messageLog.logWarning(Message.MessageType.MALFORMED_CSS_RULE, chunk
+                    messageLog.warning(Message.MessageType.MALFORMED_CSS_RULE, chunk
                         .trim());
                 }
             }
@@ -106,7 +106,7 @@ public class CssSyntaxUtils
         {
             if (messageLog != null)
             {
-                messageLog.logWarning(MessageType.MALFORMED_URL, urlValue);
+                messageLog.warning(MessageType.MALFORMED_URL, urlValue);
             }
             return null;
         }

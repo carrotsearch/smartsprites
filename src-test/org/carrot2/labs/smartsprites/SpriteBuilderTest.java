@@ -10,6 +10,8 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.carrot2.labs.smartsprites.message.Message;
+import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -165,9 +167,9 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     {
         final File testDir = testDir("absolute-image-url");
         final File documentRootDir = testDir("absolute-image-url/absolute-path");
-        SpriteBuilder.buildSprites(testDir, messageLog,
-            SpriteBuilder.DEFAULT_CSS_FILE_SUFFIX, SpriteBuilder.DEFAULT_CSS_INDENT,
-            null, documentRootDir);
+        SpriteBuilder.buildSprites(new SmartSpritesParameters(testDir, null,
+            documentRootDir, MessageLevel.INFO, SpriteBuilder.DEFAULT_CSS_FILE_SUFFIX,
+            SpriteBuilder.DEFAULT_CSS_INDENT), messageLog);
 
         assertThat(expectedCss(testDir)).hasSameContentAs(
             SpriteBuilder.getProcessedCssFile(sourceCss(testDir)));
@@ -186,9 +188,9 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File documentRootDir = testDir("non-default-output-dir/absolute-path");
         final File outputDir = testDir("non-default-output-dir/output-dir");
         outputDir.mkdirs();
-        SpriteBuilder.buildSprites(testDir, messageLog,
-            SpriteBuilder.DEFAULT_CSS_FILE_SUFFIX, SpriteBuilder.DEFAULT_CSS_INDENT,
-            outputDir, documentRootDir);
+        SpriteBuilder.buildSprites(new SmartSpritesParameters(testDir, outputDir,
+            documentRootDir, MessageLevel.INFO, SpriteBuilder.DEFAULT_CSS_FILE_SUFFIX,
+            SpriteBuilder.DEFAULT_CSS_INDENT), messageLog);
 
         assertThat(expectedCss(testDir)).hasSameContentAs(
             SpriteBuilder.getProcessedCssFile(sourceCss(testDir),
@@ -202,8 +204,29 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(relativeSpriteFile).exists();
         assertThat(ImageIO.read(relativeSpriteFile)).hasSize(new Dimension(15, 16));
 
+        cleanUp(testDir);
         FileUtils.deleteDirectory(outputDir);
         FileUtils.deleteDirectory(absoluteSpriteFile.getParentFile());
+    }
+
+    /**
+     * Currently multiple references to the same image generate multiple copies of the
+     * image in the sprite, hence the test is ignored.
+     */
+    @Test
+    @Ignore
+    public void testRepeatedImageReferences() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("repeated-image-references");
+        SpriteBuilder.buildSprites(testDir, messageLog);
+
+        assertThat(expectedCss(testDir)).hasSameContentAs(
+            SpriteBuilder.getProcessedCssFile(sourceCss(testDir)));
+        assertThat(new File(testDir, "img/sprite.png")).exists();
+        assertThat(ImageIO.read(new File(testDir, "img/sprite.png"))).hasSize(
+            new Dimension(17, 17));
+
+        cleanUp(testDir);
     }
 
     private File testDir(String test)

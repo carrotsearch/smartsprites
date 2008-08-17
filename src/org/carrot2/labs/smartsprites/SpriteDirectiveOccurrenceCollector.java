@@ -185,7 +185,7 @@ public class SpriteDirectiveOccurrenceCollector
             if (spriteImageDirectivesBySpriteId
                 .containsKey(spriteImageOccurrence.spriteImageDirective.spriteId))
             {
-                messageLog.logWarning(MessageType.IGNORING_SPRITE_IMAGE_REDEFINITION);
+                messageLog.warning(MessageType.IGNORING_SPRITE_IMAGE_REDEFINITION);
             }
             else
             {
@@ -263,7 +263,7 @@ public class SpriteDirectiveOccurrenceCollector
             .extractProperties(noDirective);
         if (rules.size() == 0)
         {
-            messageLog.logWarning(
+            messageLog.warning(
                 MessageType.NO_BACKGROUND_IMAGE_RULE_NEXT_TO_SPRITE_REFERENCE_DIRECTIVE,
                 css);
             return null;
@@ -271,7 +271,7 @@ public class SpriteDirectiveOccurrenceCollector
 
         if (rules.size() > 1)
         {
-            messageLog.logWarning(
+            messageLog.warning(
                 MessageType.MORE_THAN_ONE_RULE_NEXT_TO_SPRITE_REFERENCE_DIRECTIVE, css);
             return null;
         }
@@ -279,7 +279,7 @@ public class SpriteDirectiveOccurrenceCollector
         final CssProperty backgroundImageRule = rules.iterator().next();
         if (!backgroundImageRule.rule.equals("background-image"))
         {
-            messageLog.logWarning(
+            messageLog.warning(
                 MessageType.NO_BACKGROUND_IMAGE_RULE_NEXT_TO_SPRITE_REFERENCE_DIRECTIVE,
                 css);
             return null;

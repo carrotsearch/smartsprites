@@ -27,7 +27,7 @@ public class PrintStreamMessageSink implements MessageSink
 
     /**
      * Creates a {@link PrintStreamMessageSink} with the provided <code>printStream</code>
-     * and {@link MessageLevel#INFO} logging level.
+     * and logging <code>level</code>.
      */
     public PrintStreamMessageSink(PrintStream printStream, MessageLevel level)
     {
