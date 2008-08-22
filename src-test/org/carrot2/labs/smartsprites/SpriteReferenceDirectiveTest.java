@@ -1,7 +1,7 @@
 package org.carrot2.labs.smartsprites;
 
 import static junit.framework.Assert.*;
-import static org.carrot2.labs.test.TestEqualsHelper.wrap;
+import static org.carrot2.labs.test.Assertions.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Map;
@@ -83,9 +83,9 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
 
         assertNull(directive);
 
-        assertThat(wrap(messages)).contains(
-            wrap(new Message(Message.MessageLevel.WARN,
-                Message.MessageType.REFERENCED_SPRITE_NOT_FOUND, null, 0, "spritex")));
+        assertThat(messages).isEquivalentTo(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.REFERENCED_SPRITE_NOT_FOUND, null, 0, "spritex"));
     }
 
     @Test
@@ -122,9 +122,9 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(0, directive.marginTop);
         assertEquals(0, directive.marginBottom);
 
-        assertThat(wrap(messages)).contains(
-            wrap(new Message(Message.MessageLevel.WARN,
-                Message.MessageType.UNSUPPORTED_ALIGNMENT, null, 0, "repeat-x")));
+        assertThat(messages).isEquivalentTo(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.UNSUPPORTED_ALIGNMENT, null, 0, "repeat-x"));
     }
 
     @Test
@@ -142,11 +142,11 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(0, directive.marginTop);
         assertEquals(0, directive.marginBottom);
 
-        assertThat(wrap(messages))
-            .contains(
-                wrap(new Message(Message.MessageLevel.WARN,
+        assertThat(messages)
+            .isEquivalentTo(
+                new Message(Message.MessageLevel.WARN,
                     Message.MessageType.ONLY_LEFT_OR_RIGHT_ALIGNMENT_ALLOWED, null, 0,
-                    "top")));
+                    "top"));
     }
 
     @Test
@@ -184,9 +184,9 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(30, directive.marginTop);
         assertEquals(40, directive.marginBottom);
 
-        assertThat(wrap(messages)).contains(
-            wrap(new Message(Message.MessageLevel.WARN,
-                Message.MessageType.CANNOT_PARSE_MARGIN_VALUE, null, 0, "10zpx")));
+        assertThat(messages).isEquivalentTo(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.CANNOT_PARSE_MARGIN_VALUE, null, 0, "10zpx"));
     }
 
     @Test
@@ -199,9 +199,9 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
         assertNotNull(directive);
         assertEquals("sprite", directive.spriteRef);
 
-        assertThat(wrap(messages)).contains(
-            wrap(new Message(Message.MessageLevel.WARN,
+        assertThat(messages).isEquivalentTo(
+            new Message(Message.MessageLevel.WARN,
                 Message.MessageType.UNSUPPORTED_PROPERTIES_FOUND, null, 0,
-                "sprites-alignment, sprites-margin-left")));
+                "sprites-alignment, sprites-margin-left"));
     }
 }

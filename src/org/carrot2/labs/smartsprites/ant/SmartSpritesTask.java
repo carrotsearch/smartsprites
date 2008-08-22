@@ -7,6 +7,7 @@ import java.io.*;
 import org.apache.tools.ant.*;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters;
 import org.carrot2.labs.smartsprites.SpriteBuilder;
+import org.carrot2.labs.smartsprites.SmartSpritesParameters.PngDepth;
 import org.carrot2.labs.smartsprites.message.*;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 
@@ -19,8 +20,10 @@ public class SmartSpritesTask extends Task
     private File outputDir;
     private File documentRootDir;
     private MessageLevel logLevel;
-    private String cssFileSuffix;
-    private String cssPropertyIndent;
+    private String cssFileSuffix = SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX;
+    private String cssPropertyIndent = SmartSpritesParameters.DEFAULT_CSS_INDENT;
+    private PngDepth spritePngDepth = SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH;
+    private boolean spritePngIe6 = SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6;
 
     public void setRootDir(File dir)
     {
@@ -59,16 +62,26 @@ public class SmartSpritesTask extends Task
         this.cssPropertyIndent = cssPropertyIndent;
     }
 
+    public void setSpritePngDepth(String spritePngDepthString)
+    {
+        this.spritePngDepth = SmartSpritesParameters.fromString(spritePngDepthString,
+            PngDepth.class, SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH);
+    }
+
+    public void setSpritePngIe6(boolean spritePngIe6)
+    {
+        this.spritePngIe6 = spritePngIe6;
+    }
+
     @Override
     public void execute() throws BuildException
     {
         final SmartSpritesParameters parameters = new SmartSpritesParameters(rootDir,
-            outputDir, documentRootDir, logLevel, cssFileSuffix, cssPropertyIndent);
+            outputDir, documentRootDir, logLevel, cssFileSuffix, cssPropertyIndent,
+            spritePngDepth, spritePngIe6);
 
         MessageLog log = new MessageLog(new AntLogMessageSink());
 
-        
-        
         try
         {
             parameters.validate(log);
@@ -80,7 +93,7 @@ public class SmartSpritesTask extends Task
 
         try
         {
-            SpriteBuilder.buildSprites(parameters, log);
+            new SpriteBuilder(parameters, log).buildSprites();
         }
         catch (FileNotFoundException e)
         {

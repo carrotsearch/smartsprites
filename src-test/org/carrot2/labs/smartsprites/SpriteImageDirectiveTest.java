@@ -1,8 +1,7 @@
 package org.carrot2.labs.smartsprites;
 
 import static junit.framework.Assert.*;
-import static org.carrot2.labs.test.TestEqualsHelper.wrap;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.carrot2.labs.test.Assertions.assertThat;
 
 import org.carrot2.labs.smartsprites.message.Message;
 import org.junit.Test;
@@ -55,9 +54,9 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
 
         assertNull(directive);
 
-        assertThat(wrap(messages)).contains(
-            wrap(new Message(Message.MessageLevel.WARN,
-                Message.MessageType.SPRITE_ID_NOT_FOUND, null, 0)));
+        assertThat(messages).isEquivalentTo(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.SPRITE_ID_NOT_FOUND, null, 0));
     }
 
     @Test
@@ -68,9 +67,9 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
 
         assertNull(directive);
 
-        assertThat(wrap(messages)).contains(
-            wrap(new Message(Message.MessageLevel.WARN,
-                Message.MessageType.SPRITE_IMAGE_URL_NOT_FOUND, null, 0)));
+        assertThat(messages).isEquivalentTo(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.SPRITE_IMAGE_URL_NOT_FOUND, null, 0));
     }
 
     @Test
@@ -85,11 +84,11 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
         assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
 
-        assertThat(wrap(messages))
-            .contains(
-                wrap(new Message(Message.MessageLevel.WARN,
+        assertThat(messages)
+            .isEquivalentTo(
+                new Message(Message.MessageLevel.WARN,
                     Message.MessageType.CANNOT_DETERMINE_IMAGE_FORMAT, null, 0,
-                    "../sprite.")));
+                    "../sprite."));
     }
 
     @Test
@@ -104,9 +103,9 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
         assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
 
-        assertThat(wrap(messages)).contains(
-            wrap(new Message(Message.MessageLevel.WARN,
-                Message.MessageType.UNSUPPORTED_FORMAT, null, 0, "jpgx")));
+        assertThat(messages).isEquivalentTo(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.UNSUPPORTED_FORMAT, null, 0, "jpgx"));
     }
 
     @Test
@@ -122,9 +121,9 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.JPG);
         assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
 
-        assertThat(wrap(messages)).contains(
-            wrap(new Message(Message.MessageLevel.WARN,
-                Message.MessageType.UNSUPPORTED_LAYOUT, null, 0, "other")));
+        assertThat(messages).isEquivalentTo(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.UNSUPPORTED_LAYOUT, null, 0, "other"));
     }
 
     @Test
@@ -136,11 +135,11 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
                 messageLog);
 
         assertNull(directive);
-        assertThat(wrap(messages)).contains(
-            wrap(new Message(Message.MessageLevel.WARN,
+        assertThat(messages).isEquivalentTo(
+            new Message(Message.MessageLevel.WARN,
                 Message.MessageType.UNSUPPORTED_PROPERTIES_FOUND, null, 0,
-                "sprites-image, sprites-layout")),
-            wrap(new Message(Message.MessageLevel.WARN,
-                Message.MessageType.SPRITE_IMAGE_URL_NOT_FOUND, null, 0)));
+                "sprites-layout, sprites-image"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.SPRITE_IMAGE_URL_NOT_FOUND, null, 0));
     }
 }

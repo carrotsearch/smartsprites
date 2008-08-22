@@ -1,11 +1,10 @@
 package org.carrot2.labs.smartsprites;
 
 import static junit.framework.Assert.assertEquals;
-import static org.carrot2.labs.test.TestEqualsHelper.wrap;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.carrot2.labs.test.Assertions.assertThat;
 
 import org.carrot2.labs.smartsprites.message.Message;
-import org.carrot2.labs.smartsprites.message.MessageLog;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -13,6 +12,15 @@ import org.junit.Test;
  */
 public class SpriteDirectiveOccurrenceCollectorTest extends TestWithMemoryMessageSink
 {
+    SpriteDirectiveOccurrenceCollector spriteDirectiveOccurrenceCollector;
+
+    @Before
+    public void prepare()
+    {
+        spriteDirectiveOccurrenceCollector = new SpriteDirectiveOccurrenceCollector(
+            messageLog);
+    }
+
     @Test
     public void testSpriteImageDirectiveExtractionOneDirectiveComplex()
     {
@@ -65,9 +73,8 @@ public class SpriteDirectiveOccurrenceCollectorTest extends TestWithMemoryMessag
         final String css = "background-image: url('../img/img.png'); /** "
             + spriteDirective + " */";
 
-        final MessageLog messageLog = new MessageLog();
-        assertEquals("../img/img.png", SpriteDirectiveOccurrenceCollector
-            .extractSpriteReferenceImageUrl(css, messageLog));
+        assertEquals("../img/img.png", spriteDirectiveOccurrenceCollector
+            .extractSpriteReferenceImageUrl(css));
     }
 
     @Test
@@ -77,15 +84,15 @@ public class SpriteDirectiveOccurrenceCollectorTest extends TestWithMemoryMessag
         final String css = "background-imagez: url('../img/img.png'); /** "
             + spriteDirective + " */";
 
-        assertEquals(null, SpriteDirectiveOccurrenceCollector
-            .extractSpriteReferenceImageUrl(css, messageLog));
+        assertEquals(null, spriteDirectiveOccurrenceCollector
+            .extractSpriteReferenceImageUrl(css));
 
-        assertThat(wrap(messages))
-            .contains(
-                wrap(new Message(
+        assertThat(messages)
+            .isEquivalentTo(
+                new Message(
                     Message.MessageLevel.WARN,
                     Message.MessageType.NO_BACKGROUND_IMAGE_RULE_NEXT_TO_SPRITE_REFERENCE_DIRECTIVE,
-                    null, 0, css)));
+                    null, 0, css));
     }
 
     @Test
@@ -95,14 +102,14 @@ public class SpriteDirectiveOccurrenceCollectorTest extends TestWithMemoryMessag
         final String css = "color: red; background-image: url('../img/img.png'); /** "
             + spriteDirective + " */";
 
-        assertEquals(null, SpriteDirectiveOccurrenceCollector
-            .extractSpriteReferenceImageUrl(css, messageLog));
+        assertEquals(null, spriteDirectiveOccurrenceCollector
+            .extractSpriteReferenceImageUrl(css));
 
-        assertThat(wrap(messages))
-            .contains(
-                wrap(new Message(
+        assertThat(messages)
+            .isEquivalentTo(
+                new Message(
                     Message.MessageLevel.WARN,
                     Message.MessageType.MORE_THAN_ONE_RULE_NEXT_TO_SPRITE_REFERENCE_DIRECTIVE,
-                    null, 0, css)));
+                    null, 0, css));
     }
 }

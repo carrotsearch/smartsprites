@@ -67,22 +67,52 @@ public class SmartSpritesParameters
      */
     public final String cssPropertyIndent;
 
+    /**
+     * 
+     */
+    public final PngDepth spritePngDepth;
+
+    /**
+     * 
+     */
+    public final boolean spritePngIe6;
+
     /** Default indent for the generated CSS properties. */
     public static final String DEFAULT_CSS_INDENT = "  ";
 
     /** The default suffix to be added to the generated CSS files. */
     public static final String DEFAULT_CSS_FILE_SUFFIX = "-sprite";
 
+    /** By default, we use full color only when necessary */
+    public static final PngDepth DEFAULT_SPRITE_PNG_DEPTH = PngDepth.AUTO;
+
+    /** By default, we'll generate separate sprites for IE6 if needed */
+    public static final boolean DEFAULT_SPRITE_PNG_IE6 = true;
+
     /** The default logging level. */
     public static final MessageLevel DEFAULT_LOGGING_LEVEL = MessageLevel.INFO;
 
     private static final String ROOT_DIR_PATH_PROPERTY = "root.dir.path";
 
+    public enum PngDepth {
+        AUTO, INDEXED, DIRECT;
+    }
+
+    /**
+     * Creates the parameter with most default values.
+     */
+    public SmartSpritesParameters(File rootDir)
+    {
+        this(rootDir, null, null, MessageLevel.INFO, DEFAULT_CSS_FILE_SUFFIX,
+            DEFAULT_CSS_INDENT, DEFAULT_SPRITE_PNG_DEPTH, DEFAULT_SPRITE_PNG_IE6);
+    }
+
     /**
      * Creates the parameter.
      */
     public SmartSpritesParameters(File rootDir, File outputDir, File documentRootDir,
-        MessageLevel logLevel, String cssFileSuffix, String cssPropertyIndent)
+        MessageLevel logLevel, String cssFileSuffix, String cssPropertyIndent,
+        PngDepth spritePngDepth, boolean spritePngIe6)
     {
         this.rootDir = rootDir;
         this.outputDir = outputDir;
@@ -90,6 +120,8 @@ public class SmartSpritesParameters
         this.logLevel = logLevel;
         this.cssPropertyIndent = cssPropertyIndent;
         this.cssFileSuffix = getCssFileSuffix(cssFileSuffix);
+        this.spritePngDepth = spritePngDepth;
+        this.spritePngIe6 = spritePngIe6;
     }
 
     /**
@@ -109,61 +141,84 @@ public class SmartSpritesParameters
         }
 
         // Loging level
-        String logLevelString = System.getProperty("log.level");
-        if (StringUtils.isBlank(logLevelString))
-        {
-            logLevel = DEFAULT_LOGGING_LEVEL;
-        }
-        else
-        {
-            MessageLevel level;
-            try
-            {
-                level = MessageLevel.valueOf(logLevelString);
-            }
-            catch (Exception e)
-            {
-                level = MessageLevel.INFO;
-            }
-            logLevel = level;
-        }
+        logLevel = fromSystemProperty("log.level", MessageLevel.class,
+            DEFAULT_LOGGING_LEVEL);
 
         // Root dir
-        final String rootDirString = System.getProperty(ROOT_DIR_PATH_PROPERTY);
-        if (StringUtils.isBlank(rootDirString))
+        rootDir = fromSystemProperty(ROOT_DIR_PATH_PROPERTY, null);
+        if (rootDir == null)
         {
-            throw new IllegalArgumentException(
-                "Please provide root directory in 'root.dir' system property.");
-        }
-        else
-        {
-            rootDir = new File(rootDirString);
+            throw new IllegalArgumentException("Please provide root directory in '"
+                + ROOT_DIR_PATH_PROPERTY + "' system property.");
         }
 
         // Output dir
-        final String outputDirString = System.getProperty("output.dir.path");
-        if (StringUtils.isNotBlank(outputDirString))
-        {
-            outputDir = new File(outputDirString);
-        }
-        else
-        {
-            outputDir = null;
-        }
+        outputDir = fromSystemProperty("output.dir.path", null);
 
         // Document root
-        final String documentRootDirString = System.getProperty("document.root.dir.path");
-        if (StringUtils.isNotBlank(documentRootDirString))
-        {
-            documentRootDir = new File(documentRootDirString);
-        }
-        else
-        {
-            documentRootDir = null;
-        }
+        documentRootDir = fromSystemProperty("document.root.dir.path", null);
 
         // Css file suffix
         cssFileSuffix = getCssFileSuffix(System.getProperty("css.file.suffix"));
+
+        // Always full color
+        spritePngDepth = fromSystemProperty("sprite.png.depth", PngDepth.class,
+            DEFAULT_SPRITE_PNG_DEPTH);
+
+        // IE6 indexed mode
+        spritePngIe6 = fromSystemProperty("sprite.png.ie6", DEFAULT_SPRITE_PNG_IE6);
+    }
+
+    private static File fromSystemProperty(String property, File defaultValue)
+    {
+        final String string = System.getProperty(property);
+        if (StringUtils.isNotBlank(string))
+        {
+            return new File(string);
+        }
+        else
+        {
+            return defaultValue;
+        }
+    }
+
+    private static boolean fromSystemProperty(String property, boolean defaultValue)
+    {
+        final String string = System.getProperty(property);
+        if (StringUtils.isNotBlank(string))
+        {
+            try
+            {
+                return Boolean.valueOf(string).booleanValue();
+            }
+            catch (Exception e)
+            {
+                return defaultValue;
+            }
+        }
+        else
+        {
+            return defaultValue;
+        }
+    }
+
+    private static <T extends Enum<T>> T fromSystemProperty(String property,
+        Class<T> enumClass, T defaultValue)
+    {
+        return fromString(property, enumClass, defaultValue);
+    }
+
+    public static <T extends Enum<T>> T fromString(String string, Class<T> enumClass,
+        T defaultValue)
+    {
+        if (StringUtils.isNotBlank(string))
+        {
+            return Enum.valueOf(enumClass, string);
+        }
+        else
+        {
+            return defaultValue;
+        }
     }
 
     /**

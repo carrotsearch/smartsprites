@@ -1,7 +1,6 @@
 package org.carrot2.labs.smartsprites.css;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +23,7 @@ public class CssSyntaxUtils
     /**
      * Extracts CSS properties from the provided {@link String}.
      */
-    public static Collection<CssProperty> extractProperties(String text)
+    public static List<CssProperty> extractProperties(String text)
     {
         return extractRules(text, null);
     }
@@ -33,9 +32,9 @@ public class CssSyntaxUtils
      * Extracts CSS properties from the provided {@link String} and logs warnings to the
      * provided {@link MessageLog}.
      */
-    public static Collection<CssProperty> extractRules(String text, MessageLog messageLog)
+    public static List<CssProperty> extractRules(String text, MessageLog messageLog)
     {
-        final Collection<CssProperty> rules = Lists.newArrayList();
+        final List<CssProperty> rules = Lists.newArrayList();
 
         final String [] chunks = text.split(";");
         for (final String chunk : chunks)

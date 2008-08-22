@@ -1,6 +1,5 @@
 package org.carrot2.labs.smartsprites;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.math.util.MathUtils;
-import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -24,23 +22,41 @@ import com.google.common.collect.*;
  */
 public class SpriteImageBuilder
 {
+    /** This builder's configuration */
+    public final SmartSpritesParameters parameters;
+
+    /** This builder's message log */
+    private final MessageLog messageLog;
+
+    /** Image merger for this builder */
+    private SpriteImageMerger spriteImageMerger;
+
+    /**
+     * Creates a {@link SpriteImageBuilder} with the provided parameters and log.
+     */
+    SpriteImageBuilder(SmartSpritesParameters parameters, MessageLog messageLog)
+    {
+        this.messageLog = messageLog;
+        this.parameters = parameters;
+
+        spriteImageMerger = new SpriteImageMerger(parameters, messageLog);
+    }
+
     /**
      * Builds all sprite images based on the collected directives.
      */
-    static Multimap<File, SpriteReferenceReplacement> buildSpriteImages(
+    Multimap<File, SpriteReferenceReplacement> buildSpriteImages(
         Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId,
-        Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId,
-        File rootDir, File outputDir, File documentRootDir, MessageLog messageLog)
+        Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId)
     {
         final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile = Multimaps
             .newArrayListMultimap();
         for (final Map.Entry<String, Collection<SpriteReferenceOccurrence>> spriteReferenceOccurrences : spriteReferenceOccurrencesBySpriteId
             .asMap().entrySet())
         {
-            final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReferenceReplacements = SpriteImageBuilder
-                .buildSpriteReplacements(spriteImageDirectivesBySpriteId
-                    .get(spriteReferenceOccurrences.getKey()), spriteReferenceOccurrences
-                    .getValue(), rootDir, outputDir, documentRootDir, messageLog);
+            final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReferenceReplacements = buildSpriteReplacements(
+                spriteImageDirectivesBySpriteId.get(spriteReferenceOccurrences.getKey()),
+                spriteReferenceOccurrences.getValue());
 
             for (final SpriteReferenceReplacement spriteReferenceReplacement : spriteReferenceReplacements
                 .values())
@@ -57,10 +73,9 @@ public class SpriteImageBuilder
     /**
      * Builds sprite image for a single sprite image directive.
      */
-    static Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> buildSpriteReplacements(
+    Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> buildSpriteReplacements(
         SpriteImageDirective spriteImageDirective,
-        Collection<SpriteReferenceOccurrence> spriteReferenceOccurrences, File rootDir,
-        File outputDir, File documentRootDir, MessageLog messageLog)
+        Collection<SpriteReferenceOccurrence> spriteReferenceOccurrences)
     {
         // Take SpriteImageDescriptor from the first entry, they should be the same
         final SpriteReferenceOccurrence firstSpriteEntry = spriteReferenceOccurrences
@@ -76,8 +91,7 @@ public class SpriteImageBuilder
             messageLog.setLine(spriteReferenceOccurrence.line);
 
             final File imageFile = getImageFile(spriteReferenceOccurrence.cssFile,
-                spriteReferenceOccurrence.imagePath, documentRootDir, messageLog, null,
-                null);
+                spriteReferenceOccurrence.imagePath, false);
 
             // Load image
             BufferedImage image;
@@ -104,13 +118,12 @@ public class SpriteImageBuilder
 
         // Finally, build the sprite image
         // Create buffer for merged image
-        final BufferedImage mergedImage = SpriteImageBuilder.buildMergedSpriteImage(
+        final BufferedImage mergedImage = spriteImageMerger.buildMergedSpriteImage(
             images, spriteImageProperties);
 
         // Save the image to the disk
         final File mergedImageFile = getImageFile(firstSpriteEntry.cssFile,
-            spriteImageDirective.imagePath, documentRootDir, messageLog, rootDir,
-            outputDir);
+            spriteImageDirective.imagePath, true);
 
         if (!mergedImageFile.getParentFile().exists())
         {
@@ -138,26 +151,26 @@ public class SpriteImageBuilder
      * relative to the cssFile. If imagePath is absolute (starts with '/') and
      * documentRootDir is not null, it's taken relative to documentRootDir.
      */
-    static File getImageFile(File cssFile, String imagePath, File documentRootDir,
-        MessageLog log, File oldRoot, File newRoot)
+    File getImageFile(File cssFile, String imagePath, boolean changeRoot)
     {
         if (imagePath.startsWith("/"))
         {
-            if (documentRootDir != null)
+            if (parameters.documentRootDir != null)
             {
-                return new File(documentRootDir, imagePath.substring(1));
+                return new File(parameters.documentRootDir, imagePath.substring(1));
             }
             else
             {
-                log.warning(MessageType.ABSOLUTE_PATH_AND_NO_DOCUMENT_ROOT, imagePath);
+                messageLog.warning(MessageType.ABSOLUTE_PATH_AND_NO_DOCUMENT_ROOT,
+                    imagePath);
             }
         }
 
         final File file = new File(cssFile.getParentFile(), imagePath);
 
-        if (!imagePath.startsWith("/") && newRoot != null)
+        if (changeRoot && !imagePath.startsWith("/") && parameters.outputDir != null)
         {
-            return FileUtils.changeRoot(file, oldRoot, newRoot);
+            return FileUtils.changeRoot(file, parameters.rootDir, parameters.outputDir);
         }
         else
         {
@@ -274,105 +287,6 @@ public class SpriteImageBuilder
             }
         }
         return leastCommonMultiple;
-    }
-
-    /**
-     * Builds the actual sprite image.
-     */
-    static BufferedImage buildMergedSpriteImage(
-        Map<SpriteReferenceOccurrence, BufferedImage> images,
-        SpriteImageProperties spriteImageProperties)
-    {
-        final int spriteHeight = spriteImageProperties.height;
-        final int spriteWidth = spriteImageProperties.width;
-        final boolean verticalSprite = spriteImageProperties.vertical;
-        final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReferenceReplacements = spriteImageProperties.spriteReferenceReplacements;
-
-        final BufferedImage mergedImage;
-        if (!SpriteImageFormat.GIF
-            .equals(spriteImageProperties.spriteImageDirective.format))
-        {
-            mergedImage = new BufferedImage(spriteWidth, spriteHeight,
-                BufferedImage.TYPE_4BYTE_ABGR);
-        }
-        else
-        {
-            mergedImage = GraphicsEnvironment.getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice().getDefaultConfiguration()
-                .createCompatibleImage(spriteWidth, spriteHeight, Transparency.BITMASK);
-        }
-
-        final Graphics mergedGraphics = mergedImage.getGraphics();
-
-        // Draw individual images into the merged one
-        for (final Map.Entry<SpriteReferenceOccurrence, BufferedImage> entry : images
-            .entrySet())
-        {
-            final BufferedImage image = entry.getValue();
-            final SpriteReferenceDirective spriteReferenceDirective = entry.getKey().spriteReferenceDirective;
-
-            final SpriteReferenceReplacement spriteReferenceReplacement = spriteReferenceReplacements
-                .get(entry.getKey());
-
-            if (verticalSprite)
-            {
-                if (spriteReferenceDirective.alignment.equals(SpriteAlignment.RIGHT))
-                {
-                    mergedGraphics.drawImage(image, spriteWidth - image.getWidth()
-                        - spriteReferenceDirective.marginRight,
-                        spriteReferenceReplacement.verticalPosition
-                            + spriteReferenceDirective.marginTop, null);
-                }
-                else if (spriteReferenceDirective.alignment.equals(SpriteAlignment.LEFT))
-                {
-                    mergedGraphics.drawImage(image, spriteReferenceDirective.marginLeft,
-                        spriteReferenceReplacement.verticalPosition
-                            + spriteReferenceDirective.marginTop, null);
-                }
-                else
-                {
-                    // Repeat
-                    for (int x = 0; x < spriteWidth; x += image.getWidth())
-                    {
-                        mergedGraphics.drawImage(image, x,
-                            spriteReferenceReplacement.verticalPosition
-                                + spriteReferenceDirective.marginTop, null);
-                    }
-                }
-            }
-            else
-            {
-                if (spriteReferenceDirective.alignment.equals(SpriteAlignment.BOTTOM))
-                {
-                    mergedGraphics.drawImage(image,
-                        spriteReferenceReplacement.horizontalPosition
-                            + spriteReferenceDirective.marginLeft, spriteHeight
-                            - image.getHeight() - spriteReferenceDirective.marginBottom,
-                        null);
-                }
-                else if (spriteReferenceDirective.alignment.equals(SpriteAlignment.TOP))
-                {
-                    mergedGraphics.drawImage(image,
-                        spriteReferenceReplacement.horizontalPosition
-                            + spriteReferenceDirective.marginLeft,
-                        spriteReferenceDirective.marginTop, null);
-                }
-                else
-                {
-                    // Repeat
-                    for (int y = 0; y < spriteHeight; y += image.getHeight())
-                    {
-                        mergedGraphics.drawImage(image,
-                            spriteReferenceReplacement.horizontalPosition
-                                + spriteReferenceDirective.marginLeft, y, null);
-                    }
-                }
-            }
-        }
-
-        mergedGraphics.dispose();
-
-        return mergedImage;
     }
 
     /**

@@ -20,6 +20,6 @@ public class SmartSprites
         final SmartSpritesParameters parameters = new SmartSpritesParameters();
         final MessageLog messageLog = new MessageLog(new PrintStreamMessageSink(
             System.out, parameters.logLevel));
-        SpriteBuilder.buildSprites(parameters, messageLog);
+        new SpriteBuilder(parameters, messageLog).buildSprites();
     }
 }

@@ -171,8 +171,8 @@ public class SpriteImageDirective
         final int lastDotIndex = imagePath.lastIndexOf('.');
         if ((lastDotIndex < 0) || (lastDotIndex == imagePath.length() - 1))
         {
-            messageCollector.warning(MessageType.CANNOT_DETERMINE_IMAGE_FORMAT,
-                imagePath);
+            messageCollector
+                .warning(MessageType.CANNOT_DETERMINE_IMAGE_FORMAT, imagePath);
             format = SpriteImageFormat.PNG;
         }
         else

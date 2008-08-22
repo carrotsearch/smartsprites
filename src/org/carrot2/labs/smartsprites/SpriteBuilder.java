@@ -3,8 +3,8 @@ package org.carrot2.labs.smartsprites;
 import java.io.*;
 import java.util.*;
 
-import org.carrot2.labs.smartsprites.message.*;
-import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
+import org.carrot2.labs.smartsprites.message.LevelCounterMessageSink;
+import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
@@ -17,42 +17,43 @@ import com.google.common.collect.Sets;
  */
 public class SpriteBuilder
 {
-    /** Default indent for the generated CSS properties. */
-    public static final String DEFAULT_CSS_INDENT = "  ";
-
-    /** The default suffix to be added to the generated CSS files. */
-    public static final String DEFAULT_CSS_FILE_SUFFIX = "-sprite";
-
-    /** The default logging level. */
-    public static final String DEFAULT_LOGGING_LEVEL = "INFO";
-
     /** Properties we need to watch for in terms of overriding the generated ones. */
     private static final HashSet<String> OVERRIDING_PROPERTIES = Sets.newHashSet(
         "background-position", "background-image");
 
+    /** This builder's configuration */
+    public final SmartSpritesParameters parameters;
+
+    /** This builder's message log */
+    private final MessageLog messageLog;
+
+    /** Directive occurrence collector for this builder */
+    private final SpriteDirectiveOccurrenceCollector spriteDirectiveOccurrenceCollector;
+
+    /** SpriteImageBuilder for this builder */
+    private final SpriteImageBuilder spriteImageBuilder;
+
     /**
-     * Performs processing for CSS/images contained in the provided <code>dir</code>,
-     * saving messages to the provided {@link MessageLog}. Default parameters will be
-     * used.
+     * Creates a {@link SpriteBuilder} with the provided parameters and log.
      */
-    public static void buildSprites(File dir, MessageLog messageLog)
-        throws FileNotFoundException, IOException
+    public SpriteBuilder(SmartSpritesParameters parameters, MessageLog messageLog)
     {
-        buildSprites(new SmartSpritesParameters(dir, null, null, MessageLevel.INFO,
-            DEFAULT_CSS_FILE_SUFFIX, DEFAULT_CSS_INDENT), messageLog);
+        this.messageLog = messageLog;
+        this.parameters = parameters;
+
+        spriteDirectiveOccurrenceCollector = new SpriteDirectiveOccurrenceCollector(
+            messageLog);
+        spriteImageBuilder = new SpriteImageBuilder(parameters, messageLog);
     }
 
     /**
-     * Performs processing for CSS/images contained in the provided <code>dir</code>,
-     * saving messages to the provided {@link MessageLog}. The provided values of
-     * parameters will be used.
+     * Performs processing for this builder's parameters.
      */
     @SuppressWarnings("unchecked")
-    public static void buildSprites(SmartSpritesParameters parameters,
-        MessageLog messageLog) throws FileNotFoundException, IOException
+    public void buildSprites() throws FileNotFoundException, IOException
     {
         parameters.validate(messageLog);
-        
+
         final long start = System.currentTimeMillis();
         final LevelCounterMessageSink levelCounter = new LevelCounterMessageSink();
         messageLog.addMessageSink(levelCounter);
@@ -70,17 +71,16 @@ public class SpriteBuilder
             }, true);
 
         // Collect sprite declaration from all css files
-        final Multimap<File, SpriteImageOccurrence> spriteImageOccurrencesByFile = SpriteDirectiveOccurrenceCollector
-            .collectSpriteImageOccurrences(files, messageLog);
+        final Multimap<File, SpriteImageOccurrence> spriteImageOccurrencesByFile = spriteDirectiveOccurrenceCollector
+            .collectSpriteImageOccurrences(files);
 
         // Merge them, checking for duplicates
-        final Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId = SpriteDirectiveOccurrenceCollector
-            .mergeSpriteImageOccurrences(spriteImageOccurrencesByFile, messageLog);
+        final Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId = spriteDirectiveOccurrenceCollector
+            .mergeSpriteImageOccurrences(spriteImageOccurrencesByFile);
 
         // Collect sprite references from all css files
-        final Multimap<File, SpriteReferenceOccurrence> spriteEntriesByFile = SpriteDirectiveOccurrenceCollector
-            .collectSpriteReferenceOccurrences(files, spriteImageDirectivesBySpriteId,
-                messageLog);
+        final Multimap<File, SpriteReferenceOccurrence> spriteEntriesByFile = spriteDirectiveOccurrenceCollector
+            .collectSpriteReferenceOccurrences(files, spriteImageDirectivesBySpriteId);
 
         // Now merge and regroup all files by sprite-id
         final Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId = SpriteDirectiveOccurrenceCollector
@@ -88,15 +88,12 @@ public class SpriteBuilder
 
         // Build the sprite images
         messageLog.setCssPath(null);
-        final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile = SpriteImageBuilder
+        final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile = spriteImageBuilder
             .buildSpriteImages(spriteImageDirectivesBySpriteId,
-                spriteReferenceOccurrencesBySpriteId, parameters.rootDir,
-                parameters.outputDir, parameters.documentRootDir, messageLog);
+                spriteReferenceOccurrencesBySpriteId);
 
         // Rewrite the CSS
-        rewriteCssFiles(spriteImageOccurrencesByFile, spriteReplacementsByFile,
-            parameters.cssFileSuffix, parameters.cssPropertyIndent, parameters.rootDir,
-            parameters.outputDir, messageLog);
+        rewriteCssFiles(spriteImageOccurrencesByFile, spriteReplacementsByFile);
 
         final long stop = System.currentTimeMillis();
 
@@ -114,11 +111,10 @@ public class SpriteBuilder
     /**
      * Rewrites the original files to refer to the generated sprite images.
      */
-    private static void rewriteCssFiles(
+    private void rewriteCssFiles(
         final Multimap<File, SpriteImageOccurrence> spriteImageOccurrencesByFile,
-        final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile,
-        String cssFileSuffix, String cssRuleIndent, File rootDir, File outputDir,
-        MessageLog messageLog) throws IOException
+        final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile)
+        throws IOException
     {
         if (spriteReplacementsByFile.isEmpty())
         {
@@ -132,8 +128,7 @@ public class SpriteBuilder
                 createProcessedCss(cssFile, SpriteImageBuilder
                     .getSpriteImageOccurrencesByLineNumber(spriteImageOccurrencesByFile
                         .get(cssFile)),
-                    new HashMap<Integer, SpriteReferenceReplacement>(), cssFileSuffix,
-                    cssRuleIndent, rootDir, outputDir, messageLog);
+                    new HashMap<Integer, SpriteReferenceReplacement>());
             }
         }
         else
@@ -147,8 +142,7 @@ public class SpriteBuilder
 
                 createProcessedCss(cssFile, SpriteImageBuilder
                     .getSpriteImageOccurrencesByLineNumber(spriteImageOccurrencesByFile
-                        .get(cssFile)), spriteReplacementsByLineNumber, cssFileSuffix,
-                    cssRuleIndent, rootDir, outputDir, messageLog);
+                        .get(cssFile)), spriteReplacementsByLineNumber);
             }
         }
     }
@@ -156,14 +150,12 @@ public class SpriteBuilder
     /**
      * Rewrites one CSS file to refer to the generated sprite images.
      */
-    private static void createProcessedCss(File originalCssFile,
+    private void createProcessedCss(File originalCssFile,
         Map<Integer, SpriteImageOccurrence> spriteImageOccurrencesByLineNumber,
-        Map<Integer, SpriteReferenceReplacement> spriteReplacementsByLineNumber,
-        String cssFileSuffix, String cssRuleIndent, File rootDir, File outputDir,
-        MessageLog messageLog) throws IOException
+        Map<Integer, SpriteReferenceReplacement> spriteReplacementsByLineNumber)
+        throws IOException
     {
-        final File processedCssFile = getProcessedCssFile(originalCssFile, cssFileSuffix,
-            rootDir, outputDir);
+        final File processedCssFile = getProcessedCssFile(originalCssFile);
         if (!processedCssFile.getParentFile().exists())
         {
             processedCssFile.getParentFile().mkdirs();
@@ -246,28 +238,20 @@ public class SpriteBuilder
     /**
      * Gets the name of the processed CSS file.
      */
-    static File getProcessedCssFile(File originalCssFile)
-    {
-        return getProcessedCssFile(originalCssFile, DEFAULT_CSS_FILE_SUFFIX, null, null);
-    }
-
-    /**
-     * Gets the name of the processed CSS file.
-     */
-    static File getProcessedCssFile(File originalCssFile, String cssFileSuffix,
-        File rootDir, File outputDir)
+    File getProcessedCssFile(File originalCssFile)
     {
         final String originalCssFileName = originalCssFile.getName();
         final String processedCssFileName = originalCssFileName.substring(0,
             originalCssFileName.length() - 4)
-            + cssFileSuffix + ".css";
+            + parameters.cssFileSuffix + ".css";
 
         final File processedCssFile = new File(originalCssFile.getParentFile(),
             processedCssFileName);
 
-        if (outputDir != null)
+        if (parameters.outputDir != null)
         {
-            return FileUtils.changeRoot(processedCssFile, rootDir, outputDir);
+            return FileUtils.changeRoot(processedCssFile, parameters.rootDir,
+                parameters.outputDir);
         }
         else
         {

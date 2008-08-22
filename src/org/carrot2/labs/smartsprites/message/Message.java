@@ -28,7 +28,7 @@ public class Message
          * Error messages, SmartSpricess cannot perform processing.
          */
         ERROR(3),
-        
+
         /**
          * Status messages displayed at the end of processing.
          */
@@ -88,8 +88,14 @@ public class Message
         UNSUPPORTED_ALIGNMENT("Unsupported alignment: %s"),
         UNSUPPORTED_FORMAT("Unsupported format: %s"),
         UNSUPPORTED_LAYOUT("Unsupported layout: %s"),
+        JPG_DOES_NOT_SUPPORT_INDEXED_COLOR("JPG format does not support indexed color"),
+        TOO_MANY_COLORS_FOR_INDEXED_COLOR(
+            "Sprite '%s' requires %d colors, but the maximum for indexed color mode is %d. Image quality will be degraded."),
+        ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR(
+            "Alpha channel of sprite '%s' cannot be encoded in indexed color mode. Image quality will be degraded."),
         PROCESSING_COMPLETED("SmartSprites processing completed in %d ms"),
-        PROCESSING_COMPLETED_WITH_WARNINGS("SmartSprites processing completed in %d ms with %d warning(s)"),
+        PROCESSING_COMPLETED_WITH_WARNINGS(
+            "SmartSprites processing completed in %d ms with %d warning(s)"),
         UNSUPPORTED_PROPERTIES_FOUND("Unsupported properties found: %s"),
         OVERRIDING_PROPERTY_FOUND(
             "Found a '%s' property that overrides the generated one. Move it before the sprite reference directive on line %d."),

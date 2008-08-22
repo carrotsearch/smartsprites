@@ -47,3 +47,7 @@ css.file.suffix=-sprite
 # How generated CSS properties should be indented (default: two spaces)
 #
 css.property.indent=  
+
+sprite.image.always-full-color=false
+
+sprite.image.indexed-color-for-ie6=true
