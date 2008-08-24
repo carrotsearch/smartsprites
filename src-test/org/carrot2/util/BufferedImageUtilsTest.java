@@ -17,7 +17,7 @@ public class BufferedImageUtilsTest extends BufferedImageTestBase
     {
         assertThat(
             BufferedImageUtils
-                .hasFullAlphaTransparency(image("src-test/images/full-alpha.png")))
+                .hasPartialTransparency(image("src-test/images/full-alpha.png")))
             .isTrue();
     }
 
@@ -26,7 +26,7 @@ public class BufferedImageUtilsTest extends BufferedImageTestBase
     {
         assertThat(
             BufferedImageUtils
-                .hasFullAlphaTransparency(image("src-test/images/bit-alpha.png")))
+                .hasPartialTransparency(image("src-test/images/bit-alpha.png")))
             .isFalse();
     }
 

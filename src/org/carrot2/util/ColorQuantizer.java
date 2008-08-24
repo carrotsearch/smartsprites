@@ -36,7 +36,7 @@ public class ColorQuantizer
      */
     public static BufferedImage quantize(BufferedImage source, Color matteColor)
     {
-        return quantize(source, Color.WHITE, MAX_INDEXED_COLORS);
+        return quantize(source, matteColor, MAX_INDEXED_COLORS);
     }
 
     /**
@@ -90,12 +90,20 @@ public class ColorQuantizer
         return quantized;
     }
 
+    /**
+     * Reduces a direct color buffered image to an indexed color one without quality loss.
+     * To make sure no quality loss will occur, check the results of the
+     * {@link #getColorReductionInfo(BufferedImage)} method call.
+     * 
+     * @throws IllegalArgumentException if the application of this method would result in
+     *             image quality loss
+     */
     public static BufferedImage reduce(BufferedImage source)
     {
         final int width = source.getWidth();
         final int height = source.getHeight();
 
-        if (BufferedImageUtils.hasFullAlphaTransparency(source))
+        if (BufferedImageUtils.hasPartialTransparency(source))
         {
             throw new IllegalArgumentException(
                 "The source image cannot contain translucent areas");
@@ -131,27 +139,40 @@ public class ColorQuantizer
         return quantized;
     }
 
+    /**
+     * Returns a {@link ColorReductionInfo} for the provided image.
+     */
     public static ColorReductionInfo getColorReductionInfo(BufferedImage source)
     {
-        return new ColorReductionInfo(
-            BufferedImageUtils.hasFullAlphaTransparency(source), BufferedImageUtils
-                .countDistictColors(source));
+        return new ColorReductionInfo(BufferedImageUtils.hasPartialTransparency(source),
+            BufferedImageUtils.countDistictColors(source));
     }
 
+    /**
+     * Indicates how many distinct colors an image has, whether it has partial trasparency
+     * (alpha channel).
+     */
     public static class ColorReductionInfo
     {
+        /** Number of distint colors in the image */
         public int distictColors;
-        public boolean hasFullAlphaTransparency;
 
-        public ColorReductionInfo(boolean hasFullAlphaTransparency, int distictColors)
+        /** True if the image has partially transparent areas (alpha channel) */
+        public boolean hasPartialTransparency;
+
+        public ColorReductionInfo(boolean hasPartialTransparency, int distictColors)
         {
-            this.hasFullAlphaTransparency = hasFullAlphaTransparency;
+            this.hasPartialTransparency = hasPartialTransparency;
             this.distictColors = distictColors;
         }
 
+        /**
+         * Returns true if the image can be saved in a 8-bit indexed color format with
+         * 1-bit transparency without quality loss.
+         */
         public boolean canReduceWithoutQualityLoss()
         {
-            return !hasFullAlphaTransparency && distictColors <= MAX_INDEXED_COLORS;
+            return !hasPartialTransparency && distictColors <= MAX_INDEXED_COLORS;
         }
     }
 }

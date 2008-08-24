@@ -1,5 +1,6 @@
 package org.carrot2.labs.smartsprites.css;
 
+import java.awt.Color;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +20,9 @@ public class CssSyntaxUtils
 {
     private static final Pattern URL_PATTERN = Pattern
         .compile("[uU][rR][lL]\\((['\"]?)([^'\"]*)\\1\\)");
+
+    private static final Pattern COLOR_PATTERN = Pattern
+        .compile("#([0-9a-f]{6})");
 
     /**
      * Extracts CSS properties from the provided {@link String}.
@@ -85,8 +89,7 @@ public class CssSyntaxUtils
     }
 
     /**
-     * Extracts the actual url from the CSS url expression like
-     * <code>url('actua_url')</code>.
+     * Extracts the actual url from the CSS url expression like <code>url('actua_url')</code>.
      */
     public static String unpackUrl(String urlValue)
     {
@@ -94,9 +97,8 @@ public class CssSyntaxUtils
     }
 
     /**
-     * Extracts the actual url from the CSS url expression like
-     * <code>url('actua_url')</code> and logs warnings to the provided
-     * {@link MessageLog}.
+     * Extracts the actual url from the CSS url expression like <code>url('actua_url')</code> and logs
+     * warnings to the provided {@link MessageLog}.
      */
     public static String unpackUrl(String urlValue, MessageLog messageLog)
     {
@@ -110,5 +112,26 @@ public class CssSyntaxUtils
             return null;
         }
         return matcher.group(2);
+    }
+
+    /**
+     * Parses a hexadecimal format (#fff or #ffffff) of CSS color into a {@link Color}
+     * object. The RGB format (rgb(100, 0, 0)) is currently not supported. In case of
+     * parse errors, the default is returned
+     */
+    public static Color parseColor(String colorValue, MessageLog messageLog,
+        Color defaultColor)
+    {
+        final Matcher matcher = COLOR_PATTERN.matcher(colorValue);
+        if (!matcher.matches())
+        {
+            if (messageLog != null)
+            {
+                messageLog.warning(MessageType.MALFORMED_COLOR, colorValue);
+            }
+            return defaultColor;
+        }
+
+        return new Color(Integer.parseInt(matcher.group(1), 16));
     }
 }

@@ -1,5 +1,6 @@
 package org.carrot2.labs.smartsprites;
 
+import java.awt.Color;
 import java.util.*;
 
 import org.carrot2.labs.smartsprites.css.CssProperty;
@@ -18,10 +19,12 @@ public class SpriteImageDirective
     public static final String PROPERTY_SPRITE_ID = "sprite";
     public static final String PROPERTY_SPRITE_IMAGE_LAYOUT = "sprite-layout";
     public static final String PROPERTY_SPRITE_IMAGE_URL = "sprite-image";
+    public static final String PROPERTY_SPRITE_MATTE_COLOR = "sprite-matte-color";
 
     /** A set of allowed properties */
-    private static final HashSet<String> ALLOWED_PROPERTIES = Sets.newHashSet(
-        PROPERTY_SPRITE_ID, PROPERTY_SPRITE_IMAGE_LAYOUT, PROPERTY_SPRITE_IMAGE_URL);
+    private static final HashSet<String> ALLOWED_PROPERTIES = Sets.newLinkedHashSet(
+        PROPERTY_SPRITE_ID, PROPERTY_SPRITE_IMAGE_LAYOUT, PROPERTY_SPRITE_IMAGE_URL,
+        PROPERTY_SPRITE_MATTE_COLOR);
 
     /**
      * Defines the layout of this sprite.
@@ -102,13 +105,19 @@ public class SpriteImageDirective
      */
     public final SpriteImageFormat format;
 
+    /**
+     * Matte color to be used when reducing true alpha channel.
+     */
+    public final Color matteColor;
+
     public SpriteImageDirective(String id, String imageUrl, SpriteImageLayout layout,
-        SpriteImageFormat format)
+        SpriteImageFormat format, Color matteColor)
     {
         this.spriteId = id;
         this.imagePath = imageUrl;
         this.layout = layout;
         this.format = format;
+        this.matteColor = matteColor;
     }
 
     /**
@@ -189,6 +198,18 @@ public class SpriteImageDirective
             }
         }
 
-        return new SpriteImageDirective(id, imagePath, layout, format);
+        // Matte color
+        final Color matteColor;
+        if (CssSyntaxUtils.hasNonBlankValue(rules, PROPERTY_SPRITE_MATTE_COLOR))
+        {
+            matteColor = CssSyntaxUtils.parseColor(
+                rules.get(PROPERTY_SPRITE_MATTE_COLOR).value, messageCollector, null);
+        }
+        else
+        {
+            matteColor = null;
+        }
+
+        return new SpriteImageDirective(id, imagePath, layout, format, matteColor);
     }
 }

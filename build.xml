@@ -1,95 +1,97 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="SmartSprites CSS Sprite Generator" default="process">
-	<target name="build" description="Builds SmartSprites binaries">
-		<mkdir dir="tmp/classes" />
+  <target name="build" description="Builds SmartSprites binaries">
+    <mkdir dir="tmp/classes" />
 
-		<javac destdir="tmp/classes" encoding="UTF-8" source="1.5" target="1.5">
-			<classpath>
-				<fileset dir="lib">
-					<include name="**/*.jar" />
-				</fileset>
-			</classpath>
-			<src path="src" />
-			<src path="src-test" />
-		</javac>
-	</target>
+    <javac destdir="tmp/classes" encoding="UTF-8" source="1.5" target="1.5">
+      <classpath>
+        <fileset dir="lib">
+          <include name="**/*.jar" />
+        </fileset>
+      </classpath>
+      <src path="src" />
+      <src path="src-test" />
+    </javac>
+  </target>
 
-	<target name="jar" depends="build" description="Builds SmartSprites JAR file">
-		<property file="smartsprites.version" />
+  <target name="jar" depends="build" description="Builds SmartSprites JAR file">
+    <property file="smartsprites.version" />
 
-		<jar destfile="lib/smartsprites-${smartsprites.version}.jar"
-		     basedir="tmp/classes"
-		     excludes="**/Test.class" />
-	</target>
+    <jar destfile="lib/smartsprites-${smartsprites.version}.jar"
+         basedir="tmp/classes"
+         excludes="**/Test.class" />
+  </target>
 
-	<target name="test"
-	        description="Executes SmartSprites unit tests"
-	        depends="build">
-		<mkdir dir="tmp/test-results" />
+  <target name="test"
+          description="Executes SmartSprites unit tests"
+          depends="build">
+    <mkdir dir="tmp/test-results" />
 
-		<junit printsummary="yes" fork="yes" haltonfailure="yes" dir="${basedir}">
-			<classpath>
-				<fileset dir="lib">
-					<include name="**/*.jar" />
-				</fileset>
-				<pathelement location="tmp/classes" />
-				<pathelement location="resources" />
-			</classpath>
+    <junit printsummary="yes" fork="yes" haltonfailure="yes" dir="${basedir}">
+      <classpath>
+        <fileset dir="lib">
+          <include name="**/*.jar" />
+        </fileset>
+        <pathelement location="tmp/classes" />
+        <pathelement location="resources" />
+      </classpath>
 
-			<formatter type="plain" />
-			<batchtest fork="yes" todir="tmp/test-results">
-				<fileset dir="src-test">
-					<include name="**/*Test.java" />
-				</fileset>
-			</batchtest>
-		</junit>
-	</target>
+      <formatter type="plain" />
+      <batchtest fork="yes" todir="tmp/test-results">
+        <fileset dir="src-test">
+          <include name="**/*Test.java" />
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
 
-	<target name="process"
-	        description="Performs CSS sprite processing"
-	        depends="jar">
-		<property file="smartsprites.properties" />
-		<taskdef name="smartsprites"
-		         classname="org.carrot2.labs.smartsprites.ant.SmartSpritesTask">
-			<classpath>
-				<fileset dir="lib" />
-			</classpath>
-		</taskdef>
+  <target name="process"
+          description="Performs CSS sprite processing"
+          depends="jar">
+    <property file="smartsprites.properties" />
+    <taskdef name="smartsprites"
+             classname="org.carrot2.labs.smartsprites.ant.SmartSpritesTask">
+      <classpath>
+        <fileset dir="lib" />
+      </classpath>
+    </taskdef>
 
-		<smartsprites rootdir="${root.dir.path}"
-		              documentrootdir="${document.root.dir.path}"
-		              outputdir="${output.dir.path}"
-		              cssfilesuffix="${css.file.suffix}"
-		              csspropertyindent="${css.property.indent}"
-		              loglevel="${log.level}" />
-	</target>
+    <smartsprites rootdir="${root.dir.path}"
+                  documentrootdir="${document.root.dir.path}"
+                  outputdir="${output.dir.path}"
+                  cssfilesuffix="${css.file.suffix}"
+                  csspropertyindent="${css.property.indent}"
+                  loglevel="${log.level}"
+                  spritepngdepth="${sprite.png.depth}"
+                  spritepngie6="${sprite.png.ie6}" />
+  </target>
 
-	<target name="dist"
-	        depends="test"
-	        description="Builds SmartSprites distribution">
-		<property file="smartsprites.version" />
-		<mkdir dir="tmp/dist" />
+  <target name="dist"
+          depends="test"
+          description="Builds SmartSprites distribution">
+    <property file="smartsprites.version" />
+    <mkdir dir="tmp/dist" />
 
-		<zip destfile="tmp/dist/smartsprites-${smartsprites.version}.zip">
-			<zipfileset dir="." prefix="smartsprites">
-				<exclude name=".clover/**" />
-				<exclude name=".svn/**" />
-				<exclude name="tmp/**" />
-				<exclude name="*.swp" />
-				<exclude name="smartsprites.properties" />
-				<exclude name=".classpath" />
-				<exclude name=".project" />
-			</zipfileset>
-		</zip>
-	</target>
+    <zip destfile="tmp/dist/smartsprites-${smartsprites.version}.zip">
+      <zipfileset dir="." prefix="smartsprites">
+        <exclude name=".clover/**" />
+        <exclude name=".svn/**" />
+        <exclude name="tmp/**" />
+        <exclude name="*.swp" />
+        <exclude name="smartsprites.properties" />
+        <exclude name=".classpath" />
+        <exclude name=".project" />
+      </zipfileset>
+    </zip>
+  </target>
 
-	<target name="clean" description="Deletes all temporary files">
-		<delete dir="tmp" />
-		<delete>
-			<fileset dir="lib">
-				<include name="smartsprites-*.jar" />
-			</fileset>
-		</delete>
-	</target>
+  <target name="clean" description="Deletes all temporary files">
+    <delete dir="tmp" />
+    <delete>
+      <fileset dir="lib">
+        <include name="smartsprites-*.jar" />
+      </fileset>
+    </delete>
+  </target>
 </project>
 

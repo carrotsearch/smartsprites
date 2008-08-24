@@ -3,6 +3,8 @@ package org.carrot2.labs.smartsprites;
 import static junit.framework.Assert.*;
 import static org.carrot2.labs.test.Assertions.assertThat;
 
+import java.awt.Color;
+
 import org.carrot2.labs.smartsprites.message.Message;
 import org.junit.Test;
 
@@ -44,6 +46,22 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.imagePath, "../sprite.png");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
         assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
+    }
+
+    @Test
+    public void testMatteColor()
+    {
+        final SpriteImageDirective directive = SpriteImageDirective
+            .parse(
+                "sprite: sprite; sprite-image: url('../sprite.png'); sprite-matte-color: #f08231",
+                messageLog);
+
+        assertNotNull(directive);
+        assertEquals(directive.spriteId, "sprite");
+        assertEquals(directive.imagePath, "../sprite.png");
+        assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
+        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
+        assertEquals(directive.matteColor, new Color(0x00f08231));
     }
 
     @Test
@@ -138,7 +156,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertThat(messages).isEquivalentTo(
             new Message(Message.MessageLevel.WARN,
                 Message.MessageType.UNSUPPORTED_PROPERTIES_FOUND, null, 0,
-                "sprites-layout, sprites-image"),
+                "sprites-image, sprites-layout"),
             new Message(Message.MessageLevel.WARN,
                 Message.MessageType.SPRITE_IMAGE_URL_NOT_FOUND, null, 0));
     }

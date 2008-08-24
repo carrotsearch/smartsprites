@@ -1,5 +1,6 @@
 package org.carrot2.labs.smartsprites;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
@@ -7,6 +8,7 @@ import org.carrot2.labs.smartsprites.SmartSpritesParameters.PngDepth;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.MessageLog;
+import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.ColorQuantizer;
 import org.carrot2.util.ColorQuantizer.ColorReductionInfo;
@@ -32,7 +34,7 @@ public class SpriteImageMerger
     /**
      * Builds the actual sprite image and color table if necessary
      */
-    BufferedImage buildMergedSpriteImage(
+    BufferedImage [] buildMergedSpriteImage(
         Map<SpriteReferenceOccurrence, BufferedImage> images,
         SpriteImageProperties spriteImageProperties)
     {
@@ -116,7 +118,7 @@ public class SpriteImageMerger
     /**
      * If needed, quantizes the image.
      */
-    private BufferedImage render(BufferedImage sprite,
+    private BufferedImage [] render(BufferedImage sprite,
         SpriteImageProperties spriteImageProperties)
     {
         final boolean isPng = spriteImageProperties.spriteImageDirective.format == SpriteImageFormat.PNG;
@@ -130,32 +132,86 @@ public class SpriteImageMerger
         final boolean canReduceWithoutQualityLoss = colorReductionInfo
             .canReduceWithoutQualityLoss();
 
+        final BufferedImage [] result = new BufferedImage [2];
+
         if (isPngDirect || (isPngAuto && !canReduceWithoutQualityLoss) || isJpg)
         {
             // Can't or no need to handle indexed color
-            return sprite;
+            if (spriteImageProperties.spriteImageDirective.matteColor != null)
+            {
+                messageLog.warning(MessageType.IGNORING_MATTE_COLOR_NO_SUPPORT,
+                    spriteImageProperties.spriteImageDirective.spriteId);
+            }
+
+            result[0] = sprite;
+
+            // If needed, generated a quantized version for IE6
+            if (parameters.spritePngIe6 && isPng)
+            {
+                result[1] = quantize(sprite, spriteImageProperties, colorReductionInfo,
+                    MessageLevel.IE6NOTICE);
+                spriteImageProperties.hasReducedForIe6 = true;
+            }
+
+            return result;
         }
         else if (canReduceWithoutQualityLoss)
         {
             // Can perform reduction to indexed color without data loss
-            return ColorQuantizer.reduce(sprite);
+            if (spriteImageProperties.spriteImageDirective.matteColor != null)
+            {
+                messageLog.warning(
+                    MessageType.IGNORING_MATTE_COLOR_NO_PARTIAL_TRANSPARENCY,
+                    spriteImageProperties.spriteImageDirective.spriteId);
+            }
+            result[0] = ColorQuantizer.reduce(sprite);
+            return result;
         }
         else
         {
-            // Need to quantize
-            if (colorReductionInfo.hasFullAlphaTransparency)
+            result[0] = quantize(sprite, spriteImageProperties, colorReductionInfo,
+                MessageLevel.WARN);
+            return result;
+        }
+    }
+
+    /**
+     * Performs quantization, logs the appropriate messages if needed.
+     */
+    private BufferedImage quantize(BufferedImage sprite,
+        SpriteImageProperties spriteImageProperties,
+        final ColorReductionInfo colorReductionInfo, MessageLevel logLevel)
+    {
+        // Need to quantize
+        if (colorReductionInfo.hasPartialTransparency)
+        {
+            messageLog.log(logLevel, MessageType.ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR,
+                spriteImageProperties.spriteImageDirective.spriteId);
+        }
+        else
+        {
+            messageLog.log(logLevel, MessageType.TOO_MANY_COLORS_FOR_INDEXED_COLOR,
+                spriteImageProperties.spriteImageDirective.spriteId,
+                colorReductionInfo.distictColors, ColorQuantizer.MAX_INDEXED_COLORS);
+        }
+
+        final Color matte;
+        if (spriteImageProperties.spriteImageDirective.matteColor != null)
+        {
+            matte = spriteImageProperties.spriteImageDirective.matteColor;
+        }
+        else
+        {
+            if (colorReductionInfo.hasPartialTransparency)
             {
-                messageLog.warning(MessageType.ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR,
+                messageLog.log(logLevel, MessageType.USING_WHITE_MATTE_COLOR_AS_DEFAULT,
                     spriteImageProperties.spriteImageDirective.spriteId);
             }
-            else
-            {
-                messageLog.warning(MessageType.TOO_MANY_COLORS_FOR_INDEXED_COLOR,
-                    spriteImageProperties.spriteImageDirective.spriteId,
-                    colorReductionInfo.distictColors, ColorQuantizer.MAX_INDEXED_COLORS);
-            }
-            return ColorQuantizer.quantize(sprite);
+            matte = Color.WHITE;
         }
+
+        final BufferedImage quantized = ColorQuantizer.quantize(sprite, matte);
+        return quantized;
     }
 
     protected static void drawImage(BufferedImage image, BufferedImage sprite, int x,

@@ -31,6 +31,12 @@ public class SpriteImageProperties
      */
     public final SpriteImageDirective spriteImageDirective;
 
+    /**
+     * Indicates whether this sprite has been also generated in an alpha/color degraded
+     * version for IE6;
+     */
+    public boolean hasReducedForIe6 = false;
+    
     public SpriteImageProperties(int width, int height,
         SpriteImageDirective spriteImageDirective,
         Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReplacements)
@@ -41,5 +47,10 @@ public class SpriteImageProperties
         this.spriteImageDirective = spriteImageDirective;
         
         this.vertical = SpriteImageLayout.VERTICAL.equals(spriteImageDirective.layout);
+        
+        for (SpriteReferenceReplacement replacement : spriteReplacements.values())
+        {
+            replacement.spriteImageProperties = this;
+        }
     }
 }

@@ -21,7 +21,14 @@ import org.junit.*;
  */
 public class SpriteBuilderTest extends TestWithMemoryMessageSink
 {
+    /** Builder under tests, initialized in {@link #buildSprites(SmartSpritesParameters)} */
     private SpriteBuilder spriteBuilder;
+
+    @Before
+    public void setUpHeadlessMode()
+    {
+        System.setProperty("java.awt.headless", "true");
+    }
 
     @Test
     public void testNoSpriteDeclarations() throws FileNotFoundException, IOException
@@ -292,6 +299,134 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
                 Message.MessageType.ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR, null, 25,
                 "full-alpha"),
             new Message(Message.MessageLevel.WARN,
+                Message.MessageType.USING_WHITE_MATTE_COLOR_AS_DEFAULT, null, 25,
+                "full-alpha"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.TOO_MANY_COLORS_FOR_INDEXED_COLOR, null, 32,
+                "many-colors", 293, 255));
+    }
+
+    @Test
+    public void testMatteColor() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("matte-color");
+        buildSprites(testDir);
+
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor().hasBitAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-full-alpha-m1.png")).isDirectColor()
+            .hasTrueAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-full-alpha-m2.png")).isDirectColor()
+            .hasTrueAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-full-alpha-m3.png")).isDirectColor()
+            .hasTrueAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-many-colors.png")).isDirectColor()
+            .doesNotHaveAlpha();
+
+        assertThat(messages).isEquivalentTo(
+            Message.MessageLevel.WARN,
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.IGNORING_MATTE_COLOR_NO_SUPPORT, null, 12,
+                "full-alpha-m1"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.IGNORING_MATTE_COLOR_NO_SUPPORT, null, 19,
+                "full-alpha-m2"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.IGNORING_MATTE_COLOR_NO_SUPPORT, null, 26,
+                "full-alpha-m3"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.IGNORING_MATTE_COLOR_NO_PARTIAL_TRANSPARENCY, null,
+                33, "bit-alpha"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.IGNORING_MATTE_COLOR_NO_SUPPORT, null, 40,
+                "many-colors"));
+    }
+
+    @Test
+    public void testMatteColorForcedIndex() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("matte-color");
+        buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.INDEXED,
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6));
+
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor().hasBitAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-full-alpha-m1.png")).isIndexedColor()
+            .hasBitAlpha().isEqualTo(sprite(testDir, "img/sprite-full-alpha-m2.png"))
+            .isNotEqualTo(sprite(testDir, "img/sprite-full-alpha-m3.png"));
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-full-alpha-m2.png")).isIndexedColor()
+            .hasBitAlpha().isEqualTo(sprite(testDir, "img/sprite-full-alpha-m1.png"))
+            .isNotEqualTo(sprite(testDir, "img/sprite-full-alpha-m3.png"));
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-full-alpha-m3.png")).isIndexedColor()
+            .hasBitAlpha().isNotEqualTo(sprite(testDir, "img/sprite-full-alpha-m1.png"));
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-many-colors.png")).isIndexedColor()
+            .doesNotHaveAlpha();
+
+        assertThat(messages).isEquivalentTo(
+            Message.MessageLevel.WARN,
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR, null, 12,
+                "full-alpha-m1"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR, null, 19,
+                "full-alpha-m2"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR, null, 26,
+                "full-alpha-m3"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.IGNORING_MATTE_COLOR_NO_PARTIAL_TRANSPARENCY, null,
+                33, "bit-alpha"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.TOO_MANY_COLORS_FOR_INDEXED_COLOR, null, 40,
+                "many-colors", 293, 255));
+    }
+
+    @Test
+    public void testIe6IndexedColor() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("indexed-color-ie6");
+        buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.AUTO, true));
+
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor().hasBitAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor().hasBitAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-full-alpha.png")).isDirectColor().hasTrueAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-full-alpha-ie6.png")).isIndexedColor()
+            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-many-colors.png")).isDirectColor()
+            .doesNotHaveAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-many-colors-ie6.png")).isIndexedColor()
+            .doesNotHaveAlpha();
+        
+        assertThat(expectedCss()).hasSameContentAs(processedCss());
+
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+        assertThat(messages).isEquivalentTo(
+            Message.MessageLevel.IE6NOTICE,
+            new Message(Message.MessageLevel.IE6NOTICE,
+                Message.MessageType.ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR, null, 25,
+                "full-alpha"),
+            new Message(Message.MessageLevel.IE6NOTICE,
+                Message.MessageType.USING_WHITE_MATTE_COLOR_AS_DEFAULT, null, 25,
+                "full-alpha"),
+            new Message(Message.MessageLevel.IE6NOTICE,
                 Message.MessageType.TOO_MANY_COLORS_FOR_INDEXED_COLOR, null, 32,
                 "many-colors", 293, 255));
     }

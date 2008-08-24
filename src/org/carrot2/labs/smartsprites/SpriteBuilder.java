@@ -204,6 +204,16 @@ public class SpriteBuilder
                     // Write some extra css as a replacement and ignore the directive
                     processedCssWriter.write("  background-image: url('"
                         + spriteReferenceReplacement.spriteImageUrl + "');\n");
+                    if (spriteReferenceReplacement.spriteImageProperties.hasReducedForIe6)
+                    {
+                        processedCssWriter
+                            .write("  -background-image: url('"
+                                + SpriteImageBuilder
+                                    .addIe6Suffix(
+                                        spriteReferenceReplacement.spriteImageProperties.spriteImageDirective,
+                                        true) + "');\n");
+                    }
+
                     processedCssWriter.write("  background-position: "
                         + spriteReferenceReplacement.horizontalPositionString + " "
                         + spriteReferenceReplacement.verticalPositionString + ";\n");

@@ -4,12 +4,14 @@ import static junit.framework.Assert.fail;
 
 import java.io.*;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.*;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters;
 import org.carrot2.labs.smartsprites.SpriteBuilder;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters.PngDepth;
 import org.carrot2.labs.smartsprites.message.*;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
+import org.carrot2.util.EnumUtils;
 
 /**
  * Ant task for calling SmartSprites processing.
@@ -30,9 +32,9 @@ public class SmartSpritesTask extends Task
         this.rootDir = dir;
     }
 
-    public void setOutputDir(File outputDir)
+    public void setOutputDir(String outputDir)
     {
-        this.outputDir = outputDir;
+        this.outputDir = StringUtils.isNotBlank(outputDir) ? new File(outputDir) : null;
     }
 
     public void setDocumentRootDir(File documentRootDir)
@@ -64,8 +66,8 @@ public class SmartSpritesTask extends Task
 
     public void setSpritePngDepth(String spritePngDepthString)
     {
-        this.spritePngDepth = SmartSpritesParameters.fromString(spritePngDepthString,
-            PngDepth.class, SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH);
+        this.spritePngDepth = EnumUtils.valueOf(spritePngDepthString, PngDepth.class,
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH);
     }
 
     public void setSpritePngIe6(boolean spritePngIe6)

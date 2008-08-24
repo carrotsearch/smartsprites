@@ -12,7 +12,11 @@ import com.google.common.collect.Sets;
  */
 public class BufferedImageUtils
 {
-    public static boolean hasFullAlphaTransparency(BufferedImage image)
+    /**
+     * Returns <code>true</code> if the provided image has partially transparent areas
+     * (alpha channel).
+     */
+    public static boolean hasPartialTransparency(BufferedImage image)
     {
         final Raster alphaRaster = image.getAlphaRaster();
         if (image.getTransparency() != Transparency.TRANSLUCENT || alphaRaster == null)
@@ -33,16 +37,29 @@ public class BufferedImageUtils
         return false;
     }
 
+    /**
+     * Returns the number of distinct colors (excluding transparency) in the
+     * <code>image</code>.
+     */
     public static int countDistictColors(BufferedImage image)
     {
         return getDistictColors(image).length;
     }
 
+    /**
+     * Returns the <code>image</code>'s distinct colors in an RGB format, discarding
+     * transparency information.
+     */
     public static int [] getDistictColors(BufferedImage image)
     {
         return getDistictColors(image, 0);
     }
-    
+
+    /**
+     * Returns the <code>image</code>'s distinct colors in an RGB format, discarding
+     * transparency information. Adds <code>padding</code> empty slots at the beginning of
+     * the returned array.
+     */
     public static int [] getDistictColors(BufferedImage image, int padding)
     {
         final int width = image.getWidth();
@@ -74,6 +91,10 @@ public class BufferedImageUtils
         return colorMap;
     }
 
+    /**
+     * Returns a two dimensional array of the <code>image</code>'s RGB values, including
+     * transparency.
+     */
     public static int [][] getRgb(BufferedImage image)
     {
         final int width = image.getWidth();
@@ -92,6 +113,11 @@ public class BufferedImageUtils
         return rgb;
     }
 
+    /**
+     * Performs matting of the <code>cource</code> image using <code>matteColor</code>.
+     * Matting is rendering partial transparencies using solid color as if the original
+     * image was put on top of a bitmap filled with <code>matteColor</code>.
+     */
     public static BufferedImage matte(BufferedImage source, Color matteColor)
     {
         final int width = source.getWidth();

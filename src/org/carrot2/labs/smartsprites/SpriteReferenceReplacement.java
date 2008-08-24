@@ -6,6 +6,9 @@ package org.carrot2.labs.smartsprites;
  */
 public class SpriteReferenceReplacement
 {
+    /** Properties of the sprite image this replacement refers to */
+    public SpriteImageProperties spriteImageProperties;
+
     /** The {@link SpriteReferenceOccurrence} this instance refers to */
     public final SpriteReferenceOccurrence spriteReferenceOccurrence;
 

@@ -20,19 +20,24 @@ public class Message
         INFO(1),
 
         /**
+         * Notice messages related to IE6 problems.
+         */
+        IE6NOTICE(2),
+
+        /**
          * Warning messages, ignoring can lead to the converted designs looking broken.
          */
-        WARN(2),
+        WARN(3),
 
         /**
          * Error messages, SmartSpricess cannot perform processing.
          */
-        ERROR(3),
+        ERROR(4),
 
         /**
          * Status messages displayed at the end of processing.
          */
-        STATUS(4);
+        STATUS(5);
 
         /** Numeric level for comparisons */
         final private int level;
@@ -60,9 +65,11 @@ public class Message
         CANNOT_PARSE_MARGIN_VALUE("Cannot parse margin value: %s"),
         CANNOT_WRITE_SPRITE_IMAGE("Cannot write sprite image: %s due to %s"),
         CREATING_CSS_STYLE_SHEET("Creating CSS style sheet: %s"),
-        CREATING_SPRITE_IMAGE("Creating sprite image of size %s x %s for %s"),
+        WRITING_SPRITE_IMAGE(
+            "Writing sprite image of size %s x %s for sprite '%s' to %s"),
         IGNORING_SPRITE_IMAGE_REDEFINITION("Ignoring sprite image redefinition"),
         MALFORMED_CSS_RULE("Malformed CSS rule: %s"),
+        MALFORMED_COLOR("Malformed color: %s"),
         MALFORMED_URL("Malformed URL: %s"),
         MORE_THAN_ONE_RULE_NEXT_TO_SPRITE_REFERENCE_DIRECTIVE(
             "Found more than one CSS rule next to sprite reference comment: %s"),
@@ -93,6 +100,12 @@ public class Message
             "Sprite '%s' requires %d colors, but the maximum for indexed color mode is %d. Image quality will be degraded."),
         ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR(
             "Alpha channel of sprite '%s' cannot be encoded in indexed color mode. Image quality will be degraded."),
+        USING_WHITE_MATTE_COLOR_AS_DEFAULT(
+            "Defaulting to white matte color to render partial transparencies of sprite '%s'."),
+        IGNORING_MATTE_COLOR_NO_PARTIAL_TRANSPARENCY(
+            "Ignoring sprite-mate-color on sprite '%s' because the sprite image does not contain partially transparent areas."),
+        IGNORING_MATTE_COLOR_NO_SUPPORT(
+            "Ignoring sprite-mate-color on sprite '%s' because its output format does not require matting or does not support transparency."),
         PROCESSING_COMPLETED("SmartSprites processing completed in %d ms"),
         PROCESSING_COMPLETED_WITH_WARNINGS(
             "SmartSprites processing completed in %d ms with %d warning(s)"),

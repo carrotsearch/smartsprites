@@ -146,6 +146,18 @@ public class BufferedImageAssertion
         return this;
     }
 
+    public BufferedImageAssertion isEqualTo(BufferedImage expected)
+    {
+        assertThat(actual).isEqualTo(expected);
+        return this;
+    }
+
+    public BufferedImageAssertion isNotEqualTo(BufferedImage expected)
+    {
+        assertThat(actual).isNotEqualTo(expected);
+        return this;
+    }
+
     public BufferedImageAssertion as(String description)
     {
         this.description = description;

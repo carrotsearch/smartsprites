@@ -18,7 +18,7 @@ import org.carrot2.util.FileUtils;
 import com.google.common.collect.*;
 
 /**
- * Lays out and build sprite images based on the collected SmartSprites directives.
+ * Lays out and builds sprite images based on the collected SmartSprites directives.
  */
 public class SpriteImageBuilder
 {
@@ -118,12 +118,32 @@ public class SpriteImageBuilder
 
         // Finally, build the sprite image
         // Create buffer for merged image
-        final BufferedImage mergedImage = spriteImageMerger.buildMergedSpriteImage(
+        final BufferedImage [] mergedImages = spriteImageMerger.buildMergedSpriteImage(
             images, spriteImageProperties);
 
+        writeSprite(spriteImageDirective, firstSpriteEntry, mergedImages[0], false);
+        if (mergedImages[1] != null)
+        {
+            // Write IE6 version if generated
+            writeSprite(spriteImageDirective, firstSpriteEntry, mergedImages[1], true);
+        }
+
+        return spriteImageProperties.spriteReferenceReplacements;
+    }
+
+    /**
+     * Writes sprite image to the disk.
+     */
+    private void writeSprite(SpriteImageDirective spriteImageDirective,
+        final SpriteReferenceOccurrence firstSpriteEntry,
+        final BufferedImage mergedImage, boolean ie6Reduced)
+    {
+        // Add IE6 suffix if needed
+        String spritePath = addIe6Suffix(spriteImageDirective, ie6Reduced);
+
         // Save the image to the disk
-        final File mergedImageFile = getImageFile(firstSpriteEntry.cssFile,
-            spriteImageDirective.imagePath, true);
+        final File mergedImageFile = getImageFile(firstSpriteEntry.cssFile, spritePath,
+            true);
 
         if (!mergedImageFile.getParentFile().exists())
         {
@@ -132,8 +152,9 @@ public class SpriteImageBuilder
 
         try
         {
-            messageLog.info(MessageType.CREATING_SPRITE_IMAGE, mergedImage.getWidth(),
-                mergedImage.getHeight(), spriteImageDirective.spriteId);
+            messageLog.info(MessageType.WRITING_SPRITE_IMAGE, mergedImage.getWidth(),
+                mergedImage.getHeight(), spriteImageDirective.spriteId, FileUtils
+                    .getCanonicalOrAbsolutePath(mergedImageFile));
             ImageIO.write(mergedImage, spriteImageDirective.format.toString(),
                 mergedImageFile);
         }
@@ -142,8 +163,30 @@ public class SpriteImageBuilder
             messageLog.info(MessageType.CANNOT_WRITE_SPRITE_IMAGE, FileUtils
                 .getCanonicalOrAbsolutePath(mergedImageFile), e.getMessage());
         }
+    }
 
-        return spriteImageProperties.spriteReferenceReplacements;
+    /**
+     * Adds IE6 suffix to the sprite image path for IE6 reduced images.
+     */
+    static String addIe6Suffix(SpriteImageDirective spriteImageDirective,
+        boolean ie6Reduced)
+    {
+        String spritePath = spriteImageDirective.imagePath;
+        if (ie6Reduced)
+        {
+            final int dotIndex = spritePath.lastIndexOf('.');
+            if (dotIndex >= 0)
+            {
+                StringBuilder ie6Path = new StringBuilder(spritePath);
+                ie6Path.insert(dotIndex, "-ie6");
+                spritePath = ie6Path.toString();
+            }
+            else
+            {
+                spritePath = spritePath + "-ie6";
+            }
+        }
+        return spritePath;
     }
 
     /**

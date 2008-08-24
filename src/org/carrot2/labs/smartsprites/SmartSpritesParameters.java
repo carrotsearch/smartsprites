@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
+import org.carrot2.util.EnumUtils;
 import org.carrot2.util.FileUtils;
 
 /**
@@ -87,7 +88,7 @@ public class SmartSpritesParameters
     public static final PngDepth DEFAULT_SPRITE_PNG_DEPTH = PngDepth.AUTO;
 
     /** By default, we'll generate separate sprites for IE6 if needed */
-    public static final boolean DEFAULT_SPRITE_PNG_IE6 = true;
+    public static final boolean DEFAULT_SPRITE_PNG_IE6 = false;
 
     /** The default logging level. */
     public static final MessageLevel DEFAULT_LOGGING_LEVEL = MessageLevel.INFO;
@@ -131,7 +132,7 @@ public class SmartSpritesParameters
     {
         // CSS indent
         String cssIndent = System.getProperty("css.property.indent");
-        if (StringUtils.isBlank(cssIndent))
+        if (StringUtils.isEmpty(cssIndent))
         {
             cssPropertyIndent = DEFAULT_CSS_INDENT;
         }
@@ -205,20 +206,7 @@ public class SmartSpritesParameters
     private static <T extends Enum<T>> T fromSystemProperty(String property,
         Class<T> enumClass, T defaultValue)
     {
-        return fromString(property, enumClass, defaultValue);
-    }
-
-    public static <T extends Enum<T>> T fromString(String string, Class<T> enumClass,
-        T defaultValue)
-    {
-        if (StringUtils.isNotBlank(string))
-        {
-            return Enum.valueOf(enumClass, string);
-        }
-        else
-        {
-            return defaultValue;
-        }
+        return EnumUtils.valueOf(property, enumClass, defaultValue);
     }
 
     /**
