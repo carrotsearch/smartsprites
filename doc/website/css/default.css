@@ -28,6 +28,10 @@ li {
   margin-bottom: 2ex;
 }
 
+.versions li {
+  margin-bottom: 0;
+}
+
 ul li {
 	list-style: url(../img/li.gif);
 }
@@ -82,6 +86,11 @@ code span.nobreak {
 
 strong {
   color: #f0f0f0;
+}
+
+strong.new {
+  color: #ff4400;
+  padding-right: 0.5em;
 }
 
 div.quote {

@@ -30,12 +30,12 @@
       <a name="about"></a>
 			<h1>What is SmartSprites?</h1>
       <p>
-        SmartSprites is a tool that will let you <strong>easily introduce and
+        SmartSprites will let you <strong>easily introduce and
         maintain <a href="http://www.alistapart.com/articles/sprites">CSS
         sprites</a> in your designs</strong>. SmartSprites parses special
         directives you can insert into your original CSS to mark individual
         images to be turned into sprites. It then builds sprite images from the
-        collected images and automatically inserts the required CSS properties to
+        collected images and automatically inserts the required CSS properties into
         your style sheet, so that the sprites are used instead of the
         individual images.
       </p>
@@ -57,6 +57,13 @@
       <ul>
         <li>
           <strong>Alpha release</strong>: Please bear with, or better -- <a href="http://issues.carrot2.org/browse/SMARTSPRITES">report</a>, any issues you have.
+        </li>
+
+        <li>
+          <strong class="new">(NEW!)</strong><strong>Full support for GIF and
+          PNG8/24</strong>: SmartSprites can create sprites in both GIF and
+          PNG8/24 formats, including transparency. Moreover, it can
+          optimize the PNG output so that PNG24 is used only when needed.
         </li>
 
         <li>
@@ -90,9 +97,25 @@
         </li>
 
         <li>
+          <strong class="new">(NEW!)</strong><strong>Special support for
+          Internet Explorer 6</strong>: SmartSprites can generate IE6-friendly
+          PNG8 sprites preserving transparency wherever possible. Optionally, a matte color
+          can be set for each sprite separately.
+        </li>
+
+        <li>
+          <strong class="new">(NEW!)</strong><strong>CSS- and
+          document-root-relative image paths</strong>: Paths to individual
+          images and the resulting sprites can be specified both relatively to
+          the CSS file or in an absolute fashion, relatively to the provided
+          document root directory.
+        </li>
+
+        <li>
           <strong>Easy integration with build systems</strong>: Transparent
-          processing is the driving force behind SmartSprites, hence it should
-          be very easily integrated into automated build scripts.
+          processing is the driving force behind SmartSprites, using a
+          dedicated Ant task <strong class="new">(NEW!)</strong>it can be very easily
+          integrated into automated build scripts.
         </li>
 
         <li>
@@ -240,11 +263,23 @@
 
               <ul>
                 <li><strong>Sprite image layout</strong>, syntax:
-                <tt>sprite-layout: vertical | horizontal')</tt>, optional,
+                <tt>sprite-layout: vertical | horizontal</tt>, optional,
                 default value: <tt>horizontal</tt>. Specifies whether the
                 individual images should be laid out in the sprite image
                 vertically (on top of each other) or horizontally (next to
                 each other).
+                </li>
+              </ul>
+
+              <ul>
+                <li><a name="sprite-matte-color"><strong>Matte
+                color</strong></a>, syntax: <tt>sprite-matte-color:
+                #ff8822</tt>, optional, default value: <tt>#ffffff</tt>.
+                Specifies the matte color that should be used to render partial
+                transparencies on sprites saved in GIF or PNG8 formats. Note:
+                currently only the 6-digit hexadecimal color specifications are
+                supported.  See also the <a href="#png-depth">PNG color
+                depth</a> and <a href="#png-ie6">IE6-friendly PNG</a> options.
                 </li>
               </ul>
             </li>
@@ -478,6 +513,132 @@ css.property.indent=  </code>
           <strong>Check if your design still looks the same</strong>. Chances
           are, it won't right away. See <a href="#faq">FAQ</a> for some tips.
         </li>
+
+        <li>
+          <a name="global-options"><strong>Tune global options</strong></a>.
+          SmartSprites has a number of global options you can use to further
+          tune your designs and build scripts. The options are contained in the
+          <tt>smartsprites.properties</tt> file.
+
+          <ul>
+            <li>
+              <strong>output.dir.path</strong>: output directory for
+              processed CSS files and CSS-relative sprite images, optional, default: not specifed.
+              <p>
+                If <tt>root.dir.path</tt> is provided, the directory structure
+                relative to <tt>root.dir.path</tt> will be preserved in the
+                output directory. E.g. if CSS files are contained in the
+                <tt>css/base directory</tt> of <tt>root.dir.path</tt>, the
+                processed results will be written to
+                <tt>output.dir.path/css/base</tt>. Also, CSS-relative sprite
+                images will be written to the output directory. Sprite images
+                with document-root-relative URLs will be written relative to
+                the <tt>document.root.dir.path</tt>. If the
+                <tt>output.dir.path</tt> directory does not exist, it will be
+                created.
+              </p>
+              <p>
+                You can leave this property empty, in which case the CSS
+                files will be written next to the original CSS files with
+                <tt>css.file.suffix</tt>, and sprite images will be written relative
+                to CSS files.  If you are using a non-empty <tt>output.dir.path</tt>,
+                you might want to use an empty <tt>css.file.suffix</tt>.
+              </p>
+            </li>
+
+            <li>
+              <strong>document.root.dir.path</strong>: Document root path for
+              document-root-relative (starting with <tt>/</tt>) image urls in
+              CSS, optional, default: not specified.
+
+              <p>
+                All document-root-relative image and sprite URLs will be taken relative to
+                <tt>document.root.dir.path</tt>. Also document-root-relative
+                sprite URLs will be written relative to
+                <tt>document.root.dir.path</tt>.  You can leave this property
+                empty if your CSS uses only CSS-relative image URLs.
+              </p>
+            </li>
+
+            <li>
+              <strong>log.level</strong>: Message logging level, optional, default: <tt>INFO</tt>.
+
+              <p>
+                Messages less important than <tt>log.level</tt> will not be shown. SmartSprites
+                has 3 levels of log messages (in the increasing order of importance):
+              </p>
+
+              <ol>
+                <li><strong>INFO</strong>: information messages, can be safely ignored</li>
+                <li><strong>IE6NOTICE</strong>: notices related to possible quality loss when creating IE6-friendly sprite images, see also the <a href="png-ie6">IE6-friendly PNG</a> option</li>
+                <li><strong>WARN</strong>: warnings related to syntax, IO and sprite rendering quality loss problems that may cause the converted sprite-based designs look broken</li>
+              </ol>
+            </li>
+
+            <li>
+              <p><a name="png-depth"><strong>sprite.png.depth</strong></a>: Color depth of sprites in the PNG format, optional, default: <tt>AUTO</tt>.</p>
+
+              <ol>
+                <li>
+                  <strong>AUTO</strong>: PNG color depth will be chosen
+                  automatically. If the sprite image does not contain partial
+                  transparencies (alpha channel) and has less than 256
+                  colors, PNG8 will be used.  Otherwise, the sprite will be
+                  saved in PNG24.
+                </li>
+
+                <li>
+                  <strong>DIRECT</strong>: PNG sprites will always be saved in the PNG24 format.
+                </li>
+
+                <li>
+                  <strong>INDEXED</strong>: PNG sprites will always be saved in
+                  the PNG8 format.  If the sprite image contains partial
+                  transparencies (alpha chanel) or has more than 255 colors,
+                  image quality loss may occur and appropriate warnings will be
+                  issued.  See also the <a
+                  href="#sprite-matte-color"><tt>sprite-matte-color</tt></a>
+                  property.
+                </li>
+              </ol>
+            </li>
+
+            <li>
+              <a name="png-ie6"><strong>sprite.png.ie6</strong></a>: Enables/disables generation of
+              IE6-friendly sprite images, optional, default: <tt>false</tt>.
+
+              <p>
+                If IE6-friendly sprites are enabled, for each PNG sprite image with partial
+                transparencies (alpha channel) or more than 255 colors, SmartSprites will
+                generate a corresponding color-reduced PNG8 file for IE6. An extra IE6-only
+                CSS rule will be added to the generated CSS file to ensure that IE6 (and only IE6)
+                uses the color-reduced version:
+              </p>
+
+              <code>#web { 
+  width: 17px; height: 17px; 
+  background-repeat: no-repeat; 
+  background-image: url('../img/mysprite.png');
+  <strong>-background-image: url('../img/mysprite-ie6.png');</strong>
+  background-position: left -0px;
+}</code>
+              
+              <p>
+                See also the <a
+                href="#sprite-matte-color"><tt>sprite-matte-color</tt></a>
+                property.
+              </p>
+            </li>
+
+            <li>
+              <strong>css.file.suffix</strong>: Suffix to be appended to the processed CSS file name, optional, default: <tt>-sprite</tt>.
+            </li>
+
+            <li>
+              <strong>css.property.indent</strong>: Characters to be used to indent SmartSprites-generated CSS properties, optional, default: two spaces.
+            </li>
+          </ul>
+        </li>
       </ol>
 		</div>
 
@@ -569,11 +730,44 @@ css.property.indent=  </code>
 
 		<div class="item">
       <a name="php"></a>
+			<h1>Version history</h1>
+
+      <p>
+        <strong>v0.2</strong>, released: August 2008
+      </p>
+      <ul class="versions">
+        <li>full support for transparency in GIF, PNG8, PNG24</li>
+        <li>simple color quanization algorithm for GIF and PNG8</li>
+        <li>document-root-relative image paths support</li>
+        <li>arbitrary output directory support</li>
+        <li>SmartSprites Ant task</li>
+      </ul>
+
+      <p>
+        <strong>v0.1</strong>, released: February 2008
+      </p>
+      <ul class="versions">
+        <li>incubation release</li>
+      </ul>
+    </div>
+
+		<div class="item">
+      <a name="php"></a>
 			<h1>PHP version</h1>
 
       <p>
         For a PHP port of SmartSprites, please <a href="http://www.tanila.de/smartsprite/index.php">check here</a>.
       </p>
+    </div>
+
+		<div class="item">
+			<h1>Contributors</h1>
+
+      <ul>
+        <li>
+          <strong>NSS</strong>: code ideas for GIF / PNG8 transparency support
+        </li>
+      </ul>
     </div>
 
 		<div class="item">
@@ -590,6 +784,7 @@ css.property.indent=  </code>
 	</div>
 	<div class="footer">&copy; 2008 <a href="http://stanislaw.osinski.name">Stanislaw Osinski</a>. Design by <a href="http://arcsin.se">Arcsin</a></div>
 </div>
+<!--
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -599,5 +794,6 @@ var pageTracker = _gat._getTracker("UA-317750-9");
 pageTracker._initData();
 pageTracker._trackPageview();
 </script>
+-->
 </body>
 </html>
