@@ -13,7 +13,31 @@ import org.junit.Test;
 public class BufferedImageUtilsTest extends BufferedImageTestBase
 {
     @Test
-    public void testHasFullAlphaTransparencyFull() throws IOException
+    public void testHasAlphaTransparencyPartial() throws IOException
+    {
+        assertThat(
+            BufferedImageUtils.hasTransparency(image("src-test/images/full-alpha.png")))
+            .isTrue();
+    }
+
+    @Test
+    public void testHasAlphaTransparencyBitmask() throws IOException
+    {
+        assertThat(
+            BufferedImageUtils.hasTransparency(image("src-test/images/bit-alpha.png")))
+            .isTrue();
+    }
+
+    @Test
+    public void testHasAlphaTransparencyNoTransparency() throws IOException
+    {
+        assertThat(
+            BufferedImageUtils.hasTransparency(image("src-test/images/no-alpha.png")))
+            .isFalse();
+    }
+
+    @Test
+    public void testHasPartialAlphaTransparencyPartial() throws IOException
     {
         assertThat(
             BufferedImageUtils
@@ -22,12 +46,20 @@ public class BufferedImageUtilsTest extends BufferedImageTestBase
     }
 
     @Test
-    public void testHasFullAlphaTransparencyBitmask() throws IOException
+    public void testHasPartialAlphaTransparencyBitmask() throws IOException
     {
         assertThat(
             BufferedImageUtils
                 .hasPartialTransparency(image("src-test/images/bit-alpha.png")))
             .isFalse();
+    }
+
+    @Test
+    public void testHasPartialAlphaTransparencyNoTransparency() throws IOException
+    {
+        assertThat(
+            BufferedImageUtils
+                .hasPartialTransparency(image("src-test/images/no-alpha.png"))).isFalse();
     }
 
     @Test

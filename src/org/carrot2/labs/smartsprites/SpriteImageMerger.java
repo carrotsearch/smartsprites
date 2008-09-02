@@ -10,6 +10,7 @@ import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
+import org.carrot2.util.BufferedImageUtils;
 import org.carrot2.util.ColorQuantizer;
 import org.carrot2.util.ColorQuantizer.ColorReductionInfo;
 
@@ -145,8 +146,10 @@ public class SpriteImageMerger
 
             result[0] = sprite;
 
-            // If needed, generated a quantized version for IE6
-            if (parameters.spritePngIe6 && isPng)
+            // If needed, generate a quantized version for IE6. If the image has >255 colors
+            // but doesn't have any transparency, we don't need an IE6 version, because
+            // IE6 can handle PNG24 with no transparency correctly.
+            if (parameters.spritePngIe6 && isPng && BufferedImageUtils.hasTransparency(sprite))
             {
                 result[1] = quantize(sprite, spriteImageProperties, colorReductionInfo,
                     MessageLevel.IE6NOTICE);

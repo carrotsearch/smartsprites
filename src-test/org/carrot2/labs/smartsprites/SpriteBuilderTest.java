@@ -411,10 +411,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         org.carrot2.labs.test.Assertions.assertThat(
             sprite(testDir, "img/sprite-many-colors.png")).isDirectColor()
             .doesNotHaveAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-many-colors-ie6.png")).isIndexedColor()
-            .doesNotHaveAlpha();
-        
+
         assertThat(expectedCss()).hasSameContentAs(processedCss());
 
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
@@ -425,10 +422,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
                 "full-alpha"),
             new Message(Message.MessageLevel.IE6NOTICE,
                 Message.MessageType.USING_WHITE_MATTE_COLOR_AS_DEFAULT, null, 25,
-                "full-alpha"),
-            new Message(Message.MessageLevel.IE6NOTICE,
-                Message.MessageType.TOO_MANY_COLORS_FOR_INDEXED_COLOR, null, 32,
-                "many-colors", 293, 255));
+                "full-alpha"));
     }
 
     @After

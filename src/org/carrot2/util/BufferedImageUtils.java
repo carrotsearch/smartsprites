@@ -38,6 +38,30 @@ public class BufferedImageUtils
     }
 
     /**
+     * Returns <code>true</code> if the provided image has any kind of transparent areas
+     */
+    public static boolean hasTransparency(BufferedImage image)
+    {
+        final Raster alphaRaster = image.getAlphaRaster();
+        if (image.getTransparency() != Transparency.TRANSLUCENT || alphaRaster == null)
+        {
+            return false;
+        }
+        
+        int [] pixels = alphaRaster.getPixels(0, 0, alphaRaster.getWidth(), alphaRaster
+            .getHeight(), (int []) null);
+        for (int i : pixels)
+        {
+            if (i != 255)
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
      * Returns the number of distinct colors (excluding transparency) in the
      * <code>image</code>.
      */

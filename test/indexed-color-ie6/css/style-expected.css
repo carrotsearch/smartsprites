@@ -31,7 +31,6 @@
 #many-colors {
   background: transparent no-repeat;
   background-image: url('../img/sprite-many-colors.png');
-  -background-image: url('../img/sprite-many-colors-ie6.png');
   background-position: left -0px;
   width: 20px;
   height: 20px;

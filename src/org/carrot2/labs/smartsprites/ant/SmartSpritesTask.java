@@ -22,6 +22,7 @@ public class SmartSpritesTask extends Task
     private File outputDir;
     private File documentRootDir;
     private MessageLevel logLevel;
+    private MessageLevel failOnLevel;
     private String cssFileSuffix = SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX;
     private String cssPropertyIndent = SmartSpritesParameters.DEFAULT_CSS_INDENT;
     private PngDepth spritePngDepth = SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH;
@@ -44,13 +45,23 @@ public class SmartSpritesTask extends Task
 
     public void setLogLevel(String logLevel)
     {
+        this.logLevel = getLogLevelFromString(logLevel, MessageLevel.INFO);
+    }
+
+    public void setFailOnLevel(String failOnLevel)
+    {
+        this.failOnLevel = getLogLevelFromString(failOnLevel, null);
+    }
+
+    private MessageLevel getLogLevelFromString(String logLevel, MessageLevel defaultLevel)
+    {
         try
         {
-            this.logLevel = MessageLevel.valueOf(logLevel);
+            return MessageLevel.valueOf(logLevel);
         }
         catch (Exception e)
         {
-            this.logLevel = MessageLevel.INFO;
+            return defaultLevel;
         }
     }
 
@@ -82,7 +93,9 @@ public class SmartSpritesTask extends Task
             outputDir, documentRootDir, logLevel, cssFileSuffix, cssPropertyIndent,
             spritePngDepth, spritePngIe6);
 
-        MessageLog log = new MessageLog(new AntLogMessageSink());
+        final FailureDetectorMessageSink failureDetectorMessageSink = new FailureDetectorMessageSink();
+        MessageLog log = new MessageLog(new AntLogMessageSink(),
+            failureDetectorMessageSink);
 
         try
         {
@@ -105,6 +118,11 @@ public class SmartSpritesTask extends Task
         {
             throw new BuildException(e);
         }
+
+        if (failureDetectorMessageSink.shouldFail)
+        {
+            fail(failOnLevel.name() + " messages found");
+        }
     }
 
     private class AntLogMessageSink implements MessageSink
@@ -114,6 +132,20 @@ public class SmartSpritesTask extends Task
             if (MessageLevel.COMPARATOR.compare(message.level, logLevel) >= 0)
             {
                 getProject().log(message.toString());
+            }
+        }
+    }
+
+    private class FailureDetectorMessageSink implements MessageSink
+    {
+        boolean shouldFail = false;
+
+        public void add(Message message)
+        {
+            if (failOnLevel != null
+                && MessageLevel.COMPARATOR.compare(message.level, failOnLevel) >= 0)
+            {
+                shouldFail = true;
             }
         }
     }
