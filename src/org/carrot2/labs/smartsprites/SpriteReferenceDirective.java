@@ -117,7 +117,7 @@ public class SpriteReferenceDirective
             .propertiesAsMap(CssSyntaxUtils.extractRules(directiveString,
                 messageCollector));
 
-        final Set<String> properties = Sets.newHashSet(rules.keySet());
+        final Set<String> properties = Sets.newLinkedHashSet(rules.keySet());
         properties.removeAll(ALLOWED_PROPERTIES);
         if (!properties.isEmpty())
         {

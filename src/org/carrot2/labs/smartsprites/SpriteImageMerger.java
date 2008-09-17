@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.Map;
 
 import org.carrot2.labs.smartsprites.SmartSpritesParameters.PngDepth;
+import org.carrot2.labs.smartsprites.SpriteImageDirective.Ie6Mode;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -146,10 +147,12 @@ public class SpriteImageMerger
 
             result[0] = sprite;
 
-            // If needed, generate a quantized version for IE6. If the image has >255 colors
-            // but doesn't have any transparency, we don't need an IE6 version, because
-            // IE6 can handle PNG24 with no transparency correctly.
-            if (parameters.spritePngIe6 && isPng && BufferedImageUtils.hasTransparency(sprite))
+            // If needed, generate a quantized version for IE6. If the image has >255
+            // colors but doesn't have any transparency, we don't need an IE6 version,
+            // because IE6 can handle PNG24 with no transparency correctly.
+            if (parameters.spritePngIe6 && isPng
+                && BufferedImageUtils.hasTransparency(sprite)
+                && spriteImageProperties.spriteImageDirective.ie6Mode != Ie6Mode.NONE)
             {
                 result[1] = quantize(sprite, spriteImageProperties, colorReductionInfo,
                     MessageLevel.IE6NOTICE);

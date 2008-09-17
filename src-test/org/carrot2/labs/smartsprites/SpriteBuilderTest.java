@@ -104,15 +104,14 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
 
         // The unsatisfied sprite references are not removed from the output
         // file, hence we have two warnings
-        assertThat(messages).isEquivalentTo(
-            Message.MessageLevel.WARN,
-            new Message(Message.MessageLevel.WARN,
-                Message.MessageType.CANNOT_NOT_LOAD_IMAGE, new File(testDir,
-                    "css/style-expected.css").getCanonicalPath(), 15, new File(testDir,
-                    "img/logo.png").getCanonicalPath(), "Can't read input file!"),
+        assertThat(messages).contains(
             new Message(Message.MessageLevel.WARN,
                 Message.MessageType.CANNOT_NOT_LOAD_IMAGE, new File(testDir,
                     "css/style.css").getCanonicalPath(), 15, new File(testDir,
+                    "img/logo.png").getCanonicalPath(), "Can't read input file!"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.CANNOT_NOT_LOAD_IMAGE, new File(testDir,
+                    "css/style-expected.css").getCanonicalPath(), 15, new File(testDir,
                     "img/logo.png").getCanonicalPath(), "Can't read input file!"));
     }
 
@@ -411,6 +410,15 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         org.carrot2.labs.test.Assertions.assertThat(
             sprite(testDir, "img/sprite-many-colors.png")).isDirectColor()
             .doesNotHaveAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-many-colors-bit-alpha-ie6.png")).isIndexedColor()
+            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-many-colors-bit-alpha-no-ie6.png"))
+            .isDirectColor().hasBitAlpha();
+        org.carrot2.labs.test.Assertions.assertThat(
+            sprite(testDir, "img/sprite-many-colors-bit-alpha.png")).isDirectColor()
+            .hasBitAlpha();
 
         assertThat(expectedCss()).hasSameContentAs(processedCss());
 
@@ -418,11 +426,14 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(messages).isEquivalentTo(
             Message.MessageLevel.IE6NOTICE,
             new Message(Message.MessageLevel.IE6NOTICE,
-                Message.MessageType.ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR, null, 25,
+                Message.MessageType.ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR, null, 27,
                 "full-alpha"),
             new Message(Message.MessageLevel.IE6NOTICE,
-                Message.MessageType.USING_WHITE_MATTE_COLOR_AS_DEFAULT, null, 25,
-                "full-alpha"));
+                Message.MessageType.USING_WHITE_MATTE_COLOR_AS_DEFAULT, null, 27,
+                "full-alpha"),
+            new Message(Message.MessageLevel.IE6NOTICE,
+                Message.MessageType.TOO_MANY_COLORS_FOR_INDEXED_COLOR, null, 41,
+                "many-colors-bit-alpha", 293, 255));
     }
 
     @After

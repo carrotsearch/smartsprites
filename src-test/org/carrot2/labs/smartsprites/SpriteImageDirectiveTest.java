@@ -5,6 +5,7 @@ import static org.carrot2.labs.test.Assertions.assertThat;
 
 import java.awt.Color;
 
+import org.carrot2.labs.smartsprites.SpriteImageDirective.Ie6Mode;
 import org.carrot2.labs.smartsprites.message.Message;
 import org.junit.Test;
 
@@ -21,11 +22,11 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
     }
 
     @Test
-    public void testIdUrlLayoutProvided()
+    public void testIdUrlLayoutProvidedIe6Mode()
     {
         final SpriteImageDirective directive = SpriteImageDirective
             .parse(
-                "sprite: sprite; sprite-image: url('../sprite.png'); sprite-layout: horizontal",
+                "sprite: sprite; sprite-image: url('../sprite.png'); sprite-layout: horizontal; sprite-ie6-mode: none",
                 messageLog);
 
         assertNotNull(directive);
@@ -33,6 +34,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.imagePath, "../sprite.png");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
         assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.HORIZONTAL);
+        assertEquals(Ie6Mode.NONE, directive.ie6Mode);
     }
 
     @Test
@@ -142,6 +144,38 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertThat(messages).isEquivalentTo(
             new Message(Message.MessageLevel.WARN,
                 Message.MessageType.UNSUPPORTED_LAYOUT, null, 0, "other"));
+    }
+    
+    @Test
+    public void testUnsupportedIe6Mode()
+    {
+        final SpriteImageDirective directive = SpriteImageDirective.parse(
+            "sprite: sprite; sprite-image: url('../sprite.png'); sprite-ie6-mode: other",
+            messageLog);
+        
+        assertNotNull(directive);
+        assertEquals(directive.spriteId, "sprite");
+        assertEquals(directive.imagePath, "../sprite.png");
+        
+        assertThat(messages).isEquivalentTo(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.UNSUPPORTED_IE6_MODE, null, 0, "other"));
+    }
+    
+    @Test
+    public void testIgnoredIe6Mode()
+    {
+        final SpriteImageDirective directive = SpriteImageDirective.parse(
+            "sprite: sprite; sprite-image: url('../sprite.gif'); sprite-ie6-mode: auto",
+            messageLog);
+        
+        assertNotNull(directive);
+        assertEquals(directive.spriteId, "sprite");
+        assertEquals(directive.imagePath, "../sprite.gif");
+        
+        assertThat(messages).isEquivalentTo(
+            new Message(Message.MessageLevel.IE6NOTICE,
+                Message.MessageType.IGNORING_IE6_MODE, null, 0, "GIF"));
     }
 
     @Test

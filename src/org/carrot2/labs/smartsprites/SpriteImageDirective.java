@@ -3,6 +3,7 @@ package org.carrot2.labs.smartsprites;
 import java.awt.Color;
 import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
 import org.carrot2.labs.smartsprites.css.CssProperty;
 import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -20,17 +21,18 @@ public class SpriteImageDirective
     public static final String PROPERTY_SPRITE_IMAGE_LAYOUT = "sprite-layout";
     public static final String PROPERTY_SPRITE_IMAGE_URL = "sprite-image";
     public static final String PROPERTY_SPRITE_MATTE_COLOR = "sprite-matte-color";
+    public static final String PROPERTY_SPRITE_IE6_MODE = "sprite-ie6-mode";
 
     /** A set of allowed properties */
     private static final HashSet<String> ALLOWED_PROPERTIES = Sets.newLinkedHashSet(
         PROPERTY_SPRITE_ID, PROPERTY_SPRITE_IMAGE_LAYOUT, PROPERTY_SPRITE_IMAGE_URL,
-        PROPERTY_SPRITE_MATTE_COLOR);
+        PROPERTY_SPRITE_MATTE_COLOR, PROPERTY_SPRITE_IE6_MODE);
 
     /**
      * Defines the layout of this sprite.
      */
-    public static enum SpriteImageLayout {
-
+    public static enum SpriteImageLayout
+    {
         /**
          * Vertical layout, images stacked on each other.
          */
@@ -53,17 +55,13 @@ public class SpriteImageDirective
         {
             return value;
         }
-
-        public static SpriteImageLayout getValue(String value)
-        {
-            return valueOf(value.toUpperCase());
-        }
     }
 
     /**
      * Defines supported image file formats.
      */
-    public static enum SpriteImageFormat {
+    public static enum SpriteImageFormat
+    {
         PNG, GIF, JPG;
 
         private String value;
@@ -82,6 +80,31 @@ public class SpriteImageDirective
         public static SpriteImageFormat getValue(String value)
         {
             return valueOf(value.toUpperCase());
+        }
+    }
+
+    /**
+     * Defines supported IE6 support options.
+     */
+    public static enum Ie6Mode
+    {
+        /** No IE6-friendly image will be created for this sprite, even if needed */
+        NONE,
+
+        /** IE6-friendly image will be generated for this sprite if needed */
+        AUTO;
+
+        private String value;
+
+        private Ie6Mode()
+        {
+            this.value = name().toLowerCase();
+        }
+
+        @Override
+        public String toString()
+        {
+            return value;
         }
     }
 
@@ -106,17 +129,23 @@ public class SpriteImageDirective
     public final SpriteImageFormat format;
 
     /**
+     * How IE6 sprites should be handled.
+     */
+    public final Ie6Mode ie6Mode;
+
+    /**
      * Matte color to be used when reducing true alpha channel.
      */
     public final Color matteColor;
 
     public SpriteImageDirective(String id, String imageUrl, SpriteImageLayout layout,
-        SpriteImageFormat format, Color matteColor)
+        SpriteImageFormat format, Ie6Mode ie6Mode, Color matteColor)
     {
         this.spriteId = id;
         this.imagePath = imageUrl;
         this.layout = layout;
         this.format = format;
+        this.ie6Mode = ie6Mode;
         this.matteColor = matteColor;
     }
 
@@ -131,7 +160,7 @@ public class SpriteImageDirective
             .propertiesAsMap(CssSyntaxUtils.extractRules(directiveString,
                 messageCollector));
 
-        final Set<String> properties = Sets.newHashSet(rules.keySet());
+        final Set<String> properties = Sets.newLinkedHashSet(rules.keySet());
         properties.removeAll(ALLOWED_PROPERTIES);
         if (!properties.isEmpty())
         {
@@ -154,26 +183,11 @@ public class SpriteImageDirective
         final String id = rules.get(PROPERTY_SPRITE_ID).value;
         final String imagePath = CssSyntaxUtils.unpackUrl(rules
             .get(PROPERTY_SPRITE_IMAGE_URL).value);
-        SpriteImageLayout layout;
 
         // Layout is optional
-        if (CssSyntaxUtils.hasNonBlankValue(rules, PROPERTY_SPRITE_IMAGE_LAYOUT))
-        {
-            final String layoutValue = rules.get(PROPERTY_SPRITE_IMAGE_LAYOUT).value;
-            try
-            {
-                layout = SpriteImageLayout.getValue(layoutValue);
-            }
-            catch (final IllegalArgumentException e)
-            {
-                messageCollector.warning(MessageType.UNSUPPORTED_LAYOUT, layoutValue);
-                layout = SpriteImageLayout.VERTICAL;
-            }
-        }
-        else
-        {
-            layout = SpriteImageLayout.VERTICAL;
-        }
+        final SpriteImageLayout layout = valueOf(CssSyntaxUtils.getValue(rules,
+            PROPERTY_SPRITE_IMAGE_LAYOUT), SpriteImageLayout.class,
+            SpriteImageLayout.VERTICAL, messageCollector, MessageType.UNSUPPORTED_LAYOUT);
 
         // Infer format from image path
         SpriteImageFormat format;
@@ -198,6 +212,16 @@ public class SpriteImageDirective
             }
         }
 
+        // Layout is optional
+        final String ie6ModeString = CssSyntaxUtils.getValue(rules,
+            PROPERTY_SPRITE_IE6_MODE);
+        final Ie6Mode ie6Mode = valueOf(ie6ModeString, Ie6Mode.class, Ie6Mode.AUTO,
+            messageCollector, MessageType.UNSUPPORTED_IE6_MODE);
+        if (StringUtils.isNotBlank(ie6ModeString) && format != SpriteImageFormat.PNG)
+        {
+            messageCollector.notice(MessageType.IGNORING_IE6_MODE, format.name());
+        }
+
         // Matte color
         final Color matteColor;
         if (CssSyntaxUtils.hasNonBlankValue(rules, PROPERTY_SPRITE_MATTE_COLOR))
@@ -210,6 +234,28 @@ public class SpriteImageDirective
             matteColor = null;
         }
 
-        return new SpriteImageDirective(id, imagePath, layout, format, matteColor);
+        return new SpriteImageDirective(id, imagePath, layout, format, ie6Mode,
+            matteColor);
+    }
+
+    private static <T extends Enum<T>> T valueOf(String stringValue, Class<T> enumClass,
+        T defaultValue, MessageLog messageCollector, MessageType messageType)
+    {
+        if (StringUtils.isNotBlank(stringValue))
+        {
+            try
+            {
+                return Enum.valueOf(enumClass, stringValue.toUpperCase());
+            }
+            catch (IllegalArgumentException e)
+            {
+                messageCollector.warning(messageType, stringValue);
+                return defaultValue;
+            }
+        }
+        else
+        {
+            return defaultValue;
+        }
     }
 }

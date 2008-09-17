@@ -249,9 +249,7 @@
                 unique-id</tt>, required. A unique identifier by which the
                 sprite image will be referred to. For each unique sprite id,
                 SmartSprites will create one sprite image. </li>
-              </ul>
 
-              <ul>
                 <li><strong>Sprite image location</strong>, syntax:
                 <tt>sprite-image: url('path/name.(png | gif | jpg)')</tt>,
                 required.  CSS file-relative path to the sprite image to be
@@ -259,9 +257,7 @@
                 based on the extension used.  Currently supported are:
                 gif, png and jpg.
                 </li>
-              </ul>
 
-              <ul>
                 <li><strong>Sprite image layout</strong>, syntax:
                 <tt>sprite-layout: vertical | horizontal</tt>, optional,
                 default value: <tt>horizontal</tt>. Specifies whether the
@@ -269,9 +265,7 @@
                 vertically (on top of each other) or horizontally (next to
                 each other).
                 </li>
-              </ul>
 
-              <ul>
                 <li><a name="sprite-matte-color"><strong>Matte
                 color</strong></a>, syntax: <tt>sprite-matte-color:
                 #ff8822</tt>, optional, default value: <tt>#ffffff</tt>.
@@ -280,6 +274,15 @@
                 currently only the 6-digit hexadecimal color specifications are
                 supported.  See also the <a href="#png-depth">PNG color
                 depth</a> and <a href="#png-ie6">IE6-friendly PNG</a> options.
+                </li>
+
+                <li>
+                  <strong>IE6 compatibility mode</strong>, syntax: <tt>sprite-ie-mode:
+                  auto | none</tt>, optional, default value: <tt>auto</tt>.
+                  Specifies whether an IE6-compatible image for this sprite should be generated
+                  when necessary (<tt>auto</tt>) or should not be generated at all
+                  (<tt>none</tt>). See the <a href="#png-ie6">IE6-friendly PNG</a> option for
+                  more details.
                 </li>
               </ul>
             </li>
@@ -301,9 +304,7 @@
                 of the sprites declared by the sprite image directives.
                 The individual image will be placed in the sprite with the
                 provided identifier.</li>
-              </ul>
 
-              <ul>
                 <li>
                   <p>
                     <strong>Sprite Alignment</strong>, syntax:
@@ -342,9 +343,7 @@
                     <tt>sprite-alignment: repeat</tt> with caution.
                   </p>
                 </li>
-              </ul>
 
-              <ul>
                 <li><strong>Sprite margins</strong>, syntax:
                 <tt>sprite-margin-(left | right | top | bottom):
                 OFFSETpx</tt>, optional, default value: <tt>0px</tt>. The
@@ -609,7 +608,7 @@ css.property.indent=  </code>
 
               <p>
                 If IE6-friendly sprites are enabled, for each PNG sprite image with partial
-                transparencies (alpha channel) or more than 255 colors, SmartSprites will
+                transparencies (alpha channel) or more than 255 colors and any transparencies, SmartSprites will
                 generate a corresponding color-reduced PNG8 file for IE6. An extra IE6-only
                 CSS rule will be added to the generated CSS file to ensure that IE6 (and only IE6)
                 uses the color-reduced version:
@@ -765,7 +764,7 @@ css.property.indent=  </code>
 
       <ul>
         <li>
-          <strong>NSS</strong>: code ideas for GIF / PNG8 transparency support
+          <strong>NSS</strong>: feature ideas and initial code for GIF / PNG8 transparency support
         </li>
       </ul>
     </div>

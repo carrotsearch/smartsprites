@@ -1,6 +1,6 @@
 package org.carrot2.labs.test;
 
-import java.util.List;
+import java.util.*;
 
 import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
@@ -8,6 +8,7 @@ import org.fest.assertions.Assertions;
 import org.fest.assertions.Fail;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Assertions on lists of {@link Message}s.
@@ -23,6 +24,40 @@ public class MessageListAssertion
     public MessageListAssertion(List<Message> actual)
     {
         this.actual = actual;
+    }
+
+    /**
+     * Asserts that the current message list contains (at least) the specified messages.
+     */
+    public MessageListAssertion contains(Message... messages)
+    {
+        final Set<Message> toCheck = Sets.newHashSet(messages);
+        for (int i = 0; i < actual.size(); i++)
+        {
+            for (Iterator<Message> it = toCheck.iterator(); it.hasNext();)
+            {
+                final Message message = it.next();
+                try
+                {
+                    org.carrot2.labs.test.Assertions.assertThat(actual.get(i)).as(
+                        "message[" + i + "]").isEquivalentTo(message);
+                    it.remove();
+
+                }
+                catch (AssertionError e)
+                {
+                    // This means the message wan't equivalen, ignore
+                }
+            }
+        }
+
+        if (!toCheck.isEmpty())
+        {
+            Fail.fail("Message list did not contain " + toCheck.size()
+                + " of the required messages");
+        }
+
+        return this;
     }
 
     /**

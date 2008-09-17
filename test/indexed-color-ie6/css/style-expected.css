@@ -35,3 +35,20 @@
   width: 20px;
   height: 20px;
 }
+
+#many-colors-bit-alpha {
+  background: transparent no-repeat;
+  background-image: url('../img/sprite-many-colors-bit-alpha.png');
+  -background-image: url('../img/sprite-many-colors-bit-alpha-ie6.png');
+  background-position: left -0px;
+  width: 20px;
+  height: 20px;
+}
+
+#many-colors-bit-alpha-no-ie6 {
+  background: transparent no-repeat;
+  background-image: url('../img/sprite-many-colors-bit-alpha-no-ie6.png');
+  background-position: left -0px;
+  width: 20px;
+  height: 20px;
+}

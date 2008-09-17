@@ -21,8 +21,7 @@ public class CssSyntaxUtils
     private static final Pattern URL_PATTERN = Pattern
         .compile("[uU][rR][lL]\\((['\"]?)([^'\"]*)\\1\\)");
 
-    private static final Pattern COLOR_PATTERN = Pattern
-        .compile("#([0-9a-f]{6})");
+    private static final Pattern COLOR_PATTERN = Pattern.compile("#([0-9a-f]{6})");
 
     /**
      * Extracts CSS properties from the provided {@link String}.
@@ -69,12 +68,28 @@ public class CssSyntaxUtils
      */
     public static Map<String, CssProperty> propertiesAsMap(Collection<CssProperty> rules)
     {
-        final Map<String, CssProperty> result = Maps.newHashMap();
+        final Map<String, CssProperty> result = Maps.newLinkedHashMap();
         for (final CssProperty cssProperty : rules)
         {
             result.put(cssProperty.rule, cssProperty);
         }
         return result;
+    }
+
+    /**
+     * Returns the value of a CSS property if it exists, <code>null</code> otherwise.
+     */
+    public static String getValue(Map<String, CssProperty> rules, String property)
+    {
+        final CssProperty cssProperty = rules.get(property);
+        if (cssProperty != null)
+        {
+            return cssProperty.value;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /**

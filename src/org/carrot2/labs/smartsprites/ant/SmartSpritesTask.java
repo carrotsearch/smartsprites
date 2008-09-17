@@ -5,7 +5,8 @@ import static junit.framework.Assert.fail;
 import java.io.*;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters;
 import org.carrot2.labs.smartsprites.SpriteBuilder;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters.PngDepth;
@@ -121,7 +122,7 @@ public class SmartSpritesTask extends Task
 
         if (failureDetectorMessageSink.shouldFail)
         {
-            fail(failOnLevel.name() + " messages found");
+            fail(failureDetectorMessageSink.failureLevel.name() + " messages found");
         }
     }
 
@@ -139,12 +140,15 @@ public class SmartSpritesTask extends Task
     private class FailureDetectorMessageSink implements MessageSink
     {
         boolean shouldFail = false;
+        MessageLevel failureLevel = null;
 
         public void add(Message message)
         {
             if (failOnLevel != null
-                && MessageLevel.COMPARATOR.compare(message.level, failOnLevel) >= 0)
+                && MessageLevel.COMPARATOR.compare(message.level, failOnLevel) >= 0
+                && message.level != MessageLevel.STATUS)
             {
+                failureLevel = message.level;
                 shouldFail = true;
             }
         }

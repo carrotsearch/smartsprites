@@ -95,6 +95,8 @@ public class Message
         UNSUPPORTED_ALIGNMENT("Unsupported alignment: %s"),
         UNSUPPORTED_FORMAT("Unsupported format: %s"),
         UNSUPPORTED_LAYOUT("Unsupported layout: %s"),
+        UNSUPPORTED_IE6_MODE("Unsupported ie6 mode: %s"),
+        IGNORING_IE6_MODE("The sprite-ie6-mode applies only to PNG sprites. Ignoring for a %s sprite."),
         JPG_DOES_NOT_SUPPORT_INDEXED_COLOR("JPG format does not support indexed color"),
         TOO_MANY_COLORS_FOR_INDEXED_COLOR(
             "Sprite '%s' requires %d colors, but the maximum for indexed color mode is %d. Image quality will be degraded."),

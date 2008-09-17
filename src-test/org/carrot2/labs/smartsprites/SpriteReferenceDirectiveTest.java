@@ -7,8 +7,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.awt.Color;
 import java.util.Map;
 
-import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
-import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
+import org.carrot2.labs.smartsprites.SpriteImageDirective.*;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -23,11 +22,11 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
 {
     private static final SpriteImageDirective VERTICAL_SPRITE_IMAGE_DIRECTIVE = new SpriteImageDirective(
         "sprite", "sprite.png", SpriteImageLayout.VERTICAL, SpriteImageFormat.PNG,
-        Color.WHITE);
+        Ie6Mode.AUTO, Color.WHITE);
 
     private static final SpriteImageDirective HORIZONTAL_SPRITE_IMAGE_DIRECTIVE = new SpriteImageDirective(
         "hsprite", "hsprite.png", SpriteImageLayout.HORIZONTAL, SpriteImageFormat.PNG,
-        Color.WHITE);
+        Ie6Mode.AUTO, Color.WHITE);
 
     private static final Map<String, SpriteImageDirective> SPRITE_IMAGE_DIRECTIVES = Maps
         .immutableMap("sprite", VERTICAL_SPRITE_IMAGE_DIRECTIVE, "hsprite",
