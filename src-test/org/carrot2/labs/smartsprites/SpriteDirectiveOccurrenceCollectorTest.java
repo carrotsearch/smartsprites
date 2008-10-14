@@ -3,6 +3,7 @@ package org.carrot2.labs.smartsprites;
 import static junit.framework.Assert.assertEquals;
 import static org.carrot2.labs.test.Assertions.assertThat;
 
+import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
 import org.carrot2.labs.smartsprites.message.Message;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,8 +74,8 @@ public class SpriteDirectiveOccurrenceCollectorTest extends TestWithMemoryMessag
         final String css = "background-image: url('../img/img.png'); /** "
             + spriteDirective + " */";
 
-        assertEquals("../img/img.png", spriteDirectiveOccurrenceCollector
-            .extractSpriteReferenceImageUrl(css));
+        assertEquals("../img/img.png", CssSyntaxUtils.unpackUrl(spriteDirectiveOccurrenceCollector
+            .extractSpriteReferenceCssProperty(css).value, null));
     }
 
     @Test
@@ -85,7 +86,7 @@ public class SpriteDirectiveOccurrenceCollectorTest extends TestWithMemoryMessag
             + spriteDirective + " */";
 
         assertEquals(null, spriteDirectiveOccurrenceCollector
-            .extractSpriteReferenceImageUrl(css));
+            .extractSpriteReferenceCssProperty(css));
 
         assertThat(messages)
             .isEquivalentTo(
@@ -103,7 +104,7 @@ public class SpriteDirectiveOccurrenceCollectorTest extends TestWithMemoryMessag
             + spriteDirective + " */";
 
         assertEquals(null, spriteDirectiveOccurrenceCollector
-            .extractSpriteReferenceImageUrl(css));
+            .extractSpriteReferenceCssProperty(css));
 
         assertThat(messages)
             .isEquivalentTo(

@@ -23,6 +23,8 @@ public class CssSyntaxUtils
 
     private static final Pattern COLOR_PATTERN = Pattern.compile("#([0-9a-f]{6})");
 
+    private static final Pattern IMPORTANT_PATTERN = Pattern.compile("!\\s*important");
+
     /**
      * Extracts CSS properties from the provided {@link String}.
      */
@@ -46,8 +48,17 @@ public class CssSyntaxUtils
 
             if (parts.length == 2)
             {
-                rules
-                    .add(new CssProperty(parts[0].trim().toLowerCase(), parts[1].trim()));
+                String value = parts[1].trim();
+                final Matcher matcher = IMPORTANT_PATTERN.matcher(value);
+                boolean important = false;
+                if (matcher.find())
+                {
+                    important = true;
+                    value = matcher.replaceAll("");
+                }
+
+                rules.add(new CssProperty(parts[0].trim().toLowerCase(), value.trim(),
+                    important));
             }
             else
             {

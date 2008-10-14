@@ -108,7 +108,9 @@ public class SpriteDirectiveOccurrenceCollector
                     continue;
                 }
 
-                final String imageUrl = extractSpriteReferenceImageUrl(line);
+                final CssProperty backgroundProperty = extractSpriteReferenceCssProperty(line);
+                final String imageUrl = CssSyntaxUtils.unpackUrl(
+                    backgroundProperty.value, messageLog);
                 if (imageUrl == null)
                 {
                     continue;
@@ -122,7 +124,7 @@ public class SpriteDirectiveOccurrenceCollector
                 }
 
                 directives.add(new SpriteReferenceOccurrence(directive, imageUrl,
-                    cssFile, lineNumber));
+                    cssFile, lineNumber, backgroundProperty.important));
             }
         }
         finally
@@ -261,7 +263,7 @@ public class SpriteDirectiveOccurrenceCollector
     /**
      * Extract the url to the image to be added to a sprite.
      */
-    String extractSpriteReferenceImageUrl(String css)
+    CssProperty extractSpriteReferenceCssProperty(String css)
     {
         final Matcher matcher = SPRITE_REFERENCE_DIRECTIVE.matcher(css);
 
@@ -294,6 +296,6 @@ public class SpriteDirectiveOccurrenceCollector
             return null;
         }
 
-        return CssSyntaxUtils.unpackUrl(backgroundImageRule.value, messageLog);
+        return backgroundImageRule;
     }
 }

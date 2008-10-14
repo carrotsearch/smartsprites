@@ -35,6 +35,17 @@ public class CssSyntaxUtilsTest extends TestWithMemoryMessageSink
     }
 
     @Test
+    public void testImportantRules()
+    {
+        final List<CssProperty> actualRules = CssSyntaxUtils
+            .extractProperties("background-image: url(test.png) !important; color: red!   important");
+
+        assertThat(actualRules).isEquivalentTo(
+            new CssProperty("background-image", "url(test.png)", true),
+            new CssProperty("color", "red", true));
+    }
+
+    @Test
     public void testUpperCaseRule()
     {
         final List<CssProperty> actualRules = CssSyntaxUtils

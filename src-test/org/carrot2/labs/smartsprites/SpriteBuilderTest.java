@@ -47,7 +47,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("no-sprite-references");
         buildSprites(testDir);
 
-        assertThat(expectedCss()).hasSameContentAs(processedCss());
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
@@ -58,7 +58,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("target-sprite-image-dir-not-exists");
         buildSprites(testDir);
 
-        assertThat(expectedCss()).hasSameContentAs(processedCss());
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img-sprite/sprite.png")).exists();
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
 
@@ -71,11 +71,24 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("simple-horizontal-sprite");
         buildSprites(testDir);
 
-        assertThat(expectedCss()).hasSameContentAs(processedCss());
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
             new Dimension(17 + 15 + 48, 47));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+    }
+    
+    @Test
+    public void testSimpleHorizontalSpriteImportant() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("simple-horizontal-sprite-important");
+        buildSprites(testDir);
+        
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
+        assertThat(new File(testDir, "img/sprite.png")).exists();
+        org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
+            new Dimension(17 + 15 + 48, 47));
     }
 
     @Test
@@ -84,7 +97,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("large-vertical-repeat");
         buildSprites(testDir);
 
-        assertThat(expectedCss()).hasSameContentAs(processedCss());
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
             new Dimension(17 + 15, 16 * 17 /* lcm(16, 17) */));
@@ -97,7 +110,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("missing-images");
         buildSprites(testDir);
 
-        assertThat(expectedCss()).hasSameContentAs(processedCss());
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
             new Dimension(18, 17 + 6 + 5));
@@ -122,7 +135,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("unsupported-sprite-properties");
         buildSprites(testDir);
 
-        assertThat(expectedCss()).hasSameContentAs(processedCss());
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
             new Dimension(48, 16 + 17 + 47));
@@ -147,7 +160,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("overriding-css-properties");
         buildSprites(testDir);
 
-        assertThat(expectedCss()).hasSameContentAs(processedCss());
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
             new Dimension(17 + 15 + 48, 47));
@@ -174,7 +187,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6));
 
-        assertThat(expectedCss()).hasSameContentAs(processedCss());
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
         final File spriteFile = new File(documentRootDir, "img/sprite.png");
         assertThat(spriteFile).exists();
         org.fest.assertions.Assertions.assertThat(ImageIO.read(spriteFile)).hasSize(
@@ -197,7 +210,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6));
 
-        assertThat(expectedCss()).hasSameContentAs(processedCss());
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
 
         final File absoluteSpriteFile = new File(documentRootDir, "img/absolute.png");
         assertThat(absoluteSpriteFile).exists();
@@ -225,7 +238,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("repeated-image-references");
         buildSprites(testDir);
 
-        assertThat(expectedCss()).hasSameContentAs(processedCss());
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
             new Dimension(17, 17));
@@ -420,7 +433,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             sprite(testDir, "img/sprite-many-colors-bit-alpha.png")).isDirectColor()
             .hasBitAlpha();
 
-        assertThat(expectedCss()).hasSameContentAs(processedCss());
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
 
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
         assertThat(messages).isEquivalentTo(

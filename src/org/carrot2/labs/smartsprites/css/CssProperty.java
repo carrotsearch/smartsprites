@@ -8,10 +8,17 @@ public class CssProperty
 {
     public final String rule;
     public final String value;
+    public final boolean important;
 
     public CssProperty(String rule, String value)
     {
+        this(rule, value, false);
+    }
+
+    public CssProperty(String rule, String value, boolean important)
+    {
         this.rule = rule;
         this.value = value;
+        this.important = important;
     }
 }

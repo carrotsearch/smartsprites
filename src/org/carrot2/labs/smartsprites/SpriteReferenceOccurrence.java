@@ -12,12 +12,16 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
 
     /** CSS file relative path to the individual image to be added to a sprite. */
     public final String imagePath;
+    
+    /** Indicates whether the original css property has been marked as important */
+    public final boolean important;
 
     public SpriteReferenceOccurrence(SpriteReferenceDirective spriteReferenceDirective,
-        String imageFile, File cssFile, int line)
+        String imageFile, File cssFile, int line, boolean important)
     {
         super(cssFile, line);
         this.spriteReferenceDirective = spriteReferenceDirective;
         this.imagePath = imageFile;
+        this.important = important;
     }
 }
