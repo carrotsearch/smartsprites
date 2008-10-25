@@ -63,11 +63,11 @@
         <exclude name="lib/compile-time" />
         <include name="test/**" />
         <include name="smartsprites.cmd" />
-        <include name="smartsprites.sh" />
         <include name="smartsprites.LICENSE" />
         <include name="readme.txt" />
       </zipfileset>
       <zipfileset dir="." includes="build-autonomous.xml" fullpath="smartsprites/build.xml" />
+      <zipfileset dir="." includes="smartsprites.sh" prefix="smartsprites" filemode="755" />
       <zipfileset dir="." includes="smartsprites.properties.example" fullpath="smartsprites/smartsprites.properties" />
       <zipfileset dir="doc/website" prefix="smartsprites/doc" />
       <zipfileset dir="lib/compile-time" includes="junit*" prefix="smartsprites/lib" />
