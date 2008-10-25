@@ -198,9 +198,9 @@ public class SpriteImageBuilder
     {
         if (imagePath.startsWith("/"))
         {
-            if (parameters.documentRootDir != null)
+            if (parameters.getDocumentRootDir() != null)
             {
-                return new File(parameters.documentRootDir, imagePath.substring(1));
+                return new File(parameters.getDocumentRootDir(), imagePath.substring(1));
             }
             else
             {
@@ -211,9 +211,9 @@ public class SpriteImageBuilder
 
         final File file = new File(cssFile.getParentFile(), imagePath);
 
-        if (changeRoot && !imagePath.startsWith("/") && parameters.outputDir != null)
+        if (changeRoot && !imagePath.startsWith("/") && parameters.getOutputDir() != null)
         {
-            return FileUtils.changeRoot(file, parameters.rootDir, parameters.outputDir);
+            return FileUtils.changeRoot(file, parameters.getRootDir(), parameters.getOutputDir());
         }
         else
         {

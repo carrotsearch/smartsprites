@@ -1,5 +1,0 @@
-* can't support spriting backgrounds that were originally attached at the bottom
-  of the box, unless the box has hardcoded dimensions (in which case you can set top 
-  margin of the sprite to the appropriate number). This is because background
-  position is relative to the top left corner. Ok, you could do one image that is
-  at the bottom of the sprite and had large top margin, but this looks like an edge case.

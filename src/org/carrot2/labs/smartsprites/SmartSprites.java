@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.PrintStreamMessageSink;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 
 /**
  * The entry class for SmartSprites.
@@ -16,10 +18,28 @@ public class SmartSprites
      */
     public static void main(String [] args) throws FileNotFoundException, IOException
     {
-        // Get parameters form system properties
         final SmartSpritesParameters parameters = new SmartSpritesParameters();
+        
+        final CmdLineParser parser = new CmdLineParser(parameters);
+        parser.setUsageWidth(80);
+
+        try
+        {
+            parser.parseArgument(args);
+        }
+        catch (CmdLineException e)
+        {
+            System.out.print("Usage: smartsprites");
+            parser.printSingleLineUsage(System.out);
+            System.out.println();
+            System.out.println("\nPlease see http://smartsprites.osinski.name for detailed option descriptions.");
+            System.out.println("\n" + e.getMessage());
+            return;
+        }
+        
+        // Get parameters form system properties
         final MessageLog messageLog = new MessageLog(new PrintStreamMessageSink(
-            System.out, parameters.logLevel));
+            System.out, parameters.getLogLevel()));
         new SpriteBuilder(parameters, messageLog).buildSprites();
     }
 }

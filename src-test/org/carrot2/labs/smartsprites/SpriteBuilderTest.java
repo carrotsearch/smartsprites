@@ -465,7 +465,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         }
 
         // Delete sprites
-        final File [] files = new File(spriteBuilder.parameters.rootDir, "img")
+        final File [] files = new File(spriteBuilder.parameters.getRootDir(), "img")
             .listFiles(new FilenameFilter()
             {
                 public boolean accept(File dir, String name)
@@ -500,12 +500,12 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
 
     private File expectedCss()
     {
-        return new File(spriteBuilder.parameters.rootDir, "css/style-expected.css");
+        return new File(spriteBuilder.parameters.getRootDir(), "css/style-expected.css");
     }
 
     private File sourceCss()
     {
-        return new File(spriteBuilder.parameters.rootDir, "css/style.css");
+        return new File(spriteBuilder.parameters.getRootDir(), "css/style.css");
     }
 
     private File processedCss()

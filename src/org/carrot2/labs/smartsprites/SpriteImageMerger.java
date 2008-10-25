@@ -126,8 +126,8 @@ public class SpriteImageMerger
         final boolean isPng = spriteImageProperties.spriteImageDirective.format == SpriteImageFormat.PNG;
         final boolean isJpg = spriteImageProperties.spriteImageDirective.format == SpriteImageFormat.JPG;
 
-        final boolean isPngAuto = isPng && parameters.spritePngDepth == PngDepth.AUTO;
-        final boolean isPngDirect = isPng && parameters.spritePngDepth == PngDepth.DIRECT;
+        final boolean isPngAuto = isPng && parameters.getSpritePngDepth() == PngDepth.AUTO;
+        final boolean isPngDirect = isPng && parameters.getSpritePngDepth() == PngDepth.DIRECT;
 
         final ColorReductionInfo colorReductionInfo = ColorQuantizer
             .getColorReductionInfo(sprite);
@@ -150,7 +150,7 @@ public class SpriteImageMerger
             // If needed, generate a quantized version for IE6. If the image has >255
             // colors but doesn't have any transparency, we don't need an IE6 version,
             // because IE6 can handle PNG24 with no transparency correctly.
-            if (parameters.spritePngIe6 && isPng
+            if (parameters.isSpritePngIe6() && isPng
                 && BufferedImageUtils.hasTransparency(sprite)
                 && spriteImageProperties.spriteImageDirective.ie6Mode != Ie6Mode.NONE)
             {

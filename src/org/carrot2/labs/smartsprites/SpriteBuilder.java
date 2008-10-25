@@ -58,14 +58,14 @@ public class SpriteBuilder
         final LevelCounterMessageSink levelCounter = new LevelCounterMessageSink();
         messageLog.addMessageSink(levelCounter);
 
-        if (parameters.outputDir != null && !parameters.outputDir.exists())
+        if (parameters.getOutputDir() != null && !parameters.getOutputDir().exists())
         {
-            parameters.outputDir.mkdirs();
+            parameters.getOutputDir().mkdirs();
         }
 
         // Identify css files.
         final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
-            parameters.rootDir, new String []
+            parameters.getRootDir(), new String []
             {
                 "css"
             }, true);
@@ -257,15 +257,15 @@ public class SpriteBuilder
         final String originalCssFileName = originalCssFile.getName();
         final String processedCssFileName = originalCssFileName.substring(0,
             originalCssFileName.length() - 4)
-            + parameters.cssFileSuffix + ".css";
+            + parameters.getCssFileSuffix() + ".css";
 
         final File processedCssFile = new File(originalCssFile.getParentFile(),
             processedCssFileName);
 
-        if (parameters.outputDir != null)
+        if (parameters.getOutputDir() != null)
         {
-            return FileUtils.changeRoot(processedCssFile, parameters.rootDir,
-                parameters.outputDir);
+            return FileUtils.changeRoot(processedCssFile, parameters.getRootDir(),
+                parameters.getOutputDir());
         }
         else
         {

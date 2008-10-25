@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="SmartSprites CSS Sprite Generator" default="process">
+<project name="master" default="process">
+  <import file="build-autonomous.xml" />
+
   <target name="build" description="Builds SmartSprites binaries">
     <mkdir dir="tmp/classes" />
 
@@ -47,41 +49,28 @@
 
   <target name="process"
           description="Performs CSS sprite processing"
-          depends="jar">
-    <property file="smartsprites.properties" />
-    <taskdef name="smartsprites"
-             classname="org.carrot2.labs.smartsprites.ant.SmartSpritesTask">
-      <classpath>
-        <fileset dir="lib" />
-      </classpath>
-    </taskdef>
-
-    <smartsprites rootdir="${root.dir.path}"
-                  documentrootdir="${document.root.dir.path}"
-                  outputdir="${output.dir.path}"
-                  cssfilesuffix="${css.file.suffix}"
-                  csspropertyindent="${css.property.indent}"
-                  loglevel="${log.level}"
-                  spritepngdepth="${sprite.png.depth}"
-                  spritepngie6="${sprite.png.ie6}" />
-  </target>
+          depends="jar, smartsprites.process" />
 
   <target name="dist"
-          depends="test"
+          depends="test, jar"
           description="Builds SmartSprites distribution">
     <property file="smartsprites.version" />
     <mkdir dir="tmp/dist" />
 
     <zip destfile="tmp/dist/smartsprites-${smartsprites.version}.zip">
       <zipfileset dir="." prefix="smartsprites">
-        <exclude name=".clover/**" />
-        <exclude name=".svn/**" />
-        <exclude name="tmp/**" />
-        <exclude name="*.swp" />
-        <exclude name="smartsprites.properties" />
-        <exclude name=".classpath" />
-        <exclude name=".project" />
+        <include name="lib/*" />
+        <exclude name="lib/compile-time" />
+        <include name="test/**" />
+        <include name="smartsprites.cmd" />
+        <include name="smartsprites.sh" />
+        <include name="smartsprites.LICENSE" />
+        <include name="readme.txt" />
       </zipfileset>
+      <zipfileset dir="." includes="build-autonomous.xml" fullpath="smartsprites/build.xml" />
+      <zipfileset dir="." includes="smartsprites.properties.example" fullpath="smartsprites/smartsprites.properties" />
+      <zipfileset dir="doc/website" prefix="smartsprites/doc" />
+      <zipfileset dir="lib/compile-time" includes="junit*" prefix="smartsprites/lib" />
     </zip>
   </target>
 

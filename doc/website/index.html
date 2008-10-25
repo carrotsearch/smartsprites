@@ -381,22 +381,10 @@
             </li>
 
             <li>
-              Download and install <a
-              href="http://www.apache.org/dist/ant/binaries/apache-ant-1.7.0-bin.zip">Apache
-              Ant version 1.7 or above</a>.
-            </li>
-
-            <li>
               <a href="download.html">Download SmartSprites</a>
               or check out the latest version from the repository:
 
               <code>svn co https://carrot2.svn.sourceforge.net/svnroot/carrot2/labs/smartsprites</code>
-            </li>
-
-            <li>
-              Create your local settings file based on the example from the repository:
-
-              <code>cp smartsprites.properties.example smartsprites.properties</code>
             </li>
           </ol>
 
@@ -412,27 +400,14 @@
 
           <ol>
             <li>
-              Edit <tt>smartsprites.properties</tt> so that the
-              <tt>root.dir.path</tt> points to the main directory of your
-              design. It's easiest to provide an absolute path, e.g.:
+              On Windows:
+              <code>smartsprites --root-dir-path c:/example</code>
 
-              <code># Path to the directory that contains the CSS files to be processed.
-root.dir.path=c:/html/sprite-design
-
-# Suffix to be appended to the processed CSS file name
-css.file.suffix=-sprite
-
-# How generated CSS properties should be indented (default: two spaces)
-css.property.indent=  </code>
-
-              You can keep the default values for the other options for now.
+              On Linux:
+              <code>./smartsprites.sh --root-dir-path /home/user/example</code>
             </li>
             
             <li>
-              Make the checkout directory your current directory and run SmartSprites on your design:
-
-              <code>ant process</code>
-
               <p>
                 After processing completes you should see on the screen messages similar to:
               </p>
@@ -515,55 +490,54 @@ css.property.indent=  </code>
 
         <li>
           <a name="global-options"><strong>Tune global options</strong></a>.
-          SmartSprites has a number of global options you can use to further
-          tune your designs and build scripts. The options are contained in the
-          <tt>smartsprites.properties</tt> file.
+          SmartSprites has a number of additional options you can specify
+          in the command line invocation to further tune your designs. 
 
           <ul>
             <li>
-              <strong>output.dir.path</strong>: output directory for
+              <strong>--output-dir-path</strong>: output directory for
               processed CSS files and CSS-relative sprite images, optional, default: not specified.
               <p>
-                If <tt>root.dir.path</tt> is provided, the directory structure
-                relative to <tt>root.dir.path</tt> will be preserved in the
+                If <tt>root-dir-path</tt> is provided, the directory structure
+                relative to <tt>root-dir-path</tt> will be preserved in the
                 output directory. E.g. if CSS files are contained in the
-                <tt>css/base directory</tt> of <tt>root.dir.path</tt>, the
+                <tt>css/base directory</tt> of <tt>root-dir-path</tt>, the
                 processed results will be written to
-                <tt>output.dir.path/css/base</tt>. Also, CSS-relative sprite
+                <tt>output-dir-path/css/base</tt>. Also, CSS-relative sprite
                 images will be written to the output directory. Sprite images
                 with document-root-relative URLs will be written relative to
-                the <tt>document.root.dir.path</tt>. If the
-                <tt>output.dir.path</tt> directory does not exist, it will be
+                the <tt>--document-root-dir-path</tt>. If the
+                <tt>output-dir-path</tt> directory does not exist, it will be
                 created.
               </p>
               <p>
                 You can leave this property empty, in which case the CSS
                 files will be written next to the original CSS files with
-                <tt>css.file.suffix</tt>, and sprite images will be written relative
-                to CSS files.  If you are using a non-empty <tt>output.dir.path</tt>,
-                you might want to use an empty <tt>css.file.suffix</tt>.
+                <tt>css-file-suffix</tt>, and sprite images will be written relative
+                to CSS files.  If you are using a non-empty <tt>output-dir-path</tt>,
+                you might want to use an empty <tt>css-file-suffix</tt>.
               </p>
             </li>
 
             <li>
-              <strong>document.root.dir.path</strong>: Document root path for
+              <strong>--document-root-dir-path</strong>: Document root path for
               document-root-relative (starting with <tt>/</tt>) image urls in
               CSS, optional, default: not specified.
 
               <p>
                 All document-root-relative image and sprite URLs will be taken relative to
-                <tt>document.root.dir.path</tt>. Also document-root-relative
+                <tt>document-root-dir-path</tt>. Also document-root-relative
                 sprite URLs will be written relative to
-                <tt>document.root.dir.path</tt>.  You can leave this property
+                <tt>document-root-dir-path</tt>.  You can leave this property
                 empty if your CSS uses only CSS-relative image URLs.
               </p>
             </li>
 
             <li>
-              <strong>log.level</strong>: Message logging level, optional, default: <tt>INFO</tt>.
+              <strong>--log-level</strong>: Message logging level, optional, default: <tt>INFO</tt>.
 
               <p>
-                Messages less important than <tt>log.level</tt> will not be shown. SmartSprites
+                Messages less important than <tt>log-level</tt> will not be shown. SmartSprites
                 has 3 levels of log messages (in the increasing order of importance):
               </p>
 
@@ -575,7 +549,7 @@ css.property.indent=  </code>
             </li>
 
             <li>
-              <p><a name="png-depth"><strong>sprite.png.depth</strong></a>: Color depth of sprites in the PNG format, optional, default: <tt>AUTO</tt>.</p>
+              <p><a name="png-depth"><strong>--sprite-png-depth</strong></a>: Color depth of sprites in the PNG format, optional, default: <tt>AUTO</tt>.</p>
 
               <ol>
                 <li>
@@ -603,11 +577,11 @@ css.property.indent=  </code>
             </li>
 
             <li>
-              <a name="png-ie6"><strong>sprite.png.ie6</strong></a>: Enables/disables generation of
-              IE6-friendly sprite images, optional, default: <tt>false</tt>.
+              <a name="png-ie6"><strong>--sprite-png-ie6</strong></a>: Enables generation of
+              IE6-friendly sprite images, optional, default: <tt>disabled</tt>.
 
               <p>
-                If IE6-friendly sprites are enabled, for each PNG sprite image with partial
+                If <tt>sprite-png-ie6</tt> is specified, for each PNG sprite image with partial
                 transparencies (alpha channel) or more than 255 colors and any transparencies, SmartSprites will
                 generate a corresponding color-reduced PNG8 file for IE6. An extra IE6-only
                 CSS rule will be added to the generated CSS file to ensure that IE6 (and only IE6)
@@ -630,13 +604,17 @@ css.property.indent=  </code>
             </li>
 
             <li>
-              <strong>css.file.suffix</strong>: Suffix to be appended to the processed CSS file name, optional, default: <tt>-sprite</tt>.
-            </li>
-
-            <li>
-              <strong>css.property.indent</strong>: Characters to be used to indent SmartSprites-generated CSS properties, optional, default: two spaces.
+              <strong>--css-file-suffix</strong>: Suffix to be appended to the processed CSS file name, optional, default: <tt>-sprite</tt>.
             </li>
           </ul>
+        </li>
+
+        <li>
+          <strong>Integrate SmartSprites with your build scripts.</strong> SmartSprites comes
+          with an Ant that performs sprite processing and has exactly the
+          same options as the command line invocation. For an example invocation
+          of the task, please take a look at the <tt>build.xml</tt> script, whose <tt>process</tt>
+          task reads parameters from <tt>smartsprites.properties</tt> and generates sprites.
         </li>
       </ol>
 		</div>
@@ -732,6 +710,18 @@ css.property.indent=  </code>
 			<h1>Version history</h1>
 
       <p>
+        <strong>v0.2.1</strong>, released: October 2008
+      </p>
+      <ul class="versions">
+        <li>Ant not needed anymore to run SmartSprites</li>
+        <li>
+          partial support for the <tt>!important</tt> modifier in <tt>background-image</tt>
+          declarations, see <a href="http://issues.carrot2.org/browse/SMARTSPRITES-23?focusedCommentId=10914#action_10914">SMARTSPRITES-23</a>
+          for a more in-depth discussion.
+        </li>
+      </ul>
+
+      <p>
         <strong>v0.2</strong>, released: August 2008
       </p>
       <ul class="versions">
@@ -765,6 +755,19 @@ css.property.indent=  </code>
       <ul>
         <li>
           <strong>Navtej Sadhal of <a target="_blank" href="http://www.redfin.com/">Redfin</a></strong>: feature ideas and initial code for GIF / PNG8 transparency support
+        </li>
+      </ul>
+    </div>
+
+		<div class="item">
+			<h1>References</h1>
+
+      <ul>
+        <li>
+          <strong><a
+          href="http://www.znetdevelopment.com/blogs/2008/10/18/css-sprites/">Z|NET
+          Development blog</a></strong> provides a short tutorial on running
+          SmartSprites.
         </li>
       </ul>
     </div>

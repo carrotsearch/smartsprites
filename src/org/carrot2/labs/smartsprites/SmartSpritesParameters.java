@@ -6,8 +6,8 @@ import org.apache.commons.lang.StringUtils;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
-import org.carrot2.util.EnumUtils;
 import org.carrot2.util.FileUtils;
+import org.kohsuke.args4j.Option;
 
 /**
  * Contains invocation parameters for SmartSprites, provides methods for validating the
@@ -21,7 +21,8 @@ public class SmartSpritesParameters
      * provided. The root.dir.path can be either absolute, e.g. c:/myproject/web or
      * relative to the directory in which this script is run.
      */
-    public final File rootDir;
+    @Option(name = "--root-dir-path", required = true)
+    private File rootDir;
 
     /**
      * Output directory for processed CSS files and CSS-relative sprite images. The
@@ -41,7 +42,8 @@ public class SmartSpritesParameters
      * If you are using a non-empty output.dir.path, you might want to use an empty
      * css.file.suffix.
      */
-    public final File outputDir;
+    @Option(name = "--output-dir-path")
+    private File outputDir;
 
     /**
      * Document root path for document-root-relative (starting with '/') image urls in
@@ -50,33 +52,38 @@ public class SmartSpritesParameters
      * document.root.dir.path. You can leave this property empty if your CSS uses only
      * CSS-relative image URLs. *
      */
-    public final File documentRootDir;
+    @Option(name = "--document-root-dir-path")
+    private File documentRootDir;
 
     /**
      * Message logging level. If you're getting lots of INFO messages and want to see only
      * warnings, set this option to WARN.
      */
-    public final MessageLevel logLevel;
+    @Option(name = "--log-level")
+    private MessageLevel logLevel;
 
     /**
      * Suffix to be appended to the processed CSS file name.
      */
-    public final String cssFileSuffix;
+    @Option(name = "--css-file-suffix")
+    private String cssFileSuffix;
 
     /**
      * How generated CSS properties should be indented.
      */
-    public final String cssPropertyIndent;
+    private String cssPropertyIndent;
 
     /**
      * 
      */
-    public final PngDepth spritePngDepth;
+    @Option(name = "--sprite-png-depth")
+    private PngDepth spritePngDepth;
 
     /**
      * 
      */
-    public final boolean spritePngIe6;
+    @Option(name = "--sprite-png-ie6")
+    private boolean spritePngIe6;
 
     /** Default indent for the generated CSS properties. */
     public static final String DEFAULT_CSS_INDENT = "  ";
@@ -93,10 +100,18 @@ public class SmartSpritesParameters
     /** The default logging level. */
     public static final MessageLevel DEFAULT_LOGGING_LEVEL = MessageLevel.INFO;
 
-    private static final String ROOT_DIR_PATH_PROPERTY = "root.dir.path";
-
-    public enum PngDepth {
+    public enum PngDepth
+    {
         AUTO, INDEXED, DIRECT;
+    }
+
+    /**
+     * Creates the parameters with default options and null root dir, before root dir is
+     * set, the parameters are invalid.
+     */
+    public SmartSpritesParameters()
+    {
+        this(null);
     }
 
     /**
@@ -123,90 +138,6 @@ public class SmartSpritesParameters
         this.cssFileSuffix = getCssFileSuffix(cssFileSuffix);
         this.spritePngDepth = spritePngDepth;
         this.spritePngIe6 = spritePngIe6;
-    }
-
-    /**
-     * Initializes the parameter object from system properties.
-     */
-    public SmartSpritesParameters()
-    {
-        // CSS indent
-        String cssIndent = System.getProperty("css.property.indent");
-        if (StringUtils.isEmpty(cssIndent))
-        {
-            cssPropertyIndent = DEFAULT_CSS_INDENT;
-        }
-        else
-        {
-            cssPropertyIndent = cssIndent;
-        }
-
-        // Loging level
-        logLevel = fromSystemProperty("log.level", MessageLevel.class,
-            DEFAULT_LOGGING_LEVEL);
-
-        // Root dir
-        rootDir = fromSystemProperty(ROOT_DIR_PATH_PROPERTY, null);
-        if (rootDir == null)
-        {
-            throw new IllegalArgumentException("Please provide root directory in '"
-                + ROOT_DIR_PATH_PROPERTY + "' system property.");
-        }
-
-        // Output dir
-        outputDir = fromSystemProperty("output.dir.path", null);
-
-        // Document root
-        documentRootDir = fromSystemProperty("document.root.dir.path", null);
-
-        // Css file suffix
-        cssFileSuffix = getCssFileSuffix(System.getProperty("css.file.suffix"));
-
-        // Always full color
-        spritePngDepth = fromSystemProperty("sprite.png.depth", PngDepth.class,
-            DEFAULT_SPRITE_PNG_DEPTH);
-
-        // IE6 indexed mode
-        spritePngIe6 = fromSystemProperty("sprite.png.ie6", DEFAULT_SPRITE_PNG_IE6);
-    }
-
-    private static File fromSystemProperty(String property, File defaultValue)
-    {
-        final String string = System.getProperty(property);
-        if (StringUtils.isNotBlank(string))
-        {
-            return new File(string);
-        }
-        else
-        {
-            return defaultValue;
-        }
-    }
-
-    private static boolean fromSystemProperty(String property, boolean defaultValue)
-    {
-        final String string = System.getProperty(property);
-        if (StringUtils.isNotBlank(string))
-        {
-            try
-            {
-                return Boolean.valueOf(string).booleanValue();
-            }
-            catch (Exception e)
-            {
-                return defaultValue;
-            }
-        }
-        else
-        {
-            return defaultValue;
-        }
-    }
-
-    private static <T extends Enum<T>> T fromSystemProperty(String property,
-        Class<T> enumClass, T defaultValue)
-    {
-        return EnumUtils.valueOf(property, enumClass, defaultValue);
     }
 
     /**
@@ -262,6 +193,46 @@ public class SmartSpritesParameters
         {
             return suffix;
         }
+    }
+
+    public File getRootDir()
+    {
+        return rootDir;
+    }
+
+    public File getOutputDir()
+    {
+        return outputDir;
+    }
+
+    public File getDocumentRootDir()
+    {
+        return documentRootDir;
+    }
+
+    public MessageLevel getLogLevel()
+    {
+        return logLevel;
+    }
+
+    public String getCssFileSuffix()
+    {
+        return cssFileSuffix;
+    }
+
+    public String getCssPropertyIndent()
+    {
+        return cssPropertyIndent;
+    }
+
+    public PngDepth getSpritePngDepth()
+    {
+        return spritePngDepth;
+    }
+
+    public boolean isSpritePngIe6()
+    {
+        return spritePngIe6;
     }
 
 }
