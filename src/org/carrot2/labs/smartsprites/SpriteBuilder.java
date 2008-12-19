@@ -87,7 +87,7 @@ public class SpriteBuilder
             .mergeSpriteReferenceOccurrences(spriteEntriesByFile);
 
         // Build the sprite images
-        messageLog.setCssPath(null);
+        messageLog.setCssFile(null);
         final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile = spriteImageBuilder
             .buildSpriteImages(spriteImageDirectivesBySpriteId,
                 spriteReferenceOccurrencesBySpriteId);
@@ -172,9 +172,8 @@ public class SpriteBuilder
 
         try
         {
-            messageLog.info(MessageType.CREATING_CSS_STYLE_SHEET, FileUtils
-                .getCanonicalOrAbsolutePath(processedCssFile));
-            messageLog.setCssPath(FileUtils.getCanonicalOrAbsolutePath(originalCssFile));
+            messageLog.info(MessageType.CREATING_CSS_STYLE_SHEET, processedCssFile.getName());
+            messageLog.setCssFile(originalCssFile);
 
             while ((originalCssLine = originalCssReader.readLine()) != null)
             {
@@ -240,7 +239,7 @@ public class SpriteBuilder
                 processedCssWriter.write(originalCssLine + "\n");
             }
 
-            messageLog.setCssPath(null);
+            messageLog.setCssFile(null);
         }
         finally
         {

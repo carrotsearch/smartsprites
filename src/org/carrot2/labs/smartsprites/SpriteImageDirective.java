@@ -10,6 +10,7 @@ import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.CollectionUtils;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 /**
@@ -24,7 +25,7 @@ public class SpriteImageDirective
     public static final String PROPERTY_SPRITE_IE6_MODE = "sprite-ie6-mode";
 
     /** A set of allowed properties */
-    private static final HashSet<String> ALLOWED_PROPERTIES = Sets.newLinkedHashSet(
+    private static final Set<String> ALLOWED_PROPERTIES = ImmutableSet.of(
         PROPERTY_SPRITE_ID, PROPERTY_SPRITE_IMAGE_LAYOUT, PROPERTY_SPRITE_IMAGE_URL,
         PROPERTY_SPRITE_MATTE_COLOR, PROPERTY_SPRITE_IE6_MODE);
 

@@ -145,7 +145,7 @@ public class SpriteDirectiveOccurrenceCollector
             .newArrayListMultimap();
         for (final File cssFile : files)
         {
-            messageLog.setCssPath(FileUtils.getCanonicalOrAbsolutePath(cssFile));
+            messageLog.setCssFile(cssFile);
 
             final Collection<SpriteImageOccurrence> spriteImageOccurrences = collectSpriteImageOccurrences(cssFile);
 
@@ -166,7 +166,7 @@ public class SpriteDirectiveOccurrenceCollector
             .newArrayListMultimap();
         for (final File cssFile : files)
         {
-            messageLog.setCssPath(FileUtils.getCanonicalOrAbsolutePath(cssFile));
+            messageLog.setCssFile(cssFile);
 
             final Collection<SpriteReferenceOccurrence> spriteReferenceOccurrences = collectSpriteReferenceOccurrences(
                 cssFile, spriteImageDirectivesBySpriteId);
@@ -190,7 +190,7 @@ public class SpriteDirectiveOccurrenceCollector
             final File cssFile = entry.getKey();
             final SpriteImageOccurrence spriteImageOccurrence = entry.getValue();
 
-            messageLog.setCssPath(FileUtils.getCanonicalOrAbsolutePath(cssFile));
+            messageLog.setCssFile(cssFile);
 
             // Add to the global map, checking for duplicates
             if (spriteImageDirectivesBySpriteId

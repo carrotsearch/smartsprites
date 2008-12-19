@@ -123,6 +123,13 @@ public class SmartSpritesParameters
             DEFAULT_CSS_INDENT, DEFAULT_SPRITE_PNG_DEPTH, DEFAULT_SPRITE_PNG_IE6);
     }
 
+    public SmartSpritesParameters(File rootDir, MessageLevel messageLevel,
+        String cssFileSuffix, PngDepth spritePngDepth, boolean spritePngIe6)
+    {
+        this(rootDir, null, null, messageLevel, cssFileSuffix, DEFAULT_CSS_INDENT,
+            spritePngDepth, spritePngIe6);
+    }
+
     /**
      * Creates the parameter.
      */

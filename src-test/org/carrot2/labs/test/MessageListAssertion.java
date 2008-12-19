@@ -46,7 +46,7 @@ public class MessageListAssertion
                 }
                 catch (AssertionError e)
                 {
-                    // This means the message wan't equivalen, ignore
+                    // This means the message wasn't equivalent, ignore
                 }
             }
         }

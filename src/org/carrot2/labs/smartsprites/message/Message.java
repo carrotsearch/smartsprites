@@ -1,5 +1,6 @@
 package org.carrot2.labs.smartsprites.message;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.carrot2.labs.smartsprites.SpriteImageDirective;
@@ -8,8 +9,10 @@ import org.carrot2.labs.smartsprites.SpriteReferenceDirective;
 /**
  * Represents a processing message, can be an information message or a warning.
  */
-public class Message
+public class Message implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * The importance of the message.
      */
@@ -115,7 +118,8 @@ public class Message
         OVERRIDING_PROPERTY_FOUND(
             "Found a '%s' property that overrides the generated one. Move it before the sprite reference directive on line %d."),
         ABSOLUTE_PATH_AND_NO_DOCUMENT_ROOT(
-            "Found an absolute image path '%s' and no document.root.dir.path was defined. Taking relative to the CSS file.");
+            "Found an absolute image path '%s' and no document.root.dir.path was defined. Taking relative to the CSS file."),
+        GENERIC("%s");
 
         /**
          * Human readable text of the message.
@@ -182,7 +186,7 @@ public class Message
 
         stringBuilder.append(level);
         stringBuilder.append(": ");
-        stringBuilder.append(String.format(type.getText(), arguments));
+        stringBuilder.append(getFormattedMessage());
 
         if (cssPath != null)
         {
@@ -194,5 +198,10 @@ public class Message
         }
 
         return stringBuilder.toString();
+    }
+
+    public String getFormattedMessage()
+    {
+        return String.format(type.getText(), arguments);
     }
 }

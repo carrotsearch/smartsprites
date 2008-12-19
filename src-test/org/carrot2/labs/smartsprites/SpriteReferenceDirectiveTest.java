@@ -2,7 +2,6 @@ package org.carrot2.labs.smartsprites;
 
 import static junit.framework.Assert.*;
 import static org.carrot2.labs.test.Assertions.assertThat;
-import static org.fest.assertions.Assertions.assertThat;
 
 import java.awt.Color;
 import java.util.Map;
@@ -13,7 +12,7 @@ import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.junit.Test;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Test cases for {@link SpriteReferenceDirective}
@@ -28,8 +27,8 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
         "hsprite", "hsprite.png", SpriteImageLayout.HORIZONTAL, SpriteImageFormat.PNG,
         Ie6Mode.AUTO, Color.WHITE);
 
-    private static final Map<String, SpriteImageDirective> SPRITE_IMAGE_DIRECTIVES = Maps
-        .immutableMap("sprite", VERTICAL_SPRITE_IMAGE_DIRECTIVE, "hsprite",
+    private static final Map<String, SpriteImageDirective> SPRITE_IMAGE_DIRECTIVES = ImmutableMap
+        .of("sprite", VERTICAL_SPRITE_IMAGE_DIRECTIVE, "hsprite",
             HORIZONTAL_SPRITE_IMAGE_DIRECTIVE);
 
     @Test

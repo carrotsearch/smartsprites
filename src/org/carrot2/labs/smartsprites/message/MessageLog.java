@@ -1,6 +1,9 @@
 package org.carrot2.labs.smartsprites.message;
 
+import java.io.File;
 import java.util.List;
+
+import org.carrot2.util.FileUtils;
 
 import com.google.common.collect.Lists;
 
@@ -86,14 +89,11 @@ public class MessageLog
         this.line = line;
     }
 
-    /**
-     * Sets current CSS file path for this log.
-     */
-    public void setCssPath(String cssPath)
+    public void setCssFile(File cssFile)
     {
-        this.cssPath = cssPath;
+        this.cssPath = cssFile != null ? FileUtils.getCanonicalOrAbsolutePath(cssFile) : null;
     }
-
+    
     /**
      * Adds a {@link MessageSink} to this log.
      */

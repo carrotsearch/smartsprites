@@ -59,17 +59,19 @@ public class FileUtils
             throw new IllegalArgumentException("file must not be equal to oldRoot");
         }
 
-        final File absoluteFile = getCanonicalOrAbsoluteFile(file);
-        final File absoluteOldRoot = getCanonicalOrAbsoluteFile(oldRoot);
+        final String filePath = file.getPath();
+        final String oldRootPath = oldRoot.getPath();
 
-        final String filePath = absoluteFile.getPath();
-        final String oldRootPath = absoluteOldRoot.getPath();
-
-        if (!filePath.startsWith(oldRootPath))
+        // Strip common prefix from both paths
+        int stripToIndex = 0;
+        for (; stripToIndex < Math.min(filePath.length(), oldRootPath.length()); stripToIndex++)
         {
-            throw new IllegalArgumentException("file must be contained in oldRoot");
+            if (filePath.charAt(stripToIndex) != oldRootPath.charAt(stripToIndex))
+            {
+                break;
+            }
         }
 
-        return new File(newRoot, filePath.substring(oldRootPath.length() + 1));
+        return new File(newRoot, filePath.substring(stripToIndex));
     }
 }

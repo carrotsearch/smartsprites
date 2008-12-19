@@ -77,13 +77,14 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             new Dimension(17 + 15 + 48, 47));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
-    
+
     @Test
-    public void testSimpleHorizontalSpriteImportant() throws FileNotFoundException, IOException
+    public void testSimpleHorizontalSpriteImportant() throws FileNotFoundException,
+        IOException
     {
         final File testDir = testDir("simple-horizontal-sprite-important");
         buildSprites(testDir);
-        
+
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
@@ -225,6 +226,31 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
 
         FileUtils.deleteDirectory(outputDir);
         FileUtils.deleteDirectory(absoluteSpriteFile.getParentFile());
+    }
+
+    @Test
+    public void testCssOutputDir() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("css-output-dir");
+        final File rootDir = new File(testDir, "css/sprite");
+        final File outputDir = testDir("css-output-dir/output-dir/css");
+        outputDir.mkdirs();
+        buildSprites(new SmartSpritesParameters(rootDir, outputDir, null,
+            MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            SmartSpritesParameters.DEFAULT_CSS_INDENT,
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6));
+
+        assertThat(processedCss(new File(rootDir, "style.css"))).hasSameContentAs(
+            new File(rootDir, "style-expected.css"));
+
+        final File relativeSpriteFile = new File(outputDir, "../img/relative.png");
+        assertThat(relativeSpriteFile).exists();
+        org.fest.assertions.Assertions.assertThat(ImageIO.read(relativeSpriteFile))
+            .hasSize(new Dimension(17 + 15, 17));
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+
+        FileUtils.deleteDirectory(new File(outputDir, ".."));
     }
 
     /**
@@ -510,7 +536,12 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
 
     private File processedCss()
     {
-        return spriteBuilder.getProcessedCssFile(sourceCss());
+        return processedCss(sourceCss());
+    }
+
+    private File processedCss(File sourceCss)
+    {
+        return spriteBuilder.getProcessedCssFile(sourceCss);
     }
 
     private void buildSprites(File dir) throws IOException

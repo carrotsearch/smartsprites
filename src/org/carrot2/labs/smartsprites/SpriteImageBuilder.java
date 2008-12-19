@@ -86,8 +86,7 @@ public class SpriteImageBuilder
             .newLinkedHashMap();
         for (final SpriteReferenceOccurrence spriteReferenceOccurrence : spriteReferenceOccurrences)
         {
-            messageLog.setCssPath(FileUtils
-                .getCanonicalOrAbsolutePath(spriteReferenceOccurrence.cssFile));
+            messageLog.setCssFile(spriteReferenceOccurrence.cssFile);
             messageLog.setLine(spriteReferenceOccurrence.line);
 
             final File imageFile = getImageFile(spriteReferenceOccurrence.cssFile,
@@ -97,8 +96,7 @@ public class SpriteImageBuilder
             BufferedImage image;
             try
             {
-                messageLog.info(MessageType.READING_IMAGE, FileUtils
-                    .getCanonicalOrAbsolutePath(imageFile));
+                messageLog.info(MessageType.READING_IMAGE, imageFile.getName());
                 image = ImageIO.read(imageFile);
             }
             catch (final IOException e)
@@ -108,7 +106,7 @@ public class SpriteImageBuilder
                 continue;
             }
 
-            messageLog.setCssPath(null);
+            messageLog.setCssFile(null);
 
             images.put(spriteReferenceOccurrence, image);
         }
@@ -153,8 +151,7 @@ public class SpriteImageBuilder
         try
         {
             messageLog.info(MessageType.WRITING_SPRITE_IMAGE, mergedImage.getWidth(),
-                mergedImage.getHeight(), spriteImageDirective.spriteId, FileUtils
-                    .getCanonicalOrAbsolutePath(mergedImageFile));
+                mergedImage.getHeight(), spriteImageDirective.spriteId, mergedImageFile.getName());
             ImageIO.write(mergedImage, spriteImageDirective.format.toString(),
                 mergedImageFile);
         }
