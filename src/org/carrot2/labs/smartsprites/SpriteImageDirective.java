@@ -21,13 +21,15 @@ public class SpriteImageDirective
     public static final String PROPERTY_SPRITE_ID = "sprite";
     public static final String PROPERTY_SPRITE_IMAGE_LAYOUT = "sprite-layout";
     public static final String PROPERTY_SPRITE_IMAGE_URL = "sprite-image";
+    public static final String PROPERTY_SPRITE_IMAGE_UID_SUFFIX = "sprite-image-uid";
     public static final String PROPERTY_SPRITE_MATTE_COLOR = "sprite-matte-color";
     public static final String PROPERTY_SPRITE_IE6_MODE = "sprite-ie6-mode";
 
     /** A set of allowed properties */
     private static final Set<String> ALLOWED_PROPERTIES = ImmutableSet.of(
         PROPERTY_SPRITE_ID, PROPERTY_SPRITE_IMAGE_LAYOUT, PROPERTY_SPRITE_IMAGE_URL,
-        PROPERTY_SPRITE_MATTE_COLOR, PROPERTY_SPRITE_IE6_MODE);
+        PROPERTY_SPRITE_MATTE_COLOR, PROPERTY_SPRITE_IE6_MODE,
+        PROPERTY_SPRITE_IMAGE_UID_SUFFIX);
 
     /**
      * Defines the layout of this sprite.
@@ -47,6 +49,40 @@ public class SpriteImageDirective
         private String value;
 
         private SpriteImageLayout()
+        {
+            this.value = name().toLowerCase();
+        }
+
+        @Override
+        public String toString()
+        {
+            return value;
+        }
+    }
+
+    /**
+     * Defines the UID Generation Mode of this sprite.
+     */
+    public static enum SpriteUidType
+    {
+        /**
+         * No UID extension.
+         */
+        NONE,
+
+        /**
+         * Append current timestamp as long.
+         */
+        DATE,
+
+        /**
+         * Append MD5 of the sprites file.
+         */
+        MD5;
+
+        private String value;
+
+        private SpriteUidType()
         {
             this.value = name().toLowerCase();
         }
@@ -120,6 +156,12 @@ public class SpriteImageDirective
     public final String imagePath;
 
     /**
+     * Non-file-name extension after the sprite image path to force a cache update on
+     * change, prefixed by '?'.
+     */
+    public final SpriteUidType uidType;
+
+    /**
      * Layout of this sprite image.
      */
     public final SpriteImageLayout layout;
@@ -140,7 +182,7 @@ public class SpriteImageDirective
     public final Color matteColor;
 
     public SpriteImageDirective(String id, String imageUrl, SpriteImageLayout layout,
-        SpriteImageFormat format, Ie6Mode ie6Mode, Color matteColor)
+        SpriteImageFormat format, Ie6Mode ie6Mode, Color matteColor, SpriteUidType uidType)
     {
         this.spriteId = id;
         this.imagePath = imageUrl;
@@ -148,6 +190,7 @@ public class SpriteImageDirective
         this.format = format;
         this.ie6Mode = ie6Mode;
         this.matteColor = matteColor;
+        this.uidType = uidType;
     }
 
     /**
@@ -182,6 +225,11 @@ public class SpriteImageDirective
         }
 
         final String id = rules.get(PROPERTY_SPRITE_ID).value;
+
+        final SpriteUidType uidGenerator = valueOf(CssSyntaxUtils.getValue(rules,
+            PROPERTY_SPRITE_IMAGE_UID_SUFFIX), SpriteUidType.class, SpriteUidType.NONE,
+            messageCollector, MessageType.UNSUPPORTED_UID_TYPE);
+
         final String imagePath = CssSyntaxUtils.unpackUrl(rules
             .get(PROPERTY_SPRITE_IMAGE_URL).value);
 
@@ -236,7 +284,7 @@ public class SpriteImageDirective
         }
 
         return new SpriteImageDirective(id, imagePath, layout, format, ie6Mode,
-            matteColor);
+            matteColor, uidGenerator);
     }
 
     private static <T extends Enum<T>> T valueOf(String stringValue, Class<T> enumClass,

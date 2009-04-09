@@ -11,7 +11,6 @@ import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.CloseableUtils;
-import org.carrot2.util.FileUtils;
 
 import com.google.common.collect.*;
 

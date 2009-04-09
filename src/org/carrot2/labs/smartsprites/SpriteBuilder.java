@@ -2,6 +2,10 @@ package org.carrot2.labs.smartsprites;
 
 import java.io.*;
 import java.util.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.DigestInputStream;
+import java.math.BigInteger;
 
 import org.carrot2.labs.smartsprites.message.LevelCounterMessageSink;
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -170,9 +174,15 @@ public class SpriteBuilder
         int originalCssLineNumber = -1;
         int lastReferenceReplacementLine = -1;
 
+        // Generate UID for sprite file
+        final String uidSuffix = generateUidSuffix(
+            originalCssFile,
+            spriteImageOccurrencesByLineNumber.values().iterator().next().spriteImageDirective);
+
         try
         {
-            messageLog.info(MessageType.CREATING_CSS_STYLE_SHEET, processedCssFile.getName());
+            messageLog.info(MessageType.CREATING_CSS_STYLE_SHEET, processedCssFile
+                .getName());
             messageLog.setCssFile(originalCssFile);
 
             while ((originalCssLine = originalCssReader.readLine()) != null)
@@ -203,7 +213,7 @@ public class SpriteBuilder
 
                     // Write some extra css as a replacement and ignore the directive
                     processedCssWriter.write("  background-image: url('"
-                        + spriteReferenceReplacement.spriteImageUrl + "')"
+                        + spriteReferenceReplacement.spriteImageUrl + uidSuffix + "')"
                         + (important ? " !important" : "") + ";\n");
                     if (spriteReferenceReplacement.spriteImageProperties.hasReducedForIe6)
                     {
@@ -212,8 +222,8 @@ public class SpriteBuilder
                                 + SpriteImageBuilder
                                     .addIe6Suffix(
                                         spriteReferenceReplacement.spriteImageProperties.spriteImageDirective,
-                                        true) + "')" + (important ? " !important" : "")
-                                + ";\n");
+                                        true) + uidSuffix + "')"
+                                + (important ? " !important" : "") + ";\n");
                     }
 
                     processedCssWriter.write("  background-position: "
@@ -270,5 +280,50 @@ public class SpriteBuilder
         {
             return processedCssFile;
         }
+    }
+
+    /**
+     * Gets the appropriate extension based on the sprite UID generation mode.
+     * 
+     * @param cssFile The CSS File
+     * @param directive The Image Directive for the generated CSS file
+     * @return the value to be extered after '?' in the CSS
+     */
+    private String generateUidSuffix(File cssFile, SpriteImageDirective directive)
+        throws IOException
+    {
+        if (directive.uidType == SpriteImageDirective.SpriteUidType.NONE)
+        {
+            return "";
+        }
+        else if (directive.uidType == SpriteImageDirective.SpriteUidType.DATE)
+        {
+            return "?" + Long.toString(new Date().getTime());
+        }
+        else if (directive.uidType == SpriteImageDirective.SpriteUidType.MD5)
+        {
+            try
+            {
+                MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+                InputStream is = new FileInputStream(spriteImageBuilder.getImageFile(
+                    cssFile, directive.imagePath, false));
+                try
+                {
+                    is = new DigestInputStream(is, digest);
+                }
+                finally
+                {
+                    is.close();
+                }
+                return "?" + new BigInteger(1, digest.digest()).toString(16);
+            }
+            catch (NoSuchAlgorithmException nsaex)
+            {
+                throw new RuntimeException(nsaex);
+            }
+        }
+
+        // No valid value set
+        return "";
     }
 }

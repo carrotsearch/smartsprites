@@ -21,11 +21,11 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
 {
     private static final SpriteImageDirective VERTICAL_SPRITE_IMAGE_DIRECTIVE = new SpriteImageDirective(
         "sprite", "sprite.png", SpriteImageLayout.VERTICAL, SpriteImageFormat.PNG,
-        Ie6Mode.AUTO, Color.WHITE);
+        Ie6Mode.AUTO, Color.WHITE, SpriteUidType.NONE);
 
     private static final SpriteImageDirective HORIZONTAL_SPRITE_IMAGE_DIRECTIVE = new SpriteImageDirective(
         "hsprite", "hsprite.png", SpriteImageLayout.HORIZONTAL, SpriteImageFormat.PNG,
-        Ie6Mode.AUTO, Color.WHITE);
+        Ie6Mode.AUTO, Color.WHITE, SpriteUidType.NONE);
 
     private static final Map<String, SpriteImageDirective> SPRITE_IMAGE_DIRECTIVES = ImmutableMap
         .of("sprite", VERTICAL_SPRITE_IMAGE_DIRECTIVE, "hsprite",

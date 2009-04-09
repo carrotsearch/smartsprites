@@ -99,6 +99,7 @@ public class Message implements Serializable
         UNSUPPORTED_FORMAT("Unsupported format: %s"),
         UNSUPPORTED_LAYOUT("Unsupported layout: %s"),
         UNSUPPORTED_IE6_MODE("Unsupported ie6 mode: %s"),
+        UNSUPPORTED_UID_TYPE("Unsupported uid type: %s"),
         IGNORING_IE6_MODE("The sprite-ie6-mode applies only to PNG sprites. Ignoring for a %s sprite."),
         JPG_DOES_NOT_SUPPORT_INDEXED_COLOR("JPG format does not support indexed color"),
         TOO_MANY_COLORS_FOR_INDEXED_COLOR(

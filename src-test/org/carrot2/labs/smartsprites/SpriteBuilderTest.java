@@ -475,6 +475,35 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
                 "many-colors-bit-alpha", 293, 255));
     }
 
+    @Test
+    public void testSpriteImageUidMd5() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("sprite-image-uid-md5");
+        buildSprites(testDir);
+
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
+        assertThat(new File(testDir, "img/sprite.png")).exists();
+        org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
+            new Dimension(17 + 15 + 48, 47));
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+    }
+    
+    @Test
+    public void testSpriteImageUidMd5Ie6() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("sprite-image-uid-md5-ie6");
+        buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.AUTO, true));
+        
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
+        assertThat(new File(testDir, "img/sprite.png")).exists();
+        assertThat(new File(testDir, "img/sprite-ie6.png")).exists();
+        org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
+            new Dimension(20, 20));
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+    }
+
     @After
     public void cleanUp()
     {

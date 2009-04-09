@@ -21,7 +21,7 @@
 		<li><a href="download.html">Download</a></li>
 		<li><a href="#php">PHP version</a></li>
 		<li><a href="#faq">FAQ</a></li>
-		<li><a href="#contact">Contact</a></li>
+		<li><a href="#contact">Support</a></li>
 		<li id="last"></li>
 	</ul>
 
@@ -283,6 +283,34 @@
                   when necessary (<tt>auto</tt>) or should not be generated at all
                   (<tt>none</tt>). See the <a href="#png-ie6">IE6-friendly PNG</a> option for
                   more details.
+                </li>
+
+                <li>
+                  <a name="sprite-image-uid"><strong>Sprite UID generation</strong></a>, 
+                  syntax: <tt>sprite-image-uid: none | md5 | date</tt>, optional, default value: <tt>none</tt>.
+                  Specifies the type of UID (identifier) to append to sprite image URL references 
+                  in the generated CSS, useful when sprite images are served with
+                  <a href="http://developer.yahoo.com/performance/rules.html#expires">far future Expires headers</a>.
+                  The following UID types are supported:
+                  <ul>
+                    <li>
+                      <tt>none</tt>: no UID suffix will be appended (default)
+                    </li>
+                    
+                    <li>
+                      <tt>md5</tt>: UID will be a MD5 hash of the sprite image. This type 
+                      of UID will change only if the content of the sprite image changes.
+                    </li>
+                    
+                    <li>
+                      <tt>date</tt>: UID will be a timestamp taken at the time of sprite 
+                      image generation. This type of UID will be different every time SmartSprites processing
+                      is run, even if the sprite images do not change.
+                    </li>
+                  </ul>
+                  
+                  UIDs will appended at the end of sprite image URL after a '?' character, e.g:
+                  <code>background-image: url('../img/logo.png?d41d8cd98f00b204e9800998ecf8427e')</code>
                 </li>
               </ul>
             </li>
@@ -710,6 +738,15 @@
 			<h1>Version history</h1>
 
       <p>
+        <strong>v0.2.2</strong>, released: April 2009
+      </p>
+      <ul class="versions">
+        <li>Support for <a href="#sprite-image-uid">appending MD5 hashes</a> or timestamps to sprite image URLs 
+            (<a href="http://issues.carrot2.org/browse/SMARTSPRITES-25">SMARTSPRITES-25</a>)</li>
+        <li>Bugfix: <a href="http://issues.carrot2.org/browse/SMARTSPRITES-26">SMARTSPRITES-26</a></li>
+      </ul>
+
+      <p>
         <strong>v0.2.1</strong>, released: October 2008
       </p>
       <ul class="versions">
@@ -774,17 +811,15 @@
 
 		<div class="item">
       <a name="contact"></a>
-			<h1>Contact</h1>
+			<h1>Support</h1>
 
       <p>
-        If you have some specific questions or problems with SmartSprites, feel
-        free to <a href="mailto:stanislaw@osinski.name">e-mail me directly</a>.
-        If SmartSprites attracts more interest, I'll set up a dedicated mailing
-        list.
+        If you have specific questions, problems or feature ideas for SmartSprites, please
+        visit the <a href="http://groups.google.com/group/smartsprites-css-sprite-generator">SmartSprites CSS Sprite Generator Users and Developers group</a>.
       </p>
     </div>
 	</div>
-	<div class="footer">&copy; 2008 <a href="http://stanislaw.osinski.name">Stanislaw Osinski</a>. Design by <a href="http://arcsin.se">Arcsin</a></div>
+	<div class="footer">&copy; 2008-2009 <a href="http://stanislaw.osinski.name">Stanislaw Osinski</a>. Design by <a href="http://arcsin.se">Arcsin</a></div>
 </div>
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
