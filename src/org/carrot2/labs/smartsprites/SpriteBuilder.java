@@ -165,6 +165,7 @@ public class SpriteBuilder
             processedCssFile.getParentFile().mkdirs();
         }
 
+        // TODO: this will screw up the encoding of the original file (default locale conversion).
         final BufferedReader originalCssReader = new BufferedReader(new FileReader(
             originalCssFile));
         final BufferedWriter processedCssWriter = new BufferedWriter(new FileWriter(

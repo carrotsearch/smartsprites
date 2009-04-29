@@ -231,9 +231,9 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     @Test
     public void testCssOutputDir() throws FileNotFoundException, IOException
     {
-        final File testDir = testDir("css-output-dir").getCanonicalFile();
+        final File testDir = testDir("css-output-dir");
         final File rootDir = new File(testDir, "css/sprite").getCanonicalFile();
-        final File outputDir = testDir("css-output-dir/output-dir/css").getCanonicalFile();
+        final File outputDir = testDir("css-output-dir/output-dir/css");
         outputDir.mkdirs();
         buildSprites(new SmartSpritesParameters(rootDir, outputDir, null,
             MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
