@@ -140,7 +140,8 @@ public class SpriteImageBuilder
         String spritePath = addIe6Suffix(spriteImageDirective, ie6Reduced);
 
         // Save the image to the disk
-        final File mergedImageFile = getImageFile(firstSpriteEntry.cssFile, spritePath, true);
+        final File mergedImageFile = getImageFile(firstSpriteEntry.cssFile, spritePath,
+            true);
 
         if (!mergedImageFile.getParentFile().exists())
         {
@@ -150,7 +151,8 @@ public class SpriteImageBuilder
         try
         {
             messageLog.info(MessageType.WRITING_SPRITE_IMAGE, mergedImage.getWidth(),
-                mergedImage.getHeight(), spriteImageDirective.spriteId, mergedImageFile.getName());
+                mergedImage.getHeight(), spriteImageDirective.spriteId, mergedImageFile
+                    .getName());
             ImageIO.write(mergedImage, spriteImageDirective.format.toString(),
                 mergedImageFile);
         }
@@ -186,14 +188,14 @@ public class SpriteImageBuilder
     }
 
     /**
-     * Canonicalize the path returned from {@link #getImageFile0(File, String, boolean)} for
-     * Linux and Unix systems. Paths that contain non-existing components, followed by
+     * Canonicalize the path returned from {@link #getImageFile0(File, String, boolean)}
+     * for Linux and Unix systems. Paths that contain non-existing components, followed by
      * <code>/../</code> throw exceptions on such systems.
      */
     File getImageFile(File cssFile, String imagePath, boolean changeRoot)
     {
-        return FileUtils.getCanonicalOrAbsoluteFile(
-            getImageFile0(cssFile, imagePath, changeRoot));
+        return FileUtils.getCanonicalOrAbsoluteFile(getImageFile0(cssFile, imagePath,
+            changeRoot));
     }
 
     /**
@@ -220,7 +222,8 @@ public class SpriteImageBuilder
 
         if (changeRoot && !imagePath.startsWith("/") && parameters.getOutputDir() != null)
         {
-            return FileUtils.changeRoot(file, parameters.getRootDir(), parameters.getOutputDir());
+            return FileUtils.changeRoot(file, parameters.getRootDir(), parameters
+                .getOutputDir());
         }
         else
         {
@@ -265,12 +268,9 @@ public class SpriteImageBuilder
             SpriteReferenceReplacement spriteReferenceReplacement;
             if (verticalSprite)
             {
-                spriteReferenceReplacement = new SpriteReferenceReplacement(
-                    entry.getKey(),
-                    spriteImageDirective.imagePath,
-                    spriteHeight,
-                    (spriteReferenceDirective.alignment.equals(SpriteAlignment.RIGHT) ? "right"
-                        : "left"));
+                spriteReferenceReplacement = new SpriteReferenceReplacement(entry
+                    .getKey(), spriteHeight, (spriteReferenceDirective.alignment
+                    .equals(SpriteAlignment.RIGHT) ? "right" : "left"));
 
                 spriteWidth = Math.max(spriteWidth, requiredWidth);
 
@@ -285,11 +285,9 @@ public class SpriteImageBuilder
             }
             else
             {
-                spriteReferenceReplacement = new SpriteReferenceReplacement(
-                    entry.getKey(),
-                    spriteImageDirective.imagePath,
-                    (spriteReferenceDirective.alignment.equals(SpriteAlignment.BOTTOM) ? "bottom"
-                        : "top"), spriteWidth);
+                spriteReferenceReplacement = new SpriteReferenceReplacement(entry
+                    .getKey(), (spriteReferenceDirective.alignment
+                    .equals(SpriteAlignment.BOTTOM) ? "bottom" : "top"), spriteWidth);
 
                 spriteHeight = Math.max(spriteHeight, requiredHeight);
 

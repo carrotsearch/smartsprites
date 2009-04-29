@@ -81,6 +81,11 @@ log.level=INFO
 css.file.suffix=-sprite
 
 #
+# Encoding of the input and output CSS files
+#
+css.file.encoding=UTF-8
+
+#
 # How generated CSS properties should be indented (default: two spaces)
 #
 #css.property.indent=  

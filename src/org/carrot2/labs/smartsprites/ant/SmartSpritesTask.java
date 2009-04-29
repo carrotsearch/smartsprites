@@ -25,6 +25,7 @@ public class SmartSpritesTask extends Task
     private MessageLevel logLevel;
     private MessageLevel failOnLevel;
     private String cssFileSuffix = SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX;
+    private String cssFileEncoding = SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING;
     private String cssPropertyIndent = SmartSpritesParameters.DEFAULT_CSS_INDENT;
     private PngDepth spritePngDepth = SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH;
     private boolean spritePngIe6 = SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6;
@@ -66,6 +67,11 @@ public class SmartSpritesTask extends Task
         }
     }
 
+    public void setCssFileEncoding(String cssFileEncoding)
+    {
+        this.cssFileEncoding = cssFileEncoding;
+    }
+
     public void setCssFileSuffix(String cssFileSuffix)
     {
         this.cssFileSuffix = cssFileSuffix;
@@ -92,17 +98,13 @@ public class SmartSpritesTask extends Task
     {
         final SmartSpritesParameters parameters = new SmartSpritesParameters(rootDir,
             outputDir, documentRootDir, logLevel, cssFileSuffix, cssPropertyIndent,
-            spritePngDepth, spritePngIe6);
+            spritePngDepth, spritePngIe6, cssFileEncoding);
 
         final FailureDetectorMessageSink failureDetectorMessageSink = new FailureDetectorMessageSink();
         MessageLog log = new MessageLog(new AntLogMessageSink(),
             failureDetectorMessageSink);
 
-        try
-        {
-            parameters.validate(log);
-        }
-        catch (IllegalArgumentException e)
+        if (!parameters.validate(log))
         {
             fail();
         }

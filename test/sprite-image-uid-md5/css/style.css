@@ -3,6 +3,7 @@
  */
 
 /** sprite: test; sprite-image: url('../img/sprite.png'); sprite-layout: horizontal; sprite-image-uid: md5 */
+/** sprite: test2; sprite-image: url('../img/sprite2.png'); sprite-layout: horizontal; sprite-image-uid: md5 */
 div.web {
   width: 17px;
   height: 17px;
@@ -16,5 +17,5 @@ div.pubmed {
 }
 
 div.logo {
-  background-image: url(../img/logo.png); /** sprite-ref: test */
+  background-image: url(../img/logo.png); /** sprite-ref: test2 */
 }

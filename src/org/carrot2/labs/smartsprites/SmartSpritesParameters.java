@@ -63,6 +63,12 @@ public class SmartSpritesParameters
     private MessageLevel logLevel;
 
     /**
+     * The encoding to assume for input and output CSS files.
+     */
+    @Option(name = "--css-file-encoding")
+    private String cssFileEncoding;
+
+    /**
      * Suffix to be appended to the processed CSS file name.
      */
     @Option(name = "--css-file-suffix")
@@ -74,13 +80,14 @@ public class SmartSpritesParameters
     private String cssPropertyIndent;
 
     /**
-     * 
+     * The required depth of the generated PNG sprites.
      */
     @Option(name = "--sprite-png-depth")
     private PngDepth spritePngDepth;
 
     /**
-     * 
+     * If <code>true</code>, SmartSprites will generate IE6-friendly PNG sprites if
+     * needed.
      */
     @Option(name = "--sprite-png-ie6")
     private boolean spritePngIe6;
@@ -96,6 +103,9 @@ public class SmartSpritesParameters
 
     /** By default, we'll generate separate sprites for IE6 if needed */
     public static final boolean DEFAULT_SPRITE_PNG_IE6 = false;
+
+    /** By default, we'll assume CSS files are UTF-8 encoded */
+    public static final String DEFAULT_CSS_FILE_ENCODING = "UTF-8";
 
     /** The default logging level. */
     public static final MessageLevel DEFAULT_LOGGING_LEVEL = MessageLevel.INFO;
@@ -120,14 +130,15 @@ public class SmartSpritesParameters
     public SmartSpritesParameters(File rootDir)
     {
         this(rootDir, null, null, MessageLevel.INFO, DEFAULT_CSS_FILE_SUFFIX,
-            DEFAULT_CSS_INDENT, DEFAULT_SPRITE_PNG_DEPTH, DEFAULT_SPRITE_PNG_IE6);
+            DEFAULT_CSS_INDENT, DEFAULT_SPRITE_PNG_DEPTH, DEFAULT_SPRITE_PNG_IE6,
+            DEFAULT_CSS_FILE_ENCODING);
     }
 
     public SmartSpritesParameters(File rootDir, MessageLevel messageLevel,
         String cssFileSuffix, PngDepth spritePngDepth, boolean spritePngIe6)
     {
         this(rootDir, null, null, messageLevel, cssFileSuffix, DEFAULT_CSS_INDENT,
-            spritePngDepth, spritePngIe6);
+            spritePngDepth, spritePngIe6, DEFAULT_CSS_FILE_ENCODING);
     }
 
     /**
@@ -135,12 +146,13 @@ public class SmartSpritesParameters
      */
     public SmartSpritesParameters(File rootDir, File outputDir, File documentRootDir,
         MessageLevel logLevel, String cssFileSuffix, String cssPropertyIndent,
-        PngDepth spritePngDepth, boolean spritePngIe6)
+        PngDepth spritePngDepth, boolean spritePngIe6, String cssEncoding)
     {
         this.rootDir = rootDir;
         this.outputDir = outputDir;
         this.documentRootDir = documentRootDir;
         this.logLevel = logLevel;
+        this.cssFileEncoding = cssEncoding;
         this.cssPropertyIndent = cssPropertyIndent;
         this.cssFileSuffix = getCssFileSuffix(cssFileSuffix);
         this.spritePngDepth = spritePngDepth;
@@ -149,17 +161,18 @@ public class SmartSpritesParameters
 
     /**
      * Validates the provided parameters.
-     * 
-     * @throws IllegalArgumentException in case of validation errors. Detailed messages
-     *             will be stored in the <code>log</code>.
+     *
+     * @return <code>true</code> if the parameters are valid
      */
-    public void validate(MessageLog log)
+    public boolean validate(MessageLog log)
     {
+        boolean valid = true;
+        
         rootDir = FileUtils.getCanonicalOrAbsoluteFile(rootDir);
         if (!rootDir.exists() || !rootDir.isDirectory())
         {
             log.error(MessageType.ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY, rootDir);
-            throw new IllegalArgumentException();
+            valid = false;
         }
 
         if (outputDir != null)
@@ -168,7 +181,7 @@ public class SmartSpritesParameters
             if (outputDir.exists() && !outputDir.isDirectory())
             {
                 log.error(MessageType.OUTPUT_DIR_IS_NOT_DIRECTORY, outputDir);
-                throw new IllegalArgumentException();
+                valid = false;
             }
         }
 
@@ -177,11 +190,14 @@ public class SmartSpritesParameters
             documentRootDir = FileUtils.getCanonicalOrAbsoluteFile(documentRootDir);
             if (!documentRootDir.exists() || !documentRootDir.isDirectory())
             {
-                log.error(MessageType.DOCUMENT_ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY, 
+                log.error(
+                    MessageType.DOCUMENT_ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY,
                     documentRootDir);
-                throw new IllegalArgumentException();
+                valid = false;
             }
         }
+        
+        return valid;
     }
 
     private String getCssFileSuffix(String suffix)
@@ -245,4 +261,8 @@ public class SmartSpritesParameters
         return spritePngIe6;
     }
 
+    public String getCssFileEncoding()
+    {
+        return cssFileEncoding;
+    }
 }

@@ -93,6 +93,21 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     }
 
     @Test
+    public void testMultipleCssFiles() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("multiple-css-files");
+        buildSprites(testDir);
+
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
+        assertThat(css("css/style2-sprite.css")).hasSameContentAs(
+            css("css/style2-expected.css"));
+        assertThat(new File(testDir, "img/sprite.png")).exists();
+        org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
+            new Dimension(17 + 15 + 48, 47));
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+    }
+
+    @Test
     public void testLargeVerticalRepeat() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("large-vertical-repeat");
@@ -186,7 +201,8 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
-            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6));
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         final File spriteFile = new File(documentRootDir, "img/sprite.png");
@@ -209,7 +225,8 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
-            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6));
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
         assertThat(processedCss()).hasSameContentAs(expectedCss());
 
@@ -239,7 +256,8 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
-            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6));
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
         assertThat(processedCss(new File(rootDir, "style.css"))).hasSameContentAs(
             new File(rootDir, "style-expected.css"));
@@ -297,7 +315,8 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
             SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.DIRECT,
-            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6));
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
         org.carrot2.labs.test.Assertions.assertThat(
             sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor().hasBitAlpha();
@@ -319,7 +338,8 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
             SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.INDEXED,
-            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6));
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
         org.carrot2.labs.test.Assertions.assertThat(
             sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor().hasBitAlpha();
@@ -391,7 +411,8 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
             SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.INDEXED,
-            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6));
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
         org.carrot2.labs.test.Assertions.assertThat(
             sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor().hasBitAlpha();
@@ -435,7 +456,8 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("indexed-color-ie6");
         buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
             SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
-            SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.AUTO, true));
+            SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.AUTO, true,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
         org.carrot2.labs.test.Assertions.assertThat(
             sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor().hasBitAlpha();
@@ -484,18 +506,21 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-            new Dimension(17 + 15 + 48, 47));
+            new Dimension(17 + 15, 17));
+        org.fest.assertions.Assertions.assertThat(sprite(testDir, "img/sprite2.png"))
+            .hasSize(new Dimension(48, 47));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
-    
+
     @Test
     public void testSpriteImageUidMd5Ie6() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("sprite-image-uid-md5-ie6");
         buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
             SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
-            SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.AUTO, true));
-        
+            SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.AUTO, true,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
+
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         assertThat(new File(testDir, "img/sprite-ie6.png")).exists();
@@ -507,27 +532,29 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     @After
     public void cleanUp()
     {
-        try
-        {
-            processedCss().delete();
-        }
-        catch (IllegalArgumentException e)
-        {
-            // We may get an IllegalArgumentException when the non-default output
-            // dir gets deleted after tests. We can safely ignore that. An alternative
-            // would be calling cleanUp manually in each test except those that
-            // use non-default output directory.
-        }
+        // Delete sprite CSS
+        deleteFiles(new File(spriteBuilder.parameters.getRootDir(), "css")
+            .listFiles(new FilenameFilter()
+            {
+                public boolean accept(File dir, String name)
+                {
+                    return name.contains("-sprite");
+                }
+            }));
 
         // Delete sprites
-        final File [] files = new File(spriteBuilder.parameters.getRootDir(), "img")
+        deleteFiles(new File(spriteBuilder.parameters.getRootDir(), "img")
             .listFiles(new FilenameFilter()
             {
                 public boolean accept(File dir, String name)
                 {
                     return name.startsWith("sprite");
                 }
-            });
+            }));
+    }
+
+    private void deleteFiles(final File [] files)
+    {
         if (files != null)
         {
             for (File file : files)
@@ -555,17 +582,22 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
 
     private File expectedCss()
     {
-        return new File(spriteBuilder.parameters.getRootDir(), "css/style-expected.css");
+        return css("css/style-expected.css");
     }
 
     private File sourceCss()
     {
-        return new File(spriteBuilder.parameters.getRootDir(), "css/style.css");
+        return css("css/style.css");
     }
 
     private File processedCss()
     {
         return processedCss(sourceCss());
+    }
+
+    private File css(String cssPath)
+    {
+        return new File(spriteBuilder.parameters.getRootDir(), cssPath);
     }
 
     private File processedCss(File sourceCss)

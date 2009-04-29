@@ -1,11 +1,9 @@
 package org.carrot2.labs.smartsprites;
 
 import java.io.*;
-import java.util.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.DigestInputStream;
 import java.math.BigInteger;
+import java.security.*;
+import java.util.*;
 
 import org.carrot2.labs.smartsprites.message.LevelCounterMessageSink;
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -13,11 +11,10 @@ import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 
 /**
- * Performs all stages of sprite building.
+ * Performs all stages of sprite building. This class is not thread-safe.
  */
 public class SpriteBuilder
 {
@@ -38,6 +35,19 @@ public class SpriteBuilder
     private final SpriteImageBuilder spriteImageBuilder;
 
     /**
+     * A cache of sprite image UIDs by sprite image file. This cache will help us to avoid
+     * generating the MD5 each time we replace sprite image ocurrence in the CSS.
+     */
+    private final Map<File, String> spriteImageUidBySpriteImageFile;
+
+    /**
+     * A timestamp to use for timestamp-based sprite image UIDs. We need this time stamp
+     * as a field to make sure the timestamp is the same for all sprite image
+     * replacements.
+     */
+    private final String timestamp;
+
+    /**
      * Creates a {@link SpriteBuilder} with the provided parameters and log.
      */
     public SpriteBuilder(SmartSpritesParameters parameters, MessageLog messageLog)
@@ -48,6 +58,8 @@ public class SpriteBuilder
         spriteDirectiveOccurrenceCollector = new SpriteDirectiveOccurrenceCollector(
             messageLog);
         spriteImageBuilder = new SpriteImageBuilder(parameters, messageLog);
+        spriteImageUidBySpriteImageFile = Maps.newHashMap();
+        timestamp = Long.toString(new Date().getTime());
     }
 
     /**
@@ -56,7 +68,10 @@ public class SpriteBuilder
     @SuppressWarnings("unchecked")
     public void buildSprites() throws FileNotFoundException, IOException
     {
-        parameters.validate(messageLog);
+        if (!parameters.validate(messageLog))
+        {
+            return;
+        }
 
         final long start = System.currentTimeMillis();
         final LevelCounterMessageSink levelCounter = new LevelCounterMessageSink();
@@ -165,21 +180,18 @@ public class SpriteBuilder
             processedCssFile.getParentFile().mkdirs();
         }
 
-        // TODO: this will screw up the encoding of the original file (default locale conversion).
-        final BufferedReader originalCssReader = new BufferedReader(new FileReader(
-            originalCssFile));
-        final BufferedWriter processedCssWriter = new BufferedWriter(new FileWriter(
-            processedCssFile));
+        final BufferedReader originalCssReader = new BufferedReader(
+            new InputStreamReader(new FileInputStream(originalCssFile), parameters
+                .getCssFileEncoding()));
+        final BufferedWriter processedCssWriter = new BufferedWriter(
+            new OutputStreamWriter(new FileOutputStream(processedCssFile), parameters
+                .getCssFileEncoding()));
 
         String originalCssLine;
         int originalCssLineNumber = -1;
         int lastReferenceReplacementLine = -1;
 
         // Generate UID for sprite file
-        final String uidSuffix = generateUidSuffix(
-            originalCssFile,
-            spriteImageOccurrencesByLineNumber.values().iterator().next().spriteImageDirective);
-
         try
         {
             messageLog.info(MessageType.CREATING_CSS_STYLE_SHEET, processedCssFile
@@ -213,9 +225,13 @@ public class SpriteBuilder
                     lastReferenceReplacementLine = originalCssLineNumber;
 
                     // Write some extra css as a replacement and ignore the directive
-                    processedCssWriter.write("  background-image: url('"
-                        + spriteReferenceReplacement.spriteImageUrl + uidSuffix + "')"
-                        + (important ? " !important" : "") + ";\n");
+                    processedCssWriter
+                        .write("  background-image: url('"
+                            + spriteReferenceReplacement.spriteImageProperties.spriteImageDirective.imagePath
+                            + generateUidSuffix(
+                                originalCssFile,
+                                spriteReferenceReplacement.spriteImageProperties.spriteImageDirective,
+                                false) + "')" + (important ? " !important" : "") + ";\n");
                     if (spriteReferenceReplacement.spriteImageProperties.hasReducedForIe6)
                     {
                         processedCssWriter
@@ -223,8 +239,12 @@ public class SpriteBuilder
                                 + SpriteImageBuilder
                                     .addIe6Suffix(
                                         spriteReferenceReplacement.spriteImageProperties.spriteImageDirective,
-                                        true) + uidSuffix + "')"
-                                + (important ? " !important" : "") + ";\n");
+                                        true)
+                                + generateUidSuffix(
+                                    originalCssFile,
+                                    spriteReferenceReplacement.spriteImageProperties.spriteImageDirective,
+                                    true) + "')" + (important ? " !important" : "")
+                                + ";\n");
                     }
 
                     processedCssWriter.write("  background-position: "
@@ -288,35 +308,54 @@ public class SpriteBuilder
      * 
      * @param cssFile The CSS File
      * @param directive The Image Directive for the generated CSS file
+     * @param ie6 of true, the ie6 version of the sprite will be loaded
      * @return the value to be extered after '?' in the CSS
      */
-    private String generateUidSuffix(File cssFile, SpriteImageDirective directive)
-        throws IOException
+    private String generateUidSuffix(File cssFile, SpriteImageDirective directive,
+        boolean ie6) throws IOException
     {
+
         if (directive.uidType == SpriteImageDirective.SpriteUidType.NONE)
         {
             return "";
         }
         else if (directive.uidType == SpriteImageDirective.SpriteUidType.DATE)
         {
-            return "?" + Long.toString(new Date().getTime());
+            return "?" + timestamp;
         }
         else if (directive.uidType == SpriteImageDirective.SpriteUidType.MD5)
         {
+            final File imageFile = spriteImageBuilder.getImageFile(cssFile,
+                (ie6 ? SpriteImageBuilder.addIe6Suffix(directive, true)
+                    : directive.imagePath), false);
+            if (spriteImageUidBySpriteImageFile.containsKey(directive))
+            {
+                return spriteImageUidBySpriteImageFile.get(imageFile);
+            }
+
             try
             {
-                MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-                InputStream is = new FileInputStream(spriteImageBuilder.getImageFile(
-                    cssFile, directive.imagePath, false));
+                final byte [] buffer = new byte [4069];
+                final MessageDigest digest = java.security.MessageDigest
+                    .getInstance("MD5");
+                final InputStream is = new FileInputStream(imageFile);
                 try
                 {
-                    is = new DigestInputStream(is, digest);
+                    final InputStream digestInputStream = new DigestInputStream(is,
+                        digest);
+                    while (digestInputStream.read(buffer) >= 0)
+                    {
+                    }
+
+                    final String md5 = new BigInteger(1, digest.digest()).toString(16);
+                    spriteImageUidBySpriteImageFile.put(imageFile, md5);
+                    return "?" + md5;
                 }
                 finally
                 {
-                    is.close();
+                    CloseableUtils.closeIgnoringException(is);
+                    digest.reset();
                 }
-                return "?" + new BigInteger(1, digest.digest()).toString(16);
             }
             catch (NoSuchAlgorithmException nsaex)
             {

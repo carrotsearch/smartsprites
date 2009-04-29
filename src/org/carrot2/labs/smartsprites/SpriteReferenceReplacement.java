@@ -12,9 +12,6 @@ public class SpriteReferenceReplacement
     /** The {@link SpriteReferenceOccurrence} this instance refers to */
     public final SpriteReferenceOccurrence spriteReferenceOccurrence;
 
-    /** CSS file relative path of the sprite image replacing the individual image */
-    public final String spriteImageUrl;
-
     /** String representation of the horizontal position of this sprite replacement */
     public final String horizontalPositionString;
 
@@ -28,11 +25,10 @@ public class SpriteReferenceReplacement
     public final int verticalPosition;
 
     public SpriteReferenceReplacement(
-        SpriteReferenceOccurrence spriteReferenceOccurrence, String imageUrl,
-        int verticalPosition, String horizontalPosition)
+        SpriteReferenceOccurrence spriteReferenceOccurrence, int verticalPosition,
+        String horizontalPosition)
     {
         this.spriteReferenceOccurrence = spriteReferenceOccurrence;
-        this.spriteImageUrl = imageUrl;
         this.horizontalPosition = -1;
         this.horizontalPositionString = horizontalPosition;
         this.verticalPosition = verticalPosition;
@@ -40,11 +36,10 @@ public class SpriteReferenceReplacement
     }
 
     public SpriteReferenceReplacement(
-        SpriteReferenceOccurrence spriteReferenceOccurrence, String imageUrl,
-        String verticalPosition, int horizontalPosition)
+        SpriteReferenceOccurrence spriteReferenceOccurrence, String verticalPosition,
+        int horizontalPosition)
     {
         this.spriteReferenceOccurrence = spriteReferenceOccurrence;
-        this.spriteImageUrl = imageUrl;
         this.horizontalPosition = horizontalPosition;
         this.horizontalPositionString = "-" + horizontalPosition + "px";
         this.verticalPosition = -1;
