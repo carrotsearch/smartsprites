@@ -1,0 +1,4 @@
+<antlib>
+  <taskdef name="smartsprites"
+           classname="org.carrot2.labs.smartsprites.ant.SmartSpritesTask" />
+</antlib> 

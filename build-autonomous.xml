@@ -10,10 +10,11 @@ Please provide SmartSprite parameters in a 'smartsprites.properties' file.
     </fail>
 
     <property file="smartsprites.properties" />
-    <taskdef name="smartsprites"
-             classname="org.carrot2.labs.smartsprites.ant.SmartSpritesTask">
+    <taskdef resource="smartsprites.xml">
       <classpath>
-        <fileset dir="lib" />
+        <fileset dir="lib">
+          <include name="*.jar" />
+        </fileset>
       </classpath>
     </taskdef>
 

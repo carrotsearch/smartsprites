@@ -20,9 +20,16 @@
   <target name="jar" depends="build" description="Builds SmartSprites JAR file">
     <property file="smartsprites.version" />
 
-    <jar destfile="lib/smartsprites-${smartsprites.version}.jar"
-         basedir="tmp/classes"
-         excludes="**/Test.class" />
+    <jar destfile="lib/smartsprites-${smartsprites.version}.jar">
+      <fileset dir="tmp/classes">
+        <exclude name="*Test.class" />
+        <exclude name="**/test" />
+        <exclude name="**/test/**" />
+      </fileset>
+      <fileset dir="src">
+        <include name="**/smartsprites.xml" />
+      </fileset>
+    </jar>
   </target>
 
   <target name="test"
