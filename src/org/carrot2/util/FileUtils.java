@@ -46,6 +46,11 @@ public class FileUtils
      */
     public static File changeRoot(File file, File oldRoot, File newRoot)
     {
+        /*
+         * TODO: you may want to take a look at: org.apache.tools.ant.util.FileUtils,
+         * it contains path-relative utilities.
+         */
+
         if (!oldRoot.isDirectory())
         {
             throw new IllegalArgumentException("oldRoot must be a directory");

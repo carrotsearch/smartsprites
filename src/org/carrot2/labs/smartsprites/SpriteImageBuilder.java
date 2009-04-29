@@ -140,8 +140,7 @@ public class SpriteImageBuilder
         String spritePath = addIe6Suffix(spriteImageDirective, ie6Reduced);
 
         // Save the image to the disk
-        final File mergedImageFile = getImageFile(firstSpriteEntry.cssFile, spritePath,
-            true);
+        final File mergedImageFile = getImageFile(firstSpriteEntry.cssFile, spritePath, true);
 
         if (!mergedImageFile.getParentFile().exists())
         {
@@ -187,11 +186,22 @@ public class SpriteImageBuilder
     }
 
     /**
+     * Canonicalize the path returned from {@link #getImageFile0(File, String, boolean)} for
+     * Linux and Unix systems. Paths that contain non-existing components, followed by
+     * <code>/../</code> throw exceptions on such systems.
+     */
+    File getImageFile(File cssFile, String imagePath, boolean changeRoot)
+    {
+        return FileUtils.getCanonicalOrAbsoluteFile(
+            getImageFile0(cssFile, imagePath, changeRoot));
+    }
+
+    /**
      * Returns the {@link File} for an imagePath. If the imagePath is relative, it's taken
      * relative to the cssFile. If imagePath is absolute (starts with '/') and
      * documentRootDir is not null, it's taken relative to documentRootDir.
      */
-    File getImageFile(File cssFile, String imagePath, boolean changeRoot)
+    File getImageFile0(File cssFile, String imagePath, boolean changeRoot)
     {
         if (imagePath.startsWith("/"))
         {

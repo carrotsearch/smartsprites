@@ -155,29 +155,32 @@ public class SmartSpritesParameters
      */
     public void validate(MessageLog log)
     {
+        rootDir = FileUtils.getCanonicalOrAbsoluteFile(rootDir);
         if (!rootDir.exists() || !rootDir.isDirectory())
         {
-            log.error(MessageType.ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY, FileUtils
-                .getCanonicalOrAbsolutePath(rootDir));
+            log.error(MessageType.ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY, rootDir);
             throw new IllegalArgumentException();
         }
 
         if (outputDir != null)
         {
+            outputDir = FileUtils.getCanonicalOrAbsoluteFile(outputDir);
             if (outputDir.exists() && !outputDir.isDirectory())
             {
-                log.error(MessageType.OUTPUT_DIR_IS_NOT_DIRECTORY, FileUtils
-                    .getCanonicalOrAbsolutePath(documentRootDir));
+                log.error(MessageType.OUTPUT_DIR_IS_NOT_DIRECTORY, outputDir);
                 throw new IllegalArgumentException();
             }
         }
 
-        if (documentRootDir != null
-            && (!documentRootDir.exists() || !documentRootDir.isDirectory()))
+        if (documentRootDir != null)
         {
-            log.error(MessageType.DOCUMENT_ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY,
-                FileUtils.getCanonicalOrAbsolutePath(documentRootDir));
-            throw new IllegalArgumentException();
+            documentRootDir = FileUtils.getCanonicalOrAbsoluteFile(documentRootDir);
+            if (!documentRootDir.exists() || !documentRootDir.isDirectory())
+            {
+                log.error(MessageType.DOCUMENT_ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY, 
+                    documentRootDir);
+                throw new IllegalArgumentException();
+            }
         }
     }
 
