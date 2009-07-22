@@ -83,11 +83,12 @@ public class SpriteBuilder
         }
 
         // Identify css files.
-        final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
+        final List<File> files = Lists.newArrayList(org.apache.commons.io.FileUtils.listFiles(
             parameters.getRootDir(), new String []
             {
                 "css"
-            }, true);
+            }, true));
+        Collections.sort(files);
 
         // Collect sprite declaration from all css files
         final Multimap<File, SpriteImageOccurrence> spriteImageOccurrencesByFile = spriteDirectiveOccurrenceCollector
