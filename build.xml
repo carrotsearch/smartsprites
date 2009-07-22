@@ -2,7 +2,7 @@
 <project name="master" default="process">
   <import file="build-autonomous.xml" />
 
-  <property name="tests.report.dir" location="tmp/test-results" />
+  <property name="tests.report.dir" location="tmp/test-report" />
 
   <target name="build" description="Builds SmartSprites binaries">
     <mkdir dir="tmp/classes" />
