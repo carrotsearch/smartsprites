@@ -2,7 +2,7 @@
  * A test for loading images from absolute urls.
  */
 
-/** sprite: test; sprite-image: url('/img/sprite.png'); sprite-layout: horizontal */
+/** sprite: test; sprite-image: url('/img/sprite.png'); sprite-layout: horizontal; sprite-image-uid: md5 */
 div.web {
   width: 17px;
   height: 17px;

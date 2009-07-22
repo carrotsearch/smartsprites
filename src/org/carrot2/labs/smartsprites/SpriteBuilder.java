@@ -327,7 +327,7 @@ public class SpriteBuilder
         {
             final File imageFile = spriteImageBuilder.getImageFile(cssFile,
                 (ie6 ? SpriteImageBuilder.addIe6Suffix(directive, true)
-                    : directive.imagePath), false);
+                    : directive.imagePath), true);
             if (spriteImageUidBySpriteImageFile.containsKey(directive))
             {
                 return spriteImageUidBySpriteImageFile.get(imageFile);

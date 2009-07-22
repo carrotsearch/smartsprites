@@ -3,7 +3,7 @@
  */
 
 /** sprite: absolute; sprite-image: url('/img/absolute.png'); sprite-layout: horizontal */
-/** sprite: relative; sprite-image: url('../img/relative.png'); sprite-layout: horizontal */
+/** sprite: relative; sprite-image: url('../img/relative.png'); sprite-layout: horizontal; sprite-image-uid: md5 */
 div.web {
   width: 17px;
   height: 17px;
