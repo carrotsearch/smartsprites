@@ -2,6 +2,8 @@
 <project name="master" default="process">
   <import file="build-autonomous.xml" />
 
+  <property name="tests.report.dir" location="tmp/test-results" />
+
   <target name="build" description="Builds SmartSprites binaries">
     <mkdir dir="tmp/classes" />
 
@@ -35,9 +37,12 @@
   <target name="test"
           description="Executes SmartSprites unit tests"
           depends="build">
-    <mkdir dir="tmp/test-results" />
+    <mkdir dir="${tests.report.dir}" />
 
-    <junit printsummary="yes" fork="yes" haltonfailure="yes" dir="${basedir}">
+    <junit fork="true" forkmode="once"
+           printsummary="on"
+           errorproperty="junit.error" failureproperty="junit.failure"
+           dir="${basedir}">
       <classpath>
         <fileset dir="lib">
           <include name="**/*.jar" />
@@ -46,13 +51,28 @@
         <pathelement location="resources" />
       </classpath>
 
-      <formatter type="plain" />
-      <batchtest fork="yes" todir="tmp/test-results">
+      <formatter type="xml" />
+      <batchtest fork="yes" todir="${tests.report.dir}">
         <fileset dir="src-test">
           <include name="**/*Test.java" />
         </fileset>
       </batchtest>
     </junit>
+
+    <junitreport todir="${tests.report.dir}">
+      <fileset dir="${tests.report.dir}">
+        <include name="TEST-*.xml" />
+      </fileset>
+      <report format="frames" todir="${tests.report.dir}" />
+    </junitreport>
+
+    <condition property="tests.failed" value="true">
+      <or>
+        <isset property="junit.error" />
+        <isset property="junit.failure" />
+      </or>
+    </condition>
+    <fail message="Tests failed. See ${tests.report.dir} for report." if="tests.failed" />  
   </target>
 
   <target name="process"

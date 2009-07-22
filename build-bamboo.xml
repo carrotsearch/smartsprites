@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="SmartSprites Bamboo builds" default="help">
+    <property file="${bamboo.build.properties}" />
+    <property name="smartsprites.dir" location="${basedir}" />
+    <property name="dist.dir" location="${smartsprites.dir}/tmp/dist" />
+
+    <target name="clean" description="Clean build results">
+        <ant dir="${smartsprites.dir}" antfile="build.xml" target="clean" inheritall="true" />
+    </target>
+
+    <target name="test" description="Run SmartSprites unit tests">
+        <ant dir="${smartsprites.dir}" antfile="build.xml" target="test" inheritall="true" />
+    </target>
+
+    <target name="dist" description="Build SmartSprites distribution">
+        <ant dir="${smartsprites.dir}" antfile="build.xml" target="dist" inheritall="true" />
+    </target>
+
+    <target name="publish">
+        <fail unless="dist.dir">Define: dist.dir property.</fail>
+
+        <copy todir="${dist.dir}" overwrite="true">
+          <fileset dir="tmp/dist" />
+        </copy>
+    </target>
+
+    <target name="help">
+        <echo>This file is used to drive automated Bamboo builds.</echo>
+    </target>
+</project>
