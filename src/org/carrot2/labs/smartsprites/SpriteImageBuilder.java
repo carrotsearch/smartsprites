@@ -14,6 +14,7 @@ import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
+import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 
@@ -97,8 +98,9 @@ public class SpriteImageBuilder
             messageLog.setCssFile(spriteReferenceOccurrence.cssFile);
             messageLog.setLine(spriteReferenceOccurrence.line);
 
-            final InputStream is = resourceHandler.getResourceAsStream(
-                spriteReferenceOccurrence.cssFile, spriteReferenceOccurrence.imagePath);
+            final InputStream is = resourceHandler.getResourceAsStream(resourceHandler
+                .getResourcePath(spriteReferenceOccurrence.cssFile,
+                    spriteReferenceOccurrence.imagePath));
 
             // Load image
             BufferedImage image = null;

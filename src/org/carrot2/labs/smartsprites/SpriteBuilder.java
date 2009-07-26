@@ -8,6 +8,8 @@ import java.util.*;
 import org.carrot2.labs.smartsprites.message.LevelCounterMessageSink;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
+import org.carrot2.labs.smartsprites.resource.FileSystemResourceHandler;
+import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 
@@ -47,7 +49,7 @@ public class SpriteBuilder
      */
     private final String timestamp;
 
-    /** The resource handler */
+    /** Resource handler */
     private ResourceHandler resourceHandler;
 
     /**
@@ -56,7 +58,7 @@ public class SpriteBuilder
     public SpriteBuilder(SmartSpritesParameters parameters, MessageLog messageLog)
     {
         this(parameters, messageLog, new FileSystemResourceHandler(parameters
-            .getDocumentRootDir(), messageLog));
+            .getDocumentRootDir(), parameters.getCssFileEncoding(), messageLog));
     }
 
     /**
@@ -214,9 +216,8 @@ public class SpriteBuilder
             processedCssFile.getParentFile().mkdirs();
         }
 
-        final BufferedReader originalCssReader = new BufferedReader(
-            new InputStreamReader(new FileInputStream(originalCssFile), parameters
-                .getCssFileEncoding()));
+        final BufferedReader originalCssReader = new BufferedReader(resourceHandler
+            .getReader(originalCssFile));
         final BufferedWriter processedCssWriter = new BufferedWriter(
             new OutputStreamWriter(new FileOutputStream(processedCssFile), parameters
                 .getCssFileEncoding()));

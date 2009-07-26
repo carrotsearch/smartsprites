@@ -1,7 +1,7 @@
 package org.carrot2.labs.smartsprites;
 
 /**
- * A base class for SmartSprites directives/
+ * A base class for SmartSprites directives.
  */
 public class SpriteDirectiveOccurrence
 {

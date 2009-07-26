@@ -10,6 +10,7 @@ import org.carrot2.labs.smartsprites.css.CssProperty;
 import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
+import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 import org.carrot2.util.CloseableUtils;
 
 import com.google.common.collect.*;
@@ -95,7 +96,7 @@ public class SpriteDirectiveOccurrenceCollector
     {
         final Collection<SpriteReferenceOccurrence> directives = Lists.newArrayList();
 
-        final BufferedReader reader = new BufferedReader(new FileReader(cssFile));
+        final BufferedReader reader = new BufferedReader(resourceHandler.getReader(cssFile));
         int lineNumber = -1;
         String line;
 

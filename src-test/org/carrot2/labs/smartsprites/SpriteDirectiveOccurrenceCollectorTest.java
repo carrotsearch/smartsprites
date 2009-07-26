@@ -5,6 +5,7 @@ import static org.carrot2.labs.test.Assertions.assertThat;
 
 import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
 import org.carrot2.labs.smartsprites.message.Message;
+import org.carrot2.labs.smartsprites.resource.FileSystemResourceHandler;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +20,8 @@ public class SpriteDirectiveOccurrenceCollectorTest extends TestWithMemoryMessag
     public void prepare()
     {
         spriteDirectiveOccurrenceCollector = new SpriteDirectiveOccurrenceCollector(
-            messageLog, new FileSystemResourceHandler(null, messageLog));
+            messageLog, new FileSystemResourceHandler(null, 
+                SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING, messageLog));
     }
 
     @Test

@@ -17,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
  * @author <a href="mailto:pete-apache-dev@kazmier.com">Pete Kazmier</a>
  * @author <a href="mailto:vmassol@apache.org">Vincent Massol</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * 
  */
 public class PathUtils {
 
@@ -104,55 +103,6 @@ public class PathUtils {
     // ----------------------------------------------------------------------
     // Private methods
     // ----------------------------------------------------------------------
-
-    /**
-     * Determines the relative path of a filename.  For each separator
-     * within the filename (except the leading if present), append the
-     * "../" string to the return value.
-     *
-     * @param filename The filename to parse.
-     * @param separator The separator used within the filename.
-     * @return The relative path of the filename.  This value is not
-     * terminated with a forward slash.  A zero-length string is
-     * returned if: the filename is zero-length.
-     */
-    private static final String determineRelativePath( String filename,
-                                                       String separator )
-    {
-        if ( filename.length() == 0 )
-        {
-            return "";
-        }
-
-
-        /*
-         * Count the slashes in the relative filename, but exclude the
-         * leading slash.  If the path has no slashes, then the filename
-         * is relative to the current directory.
-         */
-        int slashCount = StringUtils.countMatches( filename, separator ) - 1;
-        if ( slashCount <= 0 )
-        {
-            return ".";
-        }
-
-        /*
-         * The relative filename contains one or more slashes indicating
-         * that the file is within one or more directories.  Thus, each
-         * slash represents a "../" in the relative path.
-         */
-        StringBuffer sb = new StringBuffer();
-        for ( int i = 0; i < slashCount; i++ )
-        {
-            sb.append( "../" );
-        }
-
-        /*
-         * Finally, return the relative path but strip the trailing
-         * slash to mimic Anakia's behavior.
-         */
-        return StringUtils.chop( sb.toString() );
-    }
 
     private static final String buildRelativePath( String toPath,  String fromPath, final char separatorChar )
     {
