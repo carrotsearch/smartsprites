@@ -3,6 +3,7 @@ package org.carrot2.labs.smartsprites;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -13,9 +14,12 @@ import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
+import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 
-import com.google.common.collect.*;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * Lays out and builds sprite images based on the collected SmartSprites directives.
@@ -31,25 +35,29 @@ public class SpriteImageBuilder
     /** Image merger for this builder */
     private SpriteImageMerger spriteImageMerger;
 
+    /** The resource handler */
+    private ResourceHandler resourceHandler;
+
     /**
      * Creates a {@link SpriteImageBuilder} with the provided parameters and log.
      */
-    SpriteImageBuilder(SmartSpritesParameters parameters, MessageLog messageLog)
+    SpriteImageBuilder(SmartSpritesParameters parameters, MessageLog messageLog,
+        ResourceHandler resourceHandler)
     {
         this.messageLog = messageLog;
         this.parameters = parameters;
-
+        this.resourceHandler = resourceHandler;
         spriteImageMerger = new SpriteImageMerger(parameters, messageLog);
     }
 
     /**
      * Builds all sprite images based on the collected directives.
      */
-    Multimap<File, SpriteReferenceReplacement> buildSpriteImages(
+    Multimap<String, SpriteReferenceReplacement> buildSpriteImages(
         Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId,
         Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId)
     {
-        final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile = Multimaps
+        final Multimap<String, SpriteReferenceReplacement> spriteReplacementsByFile = Multimaps
             .newArrayListMultimap();
         for (final Map.Entry<String, Collection<SpriteReferenceOccurrence>> spriteReferenceOccurrences : spriteReferenceOccurrencesBySpriteId
             .asMap().entrySet())
@@ -89,20 +97,32 @@ public class SpriteImageBuilder
             messageLog.setCssFile(spriteReferenceOccurrence.cssFile);
             messageLog.setLine(spriteReferenceOccurrence.line);
 
-            final File imageFile = getImageFile(spriteReferenceOccurrence.cssFile,
-                spriteReferenceOccurrence.imagePath, false);
+            final InputStream is = resourceHandler.getResourceAsStream(
+                spriteReferenceOccurrence.cssFile, spriteReferenceOccurrence.imagePath);
 
             // Load image
-            BufferedImage image;
+            BufferedImage image = null;
+            String realImagePath = resourceHandler.getResourcePath(
+                spriteReferenceOccurrence.cssFile, spriteReferenceOccurrence.imagePath);
             try
             {
-                messageLog.info(MessageType.READING_IMAGE, imageFile.getName());
-                image = ImageIO.read(imageFile);
+                if (is != null)
+                {
+                    messageLog.info(MessageType.READING_IMAGE, realImagePath);
+                    image = ImageIO.read(is);
+                }
+                else
+                {
+                    messageLog.warning(MessageType.CANNOT_NOT_LOAD_IMAGE, realImagePath,
+                        "Can't read input file!");
+                    continue;
+                }
             }
             catch (final IOException e)
             {
-                messageLog.warning(MessageType.CANNOT_NOT_LOAD_IMAGE, FileUtils
-                    .getCanonicalOrAbsolutePath(imageFile), e.getMessage());
+                CloseableUtils.closeIgnoringException(is);
+                messageLog.warning(MessageType.CANNOT_NOT_LOAD_IMAGE, realImagePath, e
+                    .getMessage());
                 continue;
             }
 
@@ -192,7 +212,7 @@ public class SpriteImageBuilder
      * for Linux and Unix systems. Paths that contain non-existing components, followed by
      * <code>/../</code> throw exceptions on such systems.
      */
-    File getImageFile(File cssFile, String imagePath, boolean changeRoot)
+    File getImageFile(String cssFile, String imagePath, boolean changeRoot)
     {
         return FileUtils.getCanonicalOrAbsoluteFile(getImageFile0(cssFile, imagePath,
             changeRoot));
@@ -203,22 +223,10 @@ public class SpriteImageBuilder
      * relative to the cssFile. If imagePath is absolute (starts with '/') and
      * documentRootDir is not null, it's taken relative to documentRootDir.
      */
-    File getImageFile0(File cssFile, String imagePath, boolean changeRoot)
+    File getImageFile0(String cssFile, String imagePath, boolean changeRoot)
     {
-        if (imagePath.startsWith("/"))
-        {
-            if (parameters.getDocumentRootDir() != null)
-            {
-                return new File(parameters.getDocumentRootDir(), imagePath.substring(1));
-            }
-            else
-            {
-                messageLog.warning(MessageType.ABSOLUTE_PATH_AND_NO_DOCUMENT_ROOT,
-                    imagePath);
-            }
-        }
-
-        final File file = new File(cssFile.getParentFile(), imagePath);
+        String path = resourceHandler.getResourcePath(cssFile, imagePath);
+        final File file = new File(path);
 
         if (changeRoot && !imagePath.startsWith("/") && parameters.getOutputDir() != null)
         {

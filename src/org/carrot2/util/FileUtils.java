@@ -67,16 +67,7 @@ public class FileUtils
         final String filePath = file.getPath();
         final String oldRootPath = oldRoot.getPath();
 
-        // Strip common prefix from both paths
-        int stripToIndex = 0;
-        for (; stripToIndex < Math.min(filePath.length(), oldRootPath.length()); stripToIndex++)
-        {
-            if (filePath.charAt(stripToIndex) != oldRootPath.charAt(stripToIndex))
-            {
-                break;
-            }
-        }
-
-        return new File(newRoot, filePath.substring(stripToIndex));
+        String relativePath = PathUtils.getRelativeFilePath(oldRootPath, filePath);
+        return new File(newRoot, relativePath);
     }
 }

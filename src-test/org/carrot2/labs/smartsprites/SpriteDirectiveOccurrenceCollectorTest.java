@@ -19,7 +19,7 @@ public class SpriteDirectiveOccurrenceCollectorTest extends TestWithMemoryMessag
     public void prepare()
     {
         spriteDirectiveOccurrenceCollector = new SpriteDirectiveOccurrenceCollector(
-            messageLog);
+            messageLog, new FileSystemResourceHandler(null, messageLog));
     }
 
     @Test

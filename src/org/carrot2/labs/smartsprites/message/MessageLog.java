@@ -1,9 +1,6 @@
 package org.carrot2.labs.smartsprites.message;
 
-import java.io.File;
 import java.util.List;
-
-import org.carrot2.util.FileUtils;
 
 import com.google.common.collect.Lists;
 
@@ -88,10 +85,10 @@ public class MessageLog
     {
         this.line = line;
     }
-
-    public void setCssFile(File cssFile)
+    
+    public void setCssFile(String cssFilePath)
     {
-        this.cssPath = cssFile != null ? FileUtils.getCanonicalOrAbsolutePath(cssFile) : null;
+        this.cssPath = cssFilePath;
     }
     
     /**

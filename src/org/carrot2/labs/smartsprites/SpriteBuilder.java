@@ -47,17 +47,31 @@ public class SpriteBuilder
      */
     private final String timestamp;
 
+    /** The resource handler */
+    private ResourceHandler resourceHandler;
+
     /**
      * Creates a {@link SpriteBuilder} with the provided parameters and log.
      */
     public SpriteBuilder(SmartSpritesParameters parameters, MessageLog messageLog)
     {
+        this(parameters, messageLog, new FileSystemResourceHandler(parameters
+            .getDocumentRootDir(), messageLog));
+    }
+
+    /**
+     * Creates a {@link SpriteBuilder} with the provided parameters and log.
+     */
+    public SpriteBuilder(SmartSpritesParameters parameters, MessageLog messageLog,
+        ResourceHandler resourceHandler)
+    {
         this.messageLog = messageLog;
         this.parameters = parameters;
-
+        this.resourceHandler = resourceHandler;
         spriteDirectiveOccurrenceCollector = new SpriteDirectiveOccurrenceCollector(
-            messageLog);
-        spriteImageBuilder = new SpriteImageBuilder(parameters, messageLog);
+            messageLog, resourceHandler);
+        spriteImageBuilder = new SpriteImageBuilder(parameters, messageLog,
+            resourceHandler);
         spriteImageUidBySpriteImageFile = Maps.newHashMap();
         timestamp = Long.toString(new Date().getTime());
     }
@@ -65,8 +79,17 @@ public class SpriteBuilder
     /**
      * Performs processing for this builder's parameters.
      */
-    @SuppressWarnings("unchecked")
     public void buildSprites() throws FileNotFoundException, IOException
+    {
+        buildSprites(null);
+    }
+
+    /**
+     * Performs processing from the list of file paths for this builder's parameters.
+     */
+    @SuppressWarnings("unchecked")
+    public void buildSprites(Collection<String> filePaths) throws FileNotFoundException,
+        IOException
     {
         if (!parameters.validate(messageLog))
         {
@@ -74,6 +97,7 @@ public class SpriteBuilder
         }
 
         final long start = System.currentTimeMillis();
+
         final LevelCounterMessageSink levelCounter = new LevelCounterMessageSink();
         messageLog.addMessageSink(levelCounter);
 
@@ -82,25 +106,34 @@ public class SpriteBuilder
             parameters.getOutputDir().mkdirs();
         }
 
-        // Identify css files.
-        final List<File> files = Lists.newArrayList(org.apache.commons.io.FileUtils.listFiles(
-            parameters.getRootDir(), new String []
+        // Initialize the paths if not defined
+        if (filePaths == null)
+        {
+            // Identify css files.
+            final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
+                parameters.getRootDir(), new String []
+                {
+                    "css"
+                }, true);
+
+            filePaths = new ArrayList<String>(files.size());
+            for (File file : files)
             {
-                "css"
-            }, true));
-        Collections.sort(files);
+                filePaths.add(FileUtils.getCanonicalOrAbsolutePath(file));
+            }
+        }
 
         // Collect sprite declaration from all css files
-        final Multimap<File, SpriteImageOccurrence> spriteImageOccurrencesByFile = spriteDirectiveOccurrenceCollector
-            .collectSpriteImageOccurrences(files);
+        final Multimap<String, SpriteImageOccurrence> spriteImageOccurrencesByFile = spriteDirectiveOccurrenceCollector
+            .collectSpriteImageOccurrences(filePaths);
 
         // Merge them, checking for duplicates
         final Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId = spriteDirectiveOccurrenceCollector
             .mergeSpriteImageOccurrences(spriteImageOccurrencesByFile);
 
         // Collect sprite references from all css files
-        final Multimap<File, SpriteReferenceOccurrence> spriteEntriesByFile = spriteDirectiveOccurrenceCollector
-            .collectSpriteReferenceOccurrences(files, spriteImageDirectivesBySpriteId);
+        final Multimap<String, SpriteReferenceOccurrence> spriteEntriesByFile = spriteDirectiveOccurrenceCollector
+            .collectSpriteReferenceOccurrences(filePaths, spriteImageDirectivesBySpriteId);
 
         // Now merge and regroup all files by sprite-id
         final Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId = SpriteDirectiveOccurrenceCollector
@@ -108,7 +141,7 @@ public class SpriteBuilder
 
         // Build the sprite images
         messageLog.setCssFile(null);
-        final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile = spriteImageBuilder
+        final Multimap<String, SpriteReferenceReplacement> spriteReplacementsByFile = spriteImageBuilder
             .buildSpriteImages(spriteImageDirectivesBySpriteId,
                 spriteReferenceOccurrencesBySpriteId);
 
@@ -132,18 +165,18 @@ public class SpriteBuilder
      * Rewrites the original files to refer to the generated sprite images.
      */
     private void rewriteCssFiles(
-        final Multimap<File, SpriteImageOccurrence> spriteImageOccurrencesByFile,
-        final Multimap<File, SpriteReferenceReplacement> spriteReplacementsByFile)
+        final Multimap<String, SpriteImageOccurrence> spriteImageOccurrencesByFile,
+        final Multimap<String, SpriteReferenceReplacement> spriteReplacementsByFile)
         throws IOException
     {
         if (spriteReplacementsByFile.isEmpty())
         {
             // If nothing to replace, still, copy the original file, so that there
             // is some output file.
-            for (final Map.Entry<File, Collection<SpriteImageOccurrence>> entry : spriteImageOccurrencesByFile
+            for (final Map.Entry<String, Collection<SpriteImageOccurrence>> entry : spriteImageOccurrencesByFile
                 .asMap().entrySet())
             {
-                final File cssFile = entry.getKey();
+                final String cssFile = entry.getKey();
 
                 createProcessedCss(cssFile, SpriteImageBuilder
                     .getSpriteImageOccurrencesByLineNumber(spriteImageOccurrencesByFile
@@ -153,10 +186,10 @@ public class SpriteBuilder
         }
         else
         {
-            for (final Map.Entry<File, Collection<SpriteReferenceReplacement>> entry : spriteReplacementsByFile
+            for (final Map.Entry<String, Collection<SpriteReferenceReplacement>> entry : spriteReplacementsByFile
                 .asMap().entrySet())
             {
-                final File cssFile = entry.getKey();
+                final String cssFile = entry.getKey();
                 final Map<Integer, SpriteReferenceReplacement> spriteReplacementsByLineNumber = SpriteImageBuilder
                     .getSpriteReplacementsByLineNumber(entry.getValue());
 
@@ -170,12 +203,12 @@ public class SpriteBuilder
     /**
      * Rewrites one CSS file to refer to the generated sprite images.
      */
-    private void createProcessedCss(File originalCssFile,
+    private void createProcessedCss(String originalCssFile,
         Map<Integer, SpriteImageOccurrence> spriteImageOccurrencesByLineNumber,
         Map<Integer, SpriteReferenceReplacement> spriteReplacementsByLineNumber)
         throws IOException
     {
-        final File processedCssFile = getProcessedCssFile(originalCssFile);
+        final File processedCssFile = getProcessedCssFile(new File(originalCssFile));
         if (!processedCssFile.getParentFile().exists())
         {
             processedCssFile.getParentFile().mkdirs();
@@ -312,7 +345,7 @@ public class SpriteBuilder
      * @param ie6 of true, the ie6 version of the sprite will be loaded
      * @return the value to be extered after '?' in the CSS
      */
-    private String generateUidSuffix(File cssFile, SpriteImageDirective directive,
+    private String generateUidSuffix(String cssFile, SpriteImageDirective directive,
         boolean ie6) throws IOException
     {
 
