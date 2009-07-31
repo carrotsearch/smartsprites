@@ -67,6 +67,7 @@ public class Message implements Serializable
         CANNOT_NOT_LOAD_IMAGE("Cannot load image: %s due to: %s"),
         CANNOT_PARSE_MARGIN_VALUE("Cannot parse margin value: %s"),
         CANNOT_WRITE_SPRITE_IMAGE("Cannot write sprite image: %s due to %s"),
+        CANNOT_CREATE_DIRECTORIES("Cannot create directories: %s"),
         CREATING_CSS_STYLE_SHEET("Creating CSS style sheet: %s"),
         WRITING_SPRITE_IMAGE(
             "Writing sprite image of size %s x %s for sprite '%s' to %s"),
@@ -177,7 +178,8 @@ public class Message implements Serializable
         this.type = type;
         this.cssPath = cssPath;
         this.line = line;
-        this.arguments = arguments;
+        this.arguments = new Object[arguments.length];
+        System.arraycopy(arguments, 0, this.arguments, 0, arguments.length);
     }
 
     @Override

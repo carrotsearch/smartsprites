@@ -72,7 +72,11 @@ public class FileSystemResourceHandler implements ResourceHandler
         final File parentFile = new File(path).getParentFile();
         if (!parentFile.exists())
         {
-            parentFile.mkdirs();
+            if (!parentFile.mkdirs()) 
+            {
+                messageLog.warning(Message.MessageType.CANNOT_CREATE_DIRECTORIES, 
+                    parentFile.getPath());
+            }
         }
         return new FileOutputStream(FileUtils.getCanonicalOrAbsoluteFile(path));
     }

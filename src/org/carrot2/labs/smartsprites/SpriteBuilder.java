@@ -5,8 +5,7 @@ import java.math.BigInteger;
 import java.security.*;
 import java.util.*;
 
-import org.carrot2.labs.smartsprites.message.LevelCounterMessageSink;
-import org.carrot2.labs.smartsprites.message.MessageLog;
+import org.carrot2.labs.smartsprites.message.*;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.resource.FileSystemResourceHandler;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
@@ -91,7 +90,11 @@ public class SpriteBuilder
             .getOutputDir()) : null;
         if (parameters.getOutputDir() != null && !outputDir.exists())
         {
-            outputDir.mkdirs();
+            if (!outputDir.mkdirs())
+            {
+                messageLog.warning(Message.MessageType.CANNOT_CREATE_DIRECTORIES, 
+                    outputDir.getPath());
+            }
         }
 
         final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
@@ -340,7 +343,6 @@ public class SpriteBuilder
     private String generateUidSuffix(String cssFile, SpriteImageDirective directive,
         boolean ie6) throws IOException
     {
-
         if (directive.uidType == SpriteImageDirective.SpriteUidType.NONE)
         {
             return "";
@@ -354,9 +356,9 @@ public class SpriteBuilder
             final String imageFile = spriteImageBuilder.getImageFile(cssFile,
                 (ie6 ? SpriteImageBuilder.addIe6Suffix(directive, true)
                     : directive.imagePath));
-            if (spriteImageUidBySpriteImageFile.containsKey(directive))
+            if (spriteImageUidBySpriteImageFile.containsKey(imageFile))
             {
-                return spriteImageUidBySpriteImageFile.get(imageFile);
+                return "?" + spriteImageUidBySpriteImageFile.get(imageFile);
             }
 
             try
@@ -364,11 +366,11 @@ public class SpriteBuilder
                 final byte [] buffer = new byte [4069];
                 final MessageDigest digest = java.security.MessageDigest
                     .getInstance("MD5");
-                InputStream is = null;
+                InputStream is = null, digestInputStream = null;
                 try
                 {
                     is = resourceHandler.getResourceAsInputStream(imageFile);
-                    final InputStream digestInputStream = new DigestInputStream(is,
+                    digestInputStream = new DigestInputStream(is,
                         digest);
                     while (digestInputStream.read(buffer) >= 0)
                     {
@@ -381,6 +383,7 @@ public class SpriteBuilder
                 finally
                 {
                     CloseableUtils.closeIgnoringException(is);
+                    CloseableUtils.closeIgnoringException(digestInputStream);
                     digest.reset();
                 }
             }
