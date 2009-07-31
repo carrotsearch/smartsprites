@@ -131,7 +131,7 @@
   </target>
 
   <target name="clean" description="Deletes all temporary files" depends="coverage.clean">
-    <delete includeEmptyDirs="true">
+    <delete includeEmptyDirs="true" failonerror="false">
       <fileset dir="tmp">
         <exclude name="eclipse/**" />
       </fileset>
