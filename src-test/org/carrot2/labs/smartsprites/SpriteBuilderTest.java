@@ -137,12 +137,12 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(messages).contains(
             new Message(Message.MessageLevel.WARN,
                 Message.MessageType.CANNOT_NOT_LOAD_IMAGE, new File(testDir,
-                    "css/style.css").getCanonicalPath(), 15, new File(testDir,
-                    "img/logo.png").getCanonicalPath(), "Can't read input file!"),
+                    "css/style.css").getPath(), 15, new File(testDir, "img/logo.png")
+                    .getPath(), "Can't read input file!"),
             new Message(Message.MessageLevel.WARN,
                 Message.MessageType.CANNOT_NOT_LOAD_IMAGE, new File(testDir,
-                    "css/style-expected.css").getCanonicalPath(), 15, new File(testDir,
-                    "img/logo.png").getCanonicalPath(), "Can't read input file!"));
+                    "css/style-expected.css").getPath(), 15, new File(testDir,
+                    "img/logo.png").getPath(), "Can't read input file!"));
     }
 
     @Test
@@ -157,7 +157,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
             new Dimension(48, 16 + 17 + 47));
 
-        final String styleCssPath = new File(testDir, "css/style.css").getCanonicalPath();
+        final String styleCssPath = new File(testDir, "css/style.css").getPath();
         assertThat(messages).isEquivalentTo(
             Message.MessageLevel.WARN,
             new Message(Message.MessageLevel.WARN,
@@ -182,7 +182,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
             new Dimension(17 + 15 + 48, 47));
 
-        final String styleCssPath = new File(testDir, "css/style.css").getCanonicalPath();
+        final String styleCssPath = new File(testDir, "css/style.css").getPath();
         assertThat(messages).isEquivalentTo(
             Message.MessageLevel.WARN,
             new Message(Message.MessageLevel.WARN,
@@ -198,7 +198,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     {
         final File testDir = testDir("absolute-image-url");
         final File documentRootDir = testDir("absolute-image-url/absolute-path");
-        buildSprites(new SmartSpritesParameters(testDir, null, documentRootDir,
+        buildSprites(filesystemSmartSpritesParameters(testDir, null, documentRootDir,
             MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
@@ -222,7 +222,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File documentRootDir = testDir("non-default-output-dir/absolute-path");
         final File outputDir = testDir("non-default-output-dir/output-dir");
         outputDir.mkdirs();
-        buildSprites(new SmartSpritesParameters(testDir, outputDir, documentRootDir,
+        buildSprites(filesystemSmartSpritesParameters(testDir, outputDir, documentRootDir,
             MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
@@ -253,7 +253,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File rootDir = new File(testDir, "css/sprite").getCanonicalFile();
         final File outputDir = testDir("css-output-dir/output-dir/css");
         outputDir.mkdirs();
-        buildSprites(new SmartSpritesParameters(rootDir, outputDir, null,
+        buildSprites(filesystemSmartSpritesParameters(rootDir, outputDir, null,
             MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
@@ -313,7 +313,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     public void testIndexedForcedDirectColor() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("indexed-color");
-        buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
+        buildSprites(filesystemSmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
             SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.DIRECT,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
@@ -336,7 +336,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     public void testIndexedForcedIndexedColor() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("indexed-color");
-        buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
+        buildSprites(filesystemSmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
             SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.INDEXED,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
@@ -409,7 +409,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     public void testMatteColorForcedIndex() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("matte-color");
-        buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
+        buildSprites(filesystemSmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
             SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.INDEXED,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
@@ -455,7 +455,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     public void testIe6IndexedColor() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("indexed-color-ie6");
-        buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
+        buildSprites(filesystemSmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
             SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.AUTO, true,
             SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
@@ -517,7 +517,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     public void testSpriteImageUidMd5Ie6() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("sprite-image-uid-md5-ie6");
-        buildSprites(new SmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
+        buildSprites(filesystemSmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
             SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.AUTO, true,
             SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
@@ -567,8 +567,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
 
     private File testDir(String test)
     {
-        final File testDir = new File("test/" + test);
-        return testDir;
+        return new File("test/" + test);
     }
 
     private BufferedImage sprite(final File testDir) throws IOException
@@ -603,12 +602,12 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
 
     private File processedCss(File sourceCss)
     {
-        return spriteBuilder.getProcessedCssFile(sourceCss);
+        return new File(spriteBuilder.getProcessedCssFile(sourceCss.getPath()));
     }
 
     private void buildSprites(File dir) throws IOException
     {
-        buildSprites(new SmartSpritesParameters(dir));
+        buildSprites(new SmartSpritesParameters(dir.getPath()));
     }
 
     private void buildSprites(SmartSpritesParameters parameters) throws IOException
@@ -616,4 +615,16 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         spriteBuilder = new SpriteBuilder(parameters, messageLog);
         spriteBuilder.buildSprites();
     }
+
+    private static SmartSpritesParameters filesystemSmartSpritesParameters(File rootDir,
+        File outputDir, File documentRootDir, MessageLevel logLevel,
+        String cssFileSuffix, String cssPropertyIndent, PngDepth spritePngDepth,
+        boolean spritePngIe6, String cssEncoding)
+    {
+        return new SmartSpritesParameters(rootDir.getPath(),
+            outputDir != null ? outputDir.getPath() : null,
+            documentRootDir != null ? documentRootDir.getPath() : null, logLevel,
+            cssFileSuffix, cssPropertyIndent, spritePngDepth, spritePngIe6, cssEncoding);
+    }
+
 }

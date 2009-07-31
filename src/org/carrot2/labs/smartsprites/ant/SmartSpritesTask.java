@@ -96,9 +96,10 @@ public class SmartSpritesTask extends Task
     @Override
     public void execute() throws BuildException
     {
-        final SmartSpritesParameters parameters = new SmartSpritesParameters(rootDir,
-            outputDir, documentRootDir, logLevel, cssFileSuffix, cssPropertyIndent,
-            spritePngDepth, spritePngIe6, cssFileEncoding);
+        final SmartSpritesParameters parameters = new SmartSpritesParameters(
+            absolutePathOrNull(rootDir), absolutePathOrNull(outputDir),
+            absolutePathOrNull(documentRootDir), logLevel, cssFileSuffix,
+            cssPropertyIndent, spritePngDepth, spritePngIe6, cssFileEncoding);
 
         final FailureDetectorMessageSink failureDetectorMessageSink = new FailureDetectorMessageSink();
         MessageLog log = new MessageLog(new AntLogMessageSink(),
@@ -126,6 +127,11 @@ public class SmartSpritesTask extends Task
         {
             fail(failureDetectorMessageSink.failureLevel.name() + " messages found");
         }
+    }
+
+    private static String absolutePathOrNull(File file)
+    {
+        return file != null ? file.getAbsolutePath() : null;
     }
 
     private class AntLogMessageSink implements MessageSink

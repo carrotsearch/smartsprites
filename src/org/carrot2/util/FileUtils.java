@@ -3,33 +3,20 @@ package org.carrot2.util;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FilenameUtils;
+
 /**
  * Various utility methods for working with {@link File}s.
  */
 public class FileUtils
 {
     /**
-     * Tries to execute {@link File#getCanonicalPath()} on the provided <code>file</code>,
-     * if the code fails, returns the result of {@link File#getAbsolutePath()}.
+     * Creates a new {@link File} from the provided path and executes
+     * {@link #getCanonicalOrAbsoluteFile(File)}.
      */
-    public static String getCanonicalOrAbsolutePath(File file)
+    public static File getCanonicalOrAbsoluteFile(String path)
     {
-        try
-        {
-            return file.getCanonicalPath();
-        }
-        catch (final IOException e)
-        {
-            return file.getAbsolutePath();
-        }
-    }
-
-    /**
-     * Tries to execute {@link File#getCanonicalFile()} on the provided <code>file</code>,
-     * if the code fails, returns the result of {@link File#getAbsoluteFile()}.
-     */
-    public static File getCanonicalOrAbsoluteFile(File file)
-    {
+        File file = new File(path);
         try
         {
             return file.getCanonicalFile();
@@ -44,30 +31,11 @@ public class FileUtils
      * Changes the root directory of a file. For example, file is /a/b/c/d/e and oldRoot
      * is /a/b/c, and newRoot is /x/y, the result will be /x/y/d/e.
      */
-    public static File changeRoot(File file, File oldRoot, File newRoot)
+    public static String changeRoot(String file, String oldRoot, String newRoot)
     {
-        /*
-         * TODO: you may want to take a look at: org.apache.tools.ant.util.FileUtils,
-         * it contains path-relative utilities.
-         */
-
-        if (!oldRoot.isDirectory())
-        {
-            throw new IllegalArgumentException("oldRoot must be a directory");
-        }
-        if (!newRoot.isDirectory())
-        {
-            throw new IllegalArgumentException("newRoot must be a directory");
-        }
-        if (file.equals(oldRoot))
-        {
-            throw new IllegalArgumentException("file must not be equal to oldRoot");
-        }
-
-        final String filePath = file.getPath();
-        final String oldRootPath = oldRoot.getPath();
-
-        String relativePath = PathUtils.getRelativeFilePath(oldRootPath, filePath);
-        return new File(newRoot, relativePath);
+        // File is assumed to be a subpath of oldRoot, so PathUtils.getRelativeFilePath()
+        // shouldn't return null here.
+        final String relativePath = PathUtils.getRelativeFilePath(oldRoot, file);
+        return FilenameUtils.concat(newRoot, relativePath);
     }
 }

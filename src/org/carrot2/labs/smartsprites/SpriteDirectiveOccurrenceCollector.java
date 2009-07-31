@@ -51,7 +51,7 @@ public class SpriteDirectiveOccurrenceCollector
         throws FileNotFoundException, IOException
     {
         final Collection<SpriteImageOccurrence> occurrences = Lists.newArrayList();
-        final BufferedReader reader = new BufferedReader(resourceHandler.getReader(cssFile));
+        final BufferedReader reader = new BufferedReader(resourceHandler.getResourceAsReader(cssFile));
 
         int lineNumber = -1;
         String line;
@@ -96,7 +96,7 @@ public class SpriteDirectiveOccurrenceCollector
     {
         final Collection<SpriteReferenceOccurrence> directives = Lists.newArrayList();
 
-        final BufferedReader reader = new BufferedReader(resourceHandler.getReader(cssFile));
+        final BufferedReader reader = new BufferedReader(resourceHandler.getResourceAsReader(cssFile));
         int lineNumber = -1;
         String line;
 

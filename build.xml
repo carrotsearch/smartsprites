@@ -103,7 +103,11 @@
   </target>
 
   <target name="clean" description="Deletes all temporary files">
-    <delete dir="tmp" />
+    <delete includeEmptyDirs="true">
+      <fileset dir="tmp">
+        <exclude name="eclipse/**" />
+      </fileset>
+    </delete>
     <delete>
       <fileset dir="lib">
         <include name="smartsprites-*.jar" />

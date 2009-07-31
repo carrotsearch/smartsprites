@@ -40,7 +40,7 @@ public class SpriteBuilder
      * A cache of sprite image UIDs by sprite image file. This cache will help us to avoid
      * generating the MD5 each time we replace sprite image ocurrence in the CSS.
      */
-    private final Map<File, String> spriteImageUidBySpriteImageFile;
+    private final Map<String, String> spriteImageUidBySpriteImageFile;
 
     /**
      * A timestamp to use for timestamp-based sprite image UIDs. We need this time stamp
@@ -79,51 +79,45 @@ public class SpriteBuilder
     }
 
     /**
-     * Performs processing for this builder's parameters.
+     * Performs processing for this builder's parameters. This method resolves all paths
+     * against the local file system.
      */
+    @SuppressWarnings("unchecked")
     public void buildSprites() throws FileNotFoundException, IOException
     {
-        buildSprites(null);
+        final Collection<String> filePaths = Lists.newArrayList();
+
+        final File outputDir = parameters.getOutputDir() != null ? new File(parameters
+            .getOutputDir()) : null;
+        if (parameters.getOutputDir() != null && !outputDir.exists())
+        {
+            outputDir.mkdirs();
+        }
+
+        final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
+            new File(parameters.getRootDir()), new String []
+            {
+                "css"
+            }, true);
+
+        for (File file : files)
+        {
+            filePaths.add(file.getPath());
+        }
+
+        buildSprites(filePaths);
     }
 
     /**
      * Performs processing from the list of file paths for this builder's parameters.
      */
-    @SuppressWarnings("unchecked")
     public void buildSprites(Collection<String> filePaths) throws FileNotFoundException,
         IOException
     {
-        if (!parameters.validate(messageLog))
-        {
-            return;
-        }
-
         final long start = System.currentTimeMillis();
 
         final LevelCounterMessageSink levelCounter = new LevelCounterMessageSink();
         messageLog.addMessageSink(levelCounter);
-
-        if (parameters.getOutputDir() != null && !parameters.getOutputDir().exists())
-        {
-            parameters.getOutputDir().mkdirs();
-        }
-
-        // Initialize the paths if not defined
-        if (filePaths == null)
-        {
-            // Identify css files.
-            final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
-                parameters.getRootDir(), new String []
-                {
-                    "css"
-                }, true);
-
-            filePaths = new ArrayList<String>(files.size());
-            for (File file : files)
-            {
-                filePaths.add(FileUtils.getCanonicalOrAbsolutePath(file));
-            }
-        }
 
         // Collect sprite declaration from all css files
         final Multimap<String, SpriteImageOccurrence> spriteImageOccurrencesByFile = spriteDirectiveOccurrenceCollector
@@ -210,17 +204,11 @@ public class SpriteBuilder
         Map<Integer, SpriteReferenceReplacement> spriteReplacementsByLineNumber)
         throws IOException
     {
-        final File processedCssFile = getProcessedCssFile(new File(originalCssFile));
-        if (!processedCssFile.getParentFile().exists())
-        {
-            processedCssFile.getParentFile().mkdirs();
-        }
-
+        final String processedCssFile = getProcessedCssFile(originalCssFile);
         final BufferedReader originalCssReader = new BufferedReader(resourceHandler
-            .getReader(originalCssFile));
+            .getResourceAsReader(originalCssFile));
         final BufferedWriter processedCssWriter = new BufferedWriter(
-            new OutputStreamWriter(new FileOutputStream(processedCssFile), parameters
-                .getCssFileEncoding()));
+            resourceHandler.getResourceAsWriter(processedCssFile));
 
         String originalCssLine;
         int originalCssLineNumber = -1;
@@ -229,8 +217,7 @@ public class SpriteBuilder
         // Generate UID for sprite file
         try
         {
-            messageLog.info(MessageType.CREATING_CSS_STYLE_SHEET, processedCssFile
-                .getName());
+            messageLog.info(MessageType.CREATING_CSS_STYLE_SHEET, processedCssFile);
             messageLog.setCssFile(originalCssFile);
 
             while ((originalCssLine = originalCssReader.readLine()) != null)
@@ -317,15 +304,19 @@ public class SpriteBuilder
     /**
      * Gets the name of the processed CSS file.
      */
-    File getProcessedCssFile(File originalCssFile)
+    String getProcessedCssFile(String originalCssFile)
     {
-        final String originalCssFileName = originalCssFile.getName();
-        final String processedCssFileName = originalCssFileName.substring(0,
-            originalCssFileName.length() - 4)
-            + parameters.getCssFileSuffix() + ".css";
-
-        final File processedCssFile = new File(originalCssFile.getParentFile(),
-            processedCssFileName);
+        final int lastDotIndex = originalCssFile.lastIndexOf('.');
+        final String processedCssFile;
+        if (lastDotIndex >= 0)
+        {
+            processedCssFile = originalCssFile.substring(0, lastDotIndex)
+                + parameters.getCssFileSuffix() + originalCssFile.substring(lastDotIndex);
+        }
+        else
+        {
+            processedCssFile = originalCssFile + parameters.getCssFileSuffix();
+        }
 
         if (parameters.getOutputDir() != null)
         {
@@ -360,9 +351,9 @@ public class SpriteBuilder
         }
         else if (directive.uidType == SpriteImageDirective.SpriteUidType.MD5)
         {
-            final File imageFile = spriteImageBuilder.getImageFile(cssFile,
+            final String imageFile = spriteImageBuilder.getImageFile(cssFile,
                 (ie6 ? SpriteImageBuilder.addIe6Suffix(directive, true)
-                    : directive.imagePath), true);
+                    : directive.imagePath));
             if (spriteImageUidBySpriteImageFile.containsKey(directive))
             {
                 return spriteImageUidBySpriteImageFile.get(imageFile);
@@ -373,9 +364,10 @@ public class SpriteBuilder
                 final byte [] buffer = new byte [4069];
                 final MessageDigest digest = java.security.MessageDigest
                     .getInstance("MD5");
-                final InputStream is = new FileInputStream(imageFile);
+                InputStream is = null;
                 try
                 {
+                    is = resourceHandler.getResourceAsInputStream(imageFile);
                     final InputStream digestInputStream = new DigestInputStream(is,
                         digest);
                     while (digestInputStream.read(buffer) >= 0)

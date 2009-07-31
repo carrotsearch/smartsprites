@@ -1,6 +1,7 @@
 package org.carrot2.labs.smartsprites.resource;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 import org.apache.commons.io.FilenameUtils;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters;
@@ -21,53 +22,72 @@ public class FileSystemResourceHandler implements ResourceHandler
     private final MessageLog messageLog;
 
     /** The root directory */
-    private final File rootDir;
+    private final String documentRootDir;
 
-    /** The charset to assume in the {@link #getReader(String)} method. */
+    /** The charset to assume in the {@link #getResourceAsReader(String)} method. */
     private final String charset;
 
     /**
      * Creates a new {@link FileSystemResourceHandler}.
      * 
-     * @param rootDir the root directory
-     * @param charset the charset to assume in the {@link #getReader(String)} method
+     * @param documentRootDir the document root directory path, can be <code>null</code>
+     * @param charset the charset to assume in the {@link #getResourceAsReader(String)}
+     *            method
      * @param messageLog the message log
      */
-    public FileSystemResourceHandler(File rootDir, String charset, MessageLog messageLog)
+    public FileSystemResourceHandler(String documentRootDirPath, String charset,
+        MessageLog messageLog)
     {
-        this.rootDir = rootDir;
+        this.documentRootDir = documentRootDirPath;
         this.messageLog = messageLog;
         this.charset = charset;
+        if (!Charset.isSupported(charset))
+        {
+            messageLog.error(Message.MessageType.GENERIC, "Charset '" + charset
+                + "' is not supported.");
+        }
     }
 
-    public InputStream getResourceAsStream(String path)
+    public InputStream getResourceAsInputStream(String path) throws IOException
     {
-        InputStream is = null;
-        try
-        {
-            is = new FileInputStream(path);
-        }
-        catch (FileNotFoundException e)
-        {
-            messageLog.info(Message.MessageType.GENERIC, e.getMessage());
-        }
-
-        return is;
+        return new FileInputStream(FileUtils.getCanonicalOrAbsoluteFile(path));
     }
 
-    public Reader getReader(String path)
+    public Reader getResourceAsReader(String path) throws IOException
     {
-        Reader rd = null;
         try
         {
-            rd = new InputStreamReader(getResourceAsStream(path), charset);
+            return new InputStreamReader(getResourceAsInputStream(path), charset);
         }
         catch (UnsupportedEncodingException e)
         {
-            messageLog.info(Message.MessageType.GENERIC, e.getMessage());
+            // Should not happen as we're checking the charset in constructor
+            throw new RuntimeException(e);
         }
+    }
 
-        return rd;
+    public OutputStream getResourceAsOutputStream(String path) throws IOException
+    {
+        // Create directories if needed
+        final File parentFile = new File(path).getParentFile();
+        if (!parentFile.exists())
+        {
+            parentFile.mkdirs();
+        }
+        return new FileOutputStream(FileUtils.getCanonicalOrAbsoluteFile(path));
+    }
+
+    public Writer getResourceAsWriter(String path) throws IOException
+    {
+        try
+        {
+            return new OutputStreamWriter(getResourceAsOutputStream(path), charset);
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            // Should not happen as we're checking the charset in constructor
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -77,31 +97,22 @@ public class FileSystemResourceHandler implements ResourceHandler
      */
     public String getResourcePath(String baseFile, String filePath)
     {
-        File file = null;
         if (filePath.startsWith("/"))
         {
-            if (rootDir != null)
+            if (documentRootDir != null)
             {
-                file = new File(FileUtils.getCanonicalOrAbsoluteFile(rootDir), filePath
-                    .substring(1));
+                return FilenameUtils.concat(documentRootDir, filePath.substring(1));
             }
             else
             {
                 messageLog.warning(MessageType.ABSOLUTE_PATH_AND_NO_DOCUMENT_ROOT,
                     filePath);
+                return "";
             }
         }
         else
         {
-            String parentPath = "";
-            int idx = FilenameUtils.indexOfLastSeparator(baseFile);
-            if (idx != -1)
-            {
-                parentPath = baseFile.substring(0, idx);
-            }
-            file = new File(FilenameUtils.concat(parentPath, filePath));
+            return FilenameUtils.concat(FilenameUtils.getFullPath(baseFile), filePath);
         }
-
-        return file != null ? FileUtils.getCanonicalOrAbsolutePath(file) : "";
     }
 }

@@ -1,9 +1,7 @@
 package org.carrot2.labs.smartsprites;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Collection;
 import java.util.Map;
 
@@ -98,20 +96,18 @@ public class SpriteImageBuilder
             messageLog.setCssFile(spriteReferenceOccurrence.cssFile);
             messageLog.setLine(spriteReferenceOccurrence.line);
 
-            final InputStream is = resourceHandler.getResourceAsStream(resourceHandler
-                .getResourcePath(spriteReferenceOccurrence.cssFile,
-                    spriteReferenceOccurrence.imagePath));
-
-            // Load image
-            BufferedImage image = null;
-            String realImagePath = resourceHandler.getResourcePath(
+            final String realImagePath = resourceHandler.getResourcePath(
                 spriteReferenceOccurrence.cssFile, spriteReferenceOccurrence.imagePath);
+            InputStream is = null;
             try
             {
+                is = resourceHandler.getResourceAsInputStream(realImagePath);
+
+                // Load image
                 if (is != null)
                 {
                     messageLog.info(MessageType.READING_IMAGE, realImagePath);
-                    image = ImageIO.read(is);
+                    images.put(spriteReferenceOccurrence, ImageIO.read(is));
                 }
                 else
                 {
@@ -123,14 +119,12 @@ public class SpriteImageBuilder
             catch (final IOException e)
             {
                 CloseableUtils.closeIgnoringException(is);
-                messageLog.warning(MessageType.CANNOT_NOT_LOAD_IMAGE, realImagePath, e
-                    .getMessage());
+                messageLog.warning(MessageType.CANNOT_NOT_LOAD_IMAGE, realImagePath,
+                    "Can't read input file!");
                 continue;
             }
 
             messageLog.setCssFile(null);
-
-            images.put(spriteReferenceOccurrence, image);
         }
 
         final SpriteImageProperties spriteImageProperties = SpriteImageBuilder
@@ -162,26 +156,26 @@ public class SpriteImageBuilder
         String spritePath = addIe6Suffix(spriteImageDirective, ie6Reduced);
 
         // Save the image to the disk
-        final File mergedImageFile = getImageFile(firstSpriteEntry.cssFile, spritePath,
-            true);
+        final String mergedImageFile = getImageFile(firstSpriteEntry.cssFile, spritePath);
 
-        if (!mergedImageFile.getParentFile().exists())
-        {
-            mergedImageFile.getParentFile().mkdirs();
-        }
-
+        OutputStream spriteImageOuputStream = null;
         try
         {
             messageLog.info(MessageType.WRITING_SPRITE_IMAGE, mergedImage.getWidth(),
-                mergedImage.getHeight(), spriteImageDirective.spriteId, mergedImageFile
-                    .getName());
+                mergedImage.getHeight(), spriteImageDirective.spriteId, spritePath);
+            spriteImageOuputStream = resourceHandler
+                .getResourceAsOutputStream(mergedImageFile);
             ImageIO.write(mergedImage, spriteImageDirective.format.toString(),
-                mergedImageFile);
+                spriteImageOuputStream);
         }
         catch (final IOException e)
         {
-            messageLog.info(MessageType.CANNOT_WRITE_SPRITE_IMAGE, FileUtils
-                .getCanonicalOrAbsolutePath(mergedImageFile), e.getMessage());
+            messageLog.warning(MessageType.CANNOT_WRITE_SPRITE_IMAGE, mergedImageFile, e
+                .getMessage());
+        }
+        finally
+        {
+            CloseableUtils.closeIgnoringException(spriteImageOuputStream);
         }
     }
 
@@ -210,34 +204,24 @@ public class SpriteImageBuilder
     }
 
     /**
-     * Canonicalize the path returned from {@link #getImageFile0(File, String, boolean)}
-     * for Linux and Unix systems. Paths that contain non-existing components, followed by
-     * <code>/../</code> throw exceptions on such systems.
+     * Computes the image path. If the imagePath is relative, it's taken relative to the
+     * cssFile. If imagePath is absolute (starts with '/') and documentRootDir is not
+     * null, it's taken relative to documentRootDir.
      */
-    File getImageFile(String cssFile, String imagePath, boolean changeRoot)
+    String getImageFile(String cssFile, String imagePath)
     {
-        return FileUtils.getCanonicalOrAbsoluteFile(getImageFile0(cssFile, imagePath,
-            changeRoot));
-    }
+        // Absolute path resolution is done by resourceHandler
+        final String path = resourceHandler.getResourcePath(cssFile, imagePath);
 
-    /**
-     * Returns the {@link File} for an imagePath. If the imagePath is relative, it's taken
-     * relative to the cssFile. If imagePath is absolute (starts with '/') and
-     * documentRootDir is not null, it's taken relative to documentRootDir.
-     */
-    File getImageFile0(String cssFile, String imagePath, boolean changeRoot)
-    {
-        String path = resourceHandler.getResourcePath(cssFile, imagePath);
-        final File file = new File(path);
-
-        if (changeRoot && !imagePath.startsWith("/") && parameters.getOutputDir() != null)
+        // Just handle the root directory changing
+        if (!imagePath.startsWith("/") && parameters.getOutputDir() != null)
         {
-            return FileUtils.changeRoot(file, parameters.getRootDir(), parameters
+            return FileUtils.changeRoot(path, parameters.getRootDir(), parameters
                 .getOutputDir());
         }
         else
         {
-            return file;
+            return path;
         }
     }
 

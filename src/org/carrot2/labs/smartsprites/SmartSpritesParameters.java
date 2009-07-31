@@ -21,8 +21,8 @@ public class SmartSpritesParameters
      * provided. The root.dir.path can be either absolute, e.g. c:/myproject/web or
      * relative to the directory in which this script is run.
      */
-    @Option(name = "--root-dir-path", required = true)
-    private File rootDir;
+    @Option(name = "--root-dir-path", required = true, metaVar = "DIR")
+    private String rootDir;
 
     /**
      * Output directory for processed CSS files and CSS-relative sprite images. The
@@ -42,8 +42,8 @@ public class SmartSpritesParameters
      * If you are using a non-empty output.dir.path, you might want to use an empty
      * css.file.suffix.
      */
-    @Option(name = "--output-dir-path")
-    private File outputDir;
+    @Option(name = "--output-dir-path", metaVar = "DIR")
+    private String outputDir;
 
     /**
      * Document root path for document-root-relative (starting with '/') image urls in
@@ -52,8 +52,8 @@ public class SmartSpritesParameters
      * document.root.dir.path. You can leave this property empty if your CSS uses only
      * CSS-relative image URLs. *
      */
-    @Option(name = "--document-root-dir-path")
-    private File documentRootDir;
+    @Option(name = "--document-root-dir-path", metaVar = "DIR")
+    private String documentRootDir;
 
     /**
      * Message logging level. If you're getting lots of INFO messages and want to see only
@@ -127,14 +127,17 @@ public class SmartSpritesParameters
     /**
      * Creates the parameter with most default values.
      */
-    public SmartSpritesParameters(File rootDir)
+    public SmartSpritesParameters(String rootDir)
     {
         this(rootDir, null, null, MessageLevel.INFO, DEFAULT_CSS_FILE_SUFFIX,
             DEFAULT_CSS_INDENT, DEFAULT_SPRITE_PNG_DEPTH, DEFAULT_SPRITE_PNG_IE6,
             DEFAULT_CSS_FILE_ENCODING);
     }
 
-    public SmartSpritesParameters(File rootDir, MessageLevel messageLevel,
+    /**
+     * Creates the parameter with most default values.
+     */
+    public SmartSpritesParameters(String rootDir, MessageLevel messageLevel,
         String cssFileSuffix, PngDepth spritePngDepth, boolean spritePngIe6)
     {
         this(rootDir, null, null, messageLevel, cssFileSuffix, DEFAULT_CSS_INDENT,
@@ -144,9 +147,10 @@ public class SmartSpritesParameters
     /**
      * Creates the parameter.
      */
-    public SmartSpritesParameters(File rootDir, File outputDir, File documentRootDir,
-        MessageLevel logLevel, String cssFileSuffix, String cssPropertyIndent,
-        PngDepth spritePngDepth, boolean spritePngIe6, String cssEncoding)
+    public SmartSpritesParameters(String rootDir, String outputDir,
+        String documentRootDir, MessageLevel logLevel, String cssFileSuffix,
+        String cssPropertyIndent, PngDepth spritePngDepth, boolean spritePngIe6,
+        String cssEncoding)
     {
         this.rootDir = rootDir;
         this.outputDir = outputDir;
@@ -160,15 +164,16 @@ public class SmartSpritesParameters
     }
 
     /**
-     * Validates the provided parameters.
-     *
+     * Validates the provided parameters. All resource paths are resolved agains the local
+     * file system.
+     * 
      * @return <code>true</code> if the parameters are valid
      */
     public boolean validate(MessageLog log)
     {
         boolean valid = true;
-        
-        rootDir = FileUtils.getCanonicalOrAbsoluteFile(rootDir);
+
+        File rootDir = FileUtils.getCanonicalOrAbsoluteFile(this.rootDir);
         if (!rootDir.exists() || !rootDir.isDirectory())
         {
             log.error(MessageType.ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY, rootDir);
@@ -177,7 +182,7 @@ public class SmartSpritesParameters
 
         if (outputDir != null)
         {
-            outputDir = FileUtils.getCanonicalOrAbsoluteFile(outputDir);
+            File outputDir = FileUtils.getCanonicalOrAbsoluteFile(this.outputDir);
             if (outputDir.exists() && !outputDir.isDirectory())
             {
                 log.error(MessageType.OUTPUT_DIR_IS_NOT_DIRECTORY, outputDir);
@@ -187,7 +192,8 @@ public class SmartSpritesParameters
 
         if (documentRootDir != null)
         {
-            documentRootDir = FileUtils.getCanonicalOrAbsoluteFile(documentRootDir);
+            File documentRootDir = FileUtils
+                .getCanonicalOrAbsoluteFile(this.documentRootDir);
             if (!documentRootDir.exists() || !documentRootDir.isDirectory())
             {
                 log.error(
@@ -196,7 +202,7 @@ public class SmartSpritesParameters
                 valid = false;
             }
         }
-        
+
         return valid;
     }
 
@@ -221,17 +227,17 @@ public class SmartSpritesParameters
         }
     }
 
-    public File getRootDir()
+    public String getRootDir()
     {
         return rootDir;
     }
 
-    public File getOutputDir()
+    public String getOutputDir()
     {
         return outputDir;
     }
 
-    public File getDocumentRootDir()
+    public String getDocumentRootDir()
     {
         return documentRootDir;
     }
