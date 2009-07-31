@@ -9,8 +9,8 @@
         <ant dir="${smartsprites.dir}" antfile="build.xml" target="clean" inheritall="true" />
     </target>
 
-    <target name="test" description="Run SmartSprites unit tests">
-        <ant dir="${smartsprites.dir}" antfile="build.xml" target="test" inheritall="true" />
+    <target name="reports" description="Run SmartSprites unit tests and code quality reports">
+        <ant dir="${smartsprites.dir}" antfile="build.xml" target="reports" inheritall="true" />
     </target>
 
     <target name="dist" description="Build SmartSprites distribution">
