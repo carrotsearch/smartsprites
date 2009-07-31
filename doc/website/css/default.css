@@ -178,7 +178,7 @@ ul.menu li a {
 }
 .menu li#last {
 	border-right: none;
-  width: 186px;
+  width: 92px;
 }
 
 
@@ -217,3 +217,37 @@ ul.menu li a {
 	background: #0A0A0A;
 	color: #666;
 } 
+
+/* Bamboo build status */
+#buildStatus,
+#buildStatusInner,
+#buildStatusInner2,
+#buildStatusInner3 {
+  display: inline;
+	background-image: none;
+}
+
+#buildStatus
+{
+  font-size: 100%;
+	background-image: none;
+  float: none;
+  width: auto;
+}
+
+#buildStatus p {
+  background-position: left center;
+  line-height: 20px;
+  padding: 0 0 0 20px;
+  display: inline;
+  color: #808080;
+  margin-left: 4px;
+}
+
+#buildStatus strong {
+  display: none;
+}
+
+div.build-info {
+  margin-left: 10px;
+}
