@@ -93,7 +93,6 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     }
 
     @Test
-    @Ignore
     public void testMultipleCssFiles() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("multiple-css-files");
