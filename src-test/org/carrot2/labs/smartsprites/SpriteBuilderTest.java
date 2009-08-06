@@ -6,6 +6,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -13,7 +14,10 @@ import org.apache.commons.io.FileUtils;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters.PngDepth;
 import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
+import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.junit.*;
+
+import com.google.common.collect.Lists;
 
 /**
  * Test cases for {@link SpriteBuilder}. The test cases read/ write files to the
@@ -199,7 +203,6 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File documentRootDir = testDir("absolute-image-url/absolute-path");
         buildSprites(filesystemSmartSpritesParameters(testDir, null, documentRootDir,
             MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
-            SmartSpritesParameters.DEFAULT_CSS_INDENT,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
             SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
@@ -211,7 +214,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             new Dimension(17, 17));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
 
-        spriteFile.delete();
+        org.carrot2.util.FileUtils.deleteThrowingExceptions(spriteFile);
     }
 
     @Test
@@ -220,10 +223,10 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("non-default-output-dir");
         final File documentRootDir = testDir("non-default-output-dir/absolute-path");
         final File outputDir = testDir("non-default-output-dir/output-dir");
-        outputDir.mkdirs();
-        buildSprites(filesystemSmartSpritesParameters(testDir, outputDir, documentRootDir,
-            MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
-            SmartSpritesParameters.DEFAULT_CSS_INDENT,
+        org.carrot2.util.FileUtils.mkdirsThrowingExceptions(outputDir);
+        buildSprites(filesystemSmartSpritesParameters(testDir, outputDir,
+            documentRootDir, MessageLevel.INFO,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
             SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
@@ -251,10 +254,9 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("css-output-dir");
         final File rootDir = new File(testDir, "css/sprite").getCanonicalFile();
         final File outputDir = testDir("css-output-dir/output-dir/css");
-        outputDir.mkdirs();
+        org.carrot2.util.FileUtils.mkdirsThrowingExceptions(outputDir);
         buildSprites(filesystemSmartSpritesParameters(rootDir, outputDir, null,
             MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
-            SmartSpritesParameters.DEFAULT_CSS_INDENT,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
             SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
             SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
@@ -312,10 +314,9 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     public void testIndexedForcedDirectColor() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("indexed-color");
-        buildSprites(filesystemSmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
-            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
-            SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.DIRECT,
-            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
+        buildSprites(filesystemSmartSpritesParameters(testDir, null, null,
+            MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            PngDepth.DIRECT, SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
             SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
         org.carrot2.labs.test.Assertions.assertThat(
@@ -335,10 +336,9 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     public void testIndexedForcedIndexedColor() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("indexed-color");
-        buildSprites(filesystemSmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
-            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
-            SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.INDEXED,
-            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
+        buildSprites(filesystemSmartSpritesParameters(testDir, null, null,
+            MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            PngDepth.INDEXED, SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
             SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
         org.carrot2.labs.test.Assertions.assertThat(
@@ -408,10 +408,9 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     public void testMatteColorForcedIndex() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("matte-color");
-        buildSprites(filesystemSmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
-            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
-            SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.INDEXED,
-            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
+        buildSprites(filesystemSmartSpritesParameters(testDir, null, null,
+            MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            PngDepth.INDEXED, SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
             SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
         org.carrot2.labs.test.Assertions.assertThat(
@@ -454,10 +453,9 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     public void testIe6IndexedColor() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("indexed-color-ie6");
-        buildSprites(filesystemSmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
-            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
-            SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.AUTO, true,
-            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
+        buildSprites(filesystemSmartSpritesParameters(testDir, null, null,
+            MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            PngDepth.AUTO, true, SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
         org.carrot2.labs.test.Assertions.assertThat(
             sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor().hasBitAlpha();
@@ -516,10 +514,9 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     public void testSpriteImageUidMd5Ie6() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("sprite-image-uid-md5-ie6");
-        buildSprites(filesystemSmartSpritesParameters(testDir, null, null, MessageLevel.INFO,
-            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
-            SmartSpritesParameters.DEFAULT_CSS_INDENT, PngDepth.AUTO, true,
-            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
+        buildSprites(filesystemSmartSpritesParameters(testDir, null, null,
+            MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            PngDepth.AUTO, true, SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
@@ -529,11 +526,82 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
+    @Test
+    public void testIndividualCssFilesWithoutOutputDir() throws IOException
+    {
+        final File testDir = testDir("individual-css-files-without-output-dir");
+        final File css = new File(testDir, "css/style-sprite.css");
+        final File customCss = new File(testDir, "css/custom/style-sprite.css");
+        final File otherCss = new File(testDir, "css-other/style-sprite.css");
+        final File sprite = new File(testDir, "img/sprite.png");
+        try
+        {
+            buildSprites(Lists.newArrayList(
+                new File(testDir, "/css/style.css").getPath(), new File(testDir,
+                    "css/custom/style.css").getPath(), new File(testDir,
+                    "css-other/style.css").getPath()));
+            assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+            assertThat(css).hasSameContentAs(new File(testDir, "css/style-expected.css"));
+            assertThat(customCss).hasSameContentAs(
+                new File(testDir, "css/custom/style-expected.css"));
+            assertThat(otherCss).hasSameContentAs(
+                new File(testDir, "css-other/style-expected.css"));
+            assertThat(sprite).exists();
+            org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
+                new Dimension(17, 51));
+        }
+        finally
+        {
+            org.carrot2.util.FileUtils.deleteThrowingExceptions(css, otherCss, customCss,
+                sprite);
+        }
+    }
+
+    @Test
+    public void testIndividualCssFilesWithOutputDir() throws IOException
+    {
+        final File testDir = testDir("individual-css-files-with-output-dir");
+        final File outputDir = new File(testDir, "output");
+        final File css = new File(outputDir, "style-sprite.css");
+        final File customCss = new File(outputDir, "custom/style-sprite.css");
+        final File otherCss = new File(testDir, "css-other/style-sprite.css");
+        final File sprite = new File(testDir, "img/sprite.png");
+        try
+        {
+            final String otherCssPath = new File(testDir, "css-other/style.css")
+                .getPath();
+            buildSprites(Lists.newArrayList(new File(testDir, "css/style.css").getPath(),
+                new File(testDir, "css/custom/style.css").getPath(), otherCssPath),
+                new File(testDir, "css").getPath(), outputDir.getPath());
+            assertThat(css).hasSameContentAs(new File(testDir, "css/style-expected.css"));
+            assertThat(customCss).hasSameContentAs(
+                new File(testDir, "css/custom/style-expected.css"));
+            assertThat(otherCss).doesNotExist();
+            assertThat(sprite).exists();
+            org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
+                new Dimension(17, 34));
+            assertThat(messages).contains(
+                new Message(MessageLevel.WARN,
+                    MessageType.IGNORING_CSS_FILE_OUTSIDE_OF_ROOT_DIR, otherCssPath));
+        }
+        finally
+        {
+            FileUtils.deleteDirectory(outputDir);
+            org.carrot2.util.FileUtils.deleteThrowingExceptions(sprite);
+        }
+    }
+
     @After
-    public void cleanUp()
+    public void cleanUp() throws IOException
     {
         // Delete sprite CSS
-        deleteFiles(new File(spriteBuilder.parameters.getRootDir(), "css")
+        final String rootDir = spriteBuilder.parameters.getRootDir();
+        if (rootDir == null)
+        {
+            return;
+        }
+
+        org.carrot2.util.FileUtils.deleteThrowingExceptions(new File(rootDir, "css")
             .listFiles(new FilenameFilter()
             {
                 public boolean accept(File dir, String name)
@@ -543,7 +611,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             }));
 
         // Delete sprites
-        deleteFiles(new File(spriteBuilder.parameters.getRootDir(), "img")
+        org.carrot2.util.FileUtils.deleteThrowingExceptions(new File(rootDir, "img")
             .listFiles(new FilenameFilter()
             {
                 public boolean accept(File dir, String name)
@@ -551,17 +619,6 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
                     return name.startsWith("sprite");
                 }
             }));
-    }
-
-    private void deleteFiles(final File [] files)
-    {
-        if (files != null)
-        {
-            for (File file : files)
-            {
-                file.delete();
-            }
-        }
     }
 
     private File testDir(String test)
@@ -609,6 +666,22 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         buildSprites(new SmartSpritesParameters(dir.getPath()));
     }
 
+    private void buildSprites(List<String> cssFiles) throws IOException
+    {
+        buildSprites(cssFiles, null, null);
+    }
+
+    private void buildSprites(List<String> cssFiles, String rootDir, String outputDir)
+        throws IOException
+    {
+        buildSprites(new SmartSpritesParameters(rootDir, cssFiles, outputDir, null,
+            SmartSpritesParameters.DEFAULT_LOGGING_LEVEL,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
+    }
+
     private void buildSprites(SmartSpritesParameters parameters) throws IOException
     {
         spriteBuilder = new SpriteBuilder(parameters, messageLog);
@@ -617,13 +690,13 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
 
     private static SmartSpritesParameters filesystemSmartSpritesParameters(File rootDir,
         File outputDir, File documentRootDir, MessageLevel logLevel,
-        String cssFileSuffix, String cssPropertyIndent, PngDepth spritePngDepth,
-        boolean spritePngIe6, String cssEncoding)
+        String cssFileSuffix, PngDepth spritePngDepth, boolean spritePngIe6,
+        String cssEncoding)
     {
-        return new SmartSpritesParameters(rootDir.getPath(),
+        return new SmartSpritesParameters(rootDir.getPath(), null,
             outputDir != null ? outputDir.getPath() : null,
             documentRootDir != null ? documentRootDir.getPath() : null, logLevel,
-            cssFileSuffix, cssPropertyIndent, spritePngDepth, spritePngIe6, cssEncoding);
+            cssFileSuffix, spritePngDepth, spritePngIe6, cssEncoding);
     }
 
 }

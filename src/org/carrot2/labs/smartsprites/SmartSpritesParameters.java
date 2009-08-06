@@ -1,19 +1,21 @@
 package org.carrot2.labs.smartsprites;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.FileUtils;
+import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
 /**
  * Contains invocation parameters for SmartSprites, provides methods for validating the
  * parameters.
  */
-public class SmartSpritesParameters
+public final class SmartSpritesParameters
 {
     /**
      * Path to the directory that contains the css files to be processed. Directories
@@ -21,8 +23,19 @@ public class SmartSpritesParameters
      * provided. The root.dir.path can be either absolute, e.g. c:/myproject/web or
      * relative to the directory in which this script is run.
      */
-    @Option(name = "--root-dir-path", required = true, metaVar = "DIR")
+    @Option(name = "--root-dir-path", required = false, metaVar = "DIR")
     private String rootDir;
+
+    /**
+     * Paths to individual CSS files to process. Either {@link #rootDir} or
+     * {@link #cssFiles} must be not empty. If only {@link #cssFiles} is not empty,
+     * {@link #outputDir} must be blank. If both {@link #rootDir} and {@link #cssFiles}
+     * are not empty, {@link #outputDir} is supported but only {@link #cssFiles} from
+     * {@link #rootDir} are processed.
+     */
+    @Argument
+    @Option(name = "--css-files", required = false, metaVar = "FILES")
+    private List<String> cssFiles;
 
     /**
      * Output directory for processed CSS files and CSS-relative sprite images. The
@@ -75,11 +88,6 @@ public class SmartSpritesParameters
     private String cssFileSuffix;
 
     /**
-     * How generated CSS properties should be indented.
-     */
-    private String cssPropertyIndent;
-
-    /**
      * The required depth of the generated PNG sprites.
      */
     @Option(name = "--sprite-png-depth")
@@ -91,9 +99,6 @@ public class SmartSpritesParameters
      */
     @Option(name = "--sprite-png-ie6")
     private boolean spritePngIe6;
-
-    /** Default indent for the generated CSS properties. */
-    public static final String DEFAULT_CSS_INDENT = "  ";
 
     /** The default suffix to be added to the generated CSS files. */
     public static final String DEFAULT_CSS_FILE_SUFFIX = "-sprite";
@@ -125,39 +130,28 @@ public class SmartSpritesParameters
     }
 
     /**
-     * Creates the parameter with most default values.
+     * Creates the parameters with most default values.
      */
     public SmartSpritesParameters(String rootDir)
     {
-        this(rootDir, null, null, MessageLevel.INFO, DEFAULT_CSS_FILE_SUFFIX,
-            DEFAULT_CSS_INDENT, DEFAULT_SPRITE_PNG_DEPTH, DEFAULT_SPRITE_PNG_IE6,
-            DEFAULT_CSS_FILE_ENCODING);
+        this(rootDir, null, null, null, MessageLevel.INFO, DEFAULT_CSS_FILE_SUFFIX,
+            DEFAULT_SPRITE_PNG_DEPTH, DEFAULT_SPRITE_PNG_IE6, DEFAULT_CSS_FILE_ENCODING);
     }
 
     /**
-     * Creates the parameter with most default values.
+     * Creates the parameters.
      */
-    public SmartSpritesParameters(String rootDir, MessageLevel messageLevel,
-        String cssFileSuffix, PngDepth spritePngDepth, boolean spritePngIe6)
-    {
-        this(rootDir, null, null, messageLevel, cssFileSuffix, DEFAULT_CSS_INDENT,
-            spritePngDepth, spritePngIe6, DEFAULT_CSS_FILE_ENCODING);
-    }
-
-    /**
-     * Creates the parameter.
-     */
-    public SmartSpritesParameters(String rootDir, String outputDir,
-        String documentRootDir, MessageLevel logLevel, String cssFileSuffix,
-        String cssPropertyIndent, PngDepth spritePngDepth, boolean spritePngIe6,
+    public SmartSpritesParameters(String rootDir, List<String> cssFiles,
+        String outputDir, String documentRootDir, MessageLevel logLevel,
+        String cssFileSuffix, PngDepth spritePngDepth, boolean spritePngIe6,
         String cssEncoding)
     {
         this.rootDir = rootDir;
+        this.cssFiles = cssFiles;
         this.outputDir = outputDir;
         this.documentRootDir = documentRootDir;
         this.logLevel = logLevel;
         this.cssFileEncoding = cssEncoding;
-        this.cssPropertyIndent = cssPropertyIndent;
         this.cssFileSuffix = getCssFileSuffix(cssFileSuffix);
         this.spritePngDepth = spritePngDepth;
         this.spritePngIe6 = spritePngIe6;
@@ -173,32 +167,55 @@ public class SmartSpritesParameters
     {
         boolean valid = true;
 
-        File rootDir = FileUtils.getCanonicalOrAbsoluteFile(this.rootDir);
-        if (!rootDir.exists() || !rootDir.isDirectory())
+        if (StringUtils.isBlank(rootDir) && !hasCssFiles())
         {
-            log.error(MessageType.ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY, rootDir);
-            valid = false;
+            log.error(MessageType.EITHER_ROOT_DIR_OR_CSS_FILES_IS_REQIRED);
+            return false;
         }
 
-        if (outputDir != null)
+        if (StringUtils.isNotBlank(this.rootDir))
         {
-            File outputDir = FileUtils.getCanonicalOrAbsoluteFile(this.outputDir);
-            if (outputDir.exists() && !outputDir.isDirectory())
+            final File rootDir = FileUtils.getCanonicalOrAbsoluteFile(this.rootDir);
+            if ((!rootDir.exists() || !rootDir.isDirectory()))
             {
-                log.error(MessageType.OUTPUT_DIR_IS_NOT_DIRECTORY, outputDir);
+                log.error(MessageType.ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY,
+                    this.rootDir);
                 valid = false;
             }
         }
 
-        if (documentRootDir != null)
+        if (StringUtils.isNotBlank(this.outputDir))
         {
-            File documentRootDir = FileUtils
+            if (StringUtils.isBlank(this.rootDir))
+            {
+                log.error(MessageType.ROOT_DIR_IS_REQIRED_FOR_OUTPUT_DIR);
+                return false;
+            }
+
+            final File outputDir = FileUtils.getCanonicalOrAbsoluteFile(this.outputDir);
+            if (outputDir.exists() && !outputDir.isDirectory())
+            {
+                log.error(MessageType.OUTPUT_DIR_IS_NOT_DIRECTORY, this.outputDir);
+                valid = false;
+            }
+        }
+
+        if (StringUtils.isBlank(this.outputDir) && StringUtils.isBlank(cssFileSuffix))
+        {
+            log
+                .error(MessageType.CSS_FILE_SUFFIX_IS_REQUIRED_IF_NO_OUTPUT_DIR);
+            valid = false;
+        }
+
+        if (StringUtils.isNotBlank(documentRootDir))
+        {
+            final File documentRootDir = FileUtils
                 .getCanonicalOrAbsoluteFile(this.documentRootDir);
             if (!documentRootDir.exists() || !documentRootDir.isDirectory())
             {
                 log.error(
                     MessageType.DOCUMENT_ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY,
-                    documentRootDir);
+                    this.documentRootDir);
                 valid = false;
             }
         }
@@ -208,7 +225,7 @@ public class SmartSpritesParameters
 
     private String getCssFileSuffix(String suffix)
     {
-        if (StringUtils.isBlank(suffix))
+        if (suffix == null)
         {
             if (outputDir == null)
             {
@@ -226,10 +243,20 @@ public class SmartSpritesParameters
             return suffix;
         }
     }
-
+    
     public String getRootDir()
     {
         return rootDir;
+    }
+
+    public List<String> getCssFiles()
+    {
+        return cssFiles;
+    }
+
+    public boolean hasCssFiles()
+    {
+        return cssFiles != null && !cssFiles.isEmpty();
     }
 
     public String getOutputDir()
@@ -250,11 +277,6 @@ public class SmartSpritesParameters
     public String getCssFileSuffix()
     {
         return cssFileSuffix;
-    }
-
-    public String getCssPropertyIndent()
-    {
-        return cssPropertyIndent;
     }
 
     public PngDepth getSpritePngDepth()

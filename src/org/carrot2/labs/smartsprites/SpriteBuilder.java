@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.security.*;
 import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
 import org.carrot2.labs.smartsprites.message.*;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.resource.FileSystemResourceHandler;
@@ -84,31 +85,66 @@ public class SpriteBuilder
     @SuppressWarnings("unchecked")
     public void buildSprites() throws FileNotFoundException, IOException
     {
-        final Collection<String> filePaths = Lists.newArrayList();
-
-        final File outputDir = parameters.getOutputDir() != null ? new File(parameters
-            .getOutputDir()) : null;
-        if (parameters.getOutputDir() != null && !outputDir.exists())
+        if (!parameters.validate(messageLog))
         {
-            if (!outputDir.mkdirs())
+            return;
+        }
+
+        final Collection<String> filePaths;
+        if (parameters.getCssFiles() != null && !parameters.getCssFiles().isEmpty())
+        {
+            // Take directly provided css fle paths
+            filePaths = parameters.getCssFiles();
+
+            // If root dir is provided, filter out those files that are outside root dir
+            if (StringUtils.isNotBlank(parameters.getOutputDir()))
             {
-                messageLog.warning(Message.MessageType.CANNOT_CREATE_DIRECTORIES, 
-                    outputDir.getPath());
+                filterFilesOutsideRootDir(filePaths);
+            }
+        }
+        else
+        {
+            // Take all css files from the root dir
+            filePaths = Lists.newArrayList();
+            final File outputDir = parameters.getOutputDir() != null ? new File(
+                parameters.getOutputDir()) : null;
+            if (parameters.getOutputDir() != null && !outputDir.exists())
+            {
+                if (!outputDir.mkdirs())
+                {
+                    messageLog.warning(Message.MessageType.CANNOT_CREATE_DIRECTORIES,
+                        outputDir.getPath());
+                }
+            }
+
+            final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
+                new File(parameters.getRootDir()), new String []
+                {
+                    "css"
+                }, true);
+
+            for (File file : files)
+            {
+                filePaths.add(file.getPath());
             }
         }
 
-        final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
-            new File(parameters.getRootDir()), new String []
-            {
-                "css"
-            }, true);
-
-        for (File file : files)
-        {
-            filePaths.add(file.getPath());
-        }
-
         buildSprites(filePaths);
+    }
+
+    private void filterFilesOutsideRootDir(Collection<String> filePaths)
+    {
+        final File rootDir = new File(parameters.getRootDir());
+        for (Iterator<String> it = filePaths.iterator(); it.hasNext();)
+        {
+            final String filePath = it.next();
+            if (!FileUtils.isFileInParent(new File(filePath), rootDir))
+            {
+                it.remove();
+                messageLog.warning(MessageType.IGNORING_CSS_FILE_OUTSIDE_OF_ROOT_DIR,
+                    filePath);
+            }
+        }
     }
 
     /**
@@ -122,7 +158,7 @@ public class SpriteBuilder
         final LevelCounterMessageSink levelCounter = new LevelCounterMessageSink();
         messageLog.addMessageSink(levelCounter);
 
-        // Collect sprite declaration from all css files
+        // Collect sprite declarations from all css files
         final Multimap<String, SpriteImageOccurrence> spriteImageOccurrencesByFile = spriteDirectiveOccurrenceCollector
             .collectSpriteImageOccurrences(filePaths);
 
@@ -210,8 +246,8 @@ public class SpriteBuilder
         final String processedCssFile = getProcessedCssFile(originalCssFile);
         final BufferedReader originalCssReader = new BufferedReader(resourceHandler
             .getResourceAsReader(originalCssFile));
-        final BufferedWriter processedCssWriter = new BufferedWriter(
-            resourceHandler.getResourceAsWriter(processedCssFile));
+        final BufferedWriter processedCssWriter = new BufferedWriter(resourceHandler
+            .getResourceAsWriter(processedCssFile));
 
         String originalCssLine;
         int originalCssLineNumber = -1;
@@ -370,8 +406,7 @@ public class SpriteBuilder
                 try
                 {
                     is = resourceHandler.getResourceAsInputStream(imageFile);
-                    digestInputStream = new DigestInputStream(is,
-                        digest);
+                    digestInputStream = new DigestInputStream(is, digest);
                     while (digestInputStream.read(buffer) >= 0)
                     {
                     }

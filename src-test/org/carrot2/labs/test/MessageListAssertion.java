@@ -124,7 +124,13 @@ public class MessageListAssertion
         final StringBuilder messages = new StringBuilder();
         for (Message message : actual)
         {
-            if (message.level == level)
+            // Ignore status messages
+            if (message.level.equals(MessageLevel.STATUS))
+            {
+                continue;
+            }
+            
+            if (MessageLevel.COMPARATOR.compare(message.level, level) >= 0)
             {
                 levelCount++;
                 messages.append(message.toString());
@@ -134,7 +140,7 @@ public class MessageListAssertion
 
         if (levelCount > 0)
         {
-            Fail.fail("Found " + levelCount + " " + level.name() + " messages: "
+            Fail.fail("Found " + levelCount + " " + level.name() + "+ messages: "
                 + messages.substring(0, messages.length() - 2));
         }
 

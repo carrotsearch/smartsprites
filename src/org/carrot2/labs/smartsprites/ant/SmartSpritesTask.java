@@ -26,7 +26,6 @@ public class SmartSpritesTask extends Task
     private MessageLevel failOnLevel;
     private String cssFileSuffix = SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX;
     private String cssFileEncoding = SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING;
-    private String cssPropertyIndent = SmartSpritesParameters.DEFAULT_CSS_INDENT;
     private PngDepth spritePngDepth = SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH;
     private boolean spritePngIe6 = SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6;
 
@@ -77,11 +76,6 @@ public class SmartSpritesTask extends Task
         this.cssFileSuffix = cssFileSuffix;
     }
 
-    public void setCssPropertyIndent(String cssPropertyIndent)
-    {
-        this.cssPropertyIndent = cssPropertyIndent;
-    }
-
     public void setSpritePngDepth(String spritePngDepthString)
     {
         this.spritePngDepth = EnumUtils.valueOf(spritePngDepthString, PngDepth.class,
@@ -97,9 +91,9 @@ public class SmartSpritesTask extends Task
     public void execute() throws BuildException
     {
         final SmartSpritesParameters parameters = new SmartSpritesParameters(
-            absolutePathOrNull(rootDir), absolutePathOrNull(outputDir),
-            absolutePathOrNull(documentRootDir), logLevel, cssFileSuffix,
-            cssPropertyIndent, spritePngDepth, spritePngIe6, cssFileEncoding);
+            absolutePathOrNull(rootDir), null,
+            absolutePathOrNull(outputDir), absolutePathOrNull(documentRootDir), logLevel,
+            cssFileSuffix, spritePngDepth, spritePngIe6, cssFileEncoding);
 
         final FailureDetectorMessageSink failureDetectorMessageSink = new FailureDetectorMessageSink();
         MessageLog log = new MessageLog(new AntLogMessageSink(),

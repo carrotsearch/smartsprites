@@ -40,9 +40,6 @@ public class SmartSprites
         // Get parameters form system properties
         final MessageLog messageLog = new MessageLog(new PrintStreamMessageSink(
             System.out, parameters.getLogLevel()));
-        if (!parameters.validate(messageLog)) {
-            return;
-        }
         new SpriteBuilder(parameters, messageLog).buildSprites();
     }
 }

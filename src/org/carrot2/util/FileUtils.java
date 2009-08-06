@@ -2,8 +2,11 @@ package org.carrot2.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.commons.io.FilenameUtils;
+
+import com.google.common.collect.Lists;
 
 /**
  * Various utility methods for working with {@link File}s.
@@ -37,5 +40,68 @@ public class FileUtils
         // shouldn't return null here.
         final String relativePath = PathUtils.getRelativeFilePath(oldRoot, file);
         return FilenameUtils.concat(newRoot, relativePath);
+    }
+
+    /**
+     * Attempts to delete the provided filesand throws an {@link IOException} in case
+     * {@link File#delete()} returns <code>false</code> for any of them.
+     */
+    public static void deleteThrowingExceptions(File... files) throws IOException
+    {
+        if (files == null)
+        {
+            return;
+        }
+
+        final ArrayList<String> undeletedFiles = Lists.newArrayList();
+        for (File file : files)
+        {
+            if (file == null)
+            {
+                continue;
+            }
+
+            if (!file.delete())
+            {
+                undeletedFiles.add(file.getPath());
+            }
+        }
+
+        if (!undeletedFiles.isEmpty())
+        {
+            throw new IOException("Unable to delete files: " + undeletedFiles.toString());
+        }
+    }
+
+    /**
+     * Calls {@link File#mkdirs()} on the provided argument and throws an
+     * {@link IOException} if the call returns <code>false</code>.
+     */
+    public static void mkdirsThrowingExceptions(File dirs) throws IOException
+    {
+        if (!dirs.mkdirs())
+        {
+            throw new IOException("Unable to create directories: " + dirs.getPath());
+        }
+    }
+
+    /**
+     * Returns <code>true</code> if file is contained in the parent directory or any
+     * parent of the parent directory.
+     */
+    public static boolean isFileInParent(File file, File parent)
+    {
+        final File fileParent = file.getParentFile();
+        if (fileParent == null)
+        {
+            return false;
+        }
+
+        if (fileParent.equals(parent))
+        {
+            return true;
+        }
+
+        return isFileInParent(fileParent, parent);
     }
 }
