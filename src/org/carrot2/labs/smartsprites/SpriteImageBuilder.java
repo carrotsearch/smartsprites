@@ -53,7 +53,7 @@ public class SpriteImageBuilder
      * Builds all sprite images based on the collected directives.
      */
     Multimap<String, SpriteReferenceReplacement> buildSpriteImages(
-        Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId,
+        Map<String, SpriteImageOccurrence> spriteImageOccurrencesBySpriteId,
         Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId)
     {
         final Multimap<String, SpriteReferenceReplacement> spriteReplacementsByFile = Multimaps
@@ -62,7 +62,7 @@ public class SpriteImageBuilder
             .asMap().entrySet())
         {
             final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReferenceReplacements = buildSpriteReplacements(
-                spriteImageDirectivesBySpriteId.get(spriteReferenceOccurrences.getKey()),
+                spriteImageOccurrencesBySpriteId.get(spriteReferenceOccurrences.getKey()),
                 spriteReferenceOccurrences.getValue());
 
             for (final SpriteReferenceReplacement spriteReferenceReplacement : spriteReferenceReplacements
@@ -81,13 +81,9 @@ public class SpriteImageBuilder
      * Builds sprite image for a single sprite image directive.
      */
     Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> buildSpriteReplacements(
-        SpriteImageDirective spriteImageDirective,
+        SpriteImageOccurrence spriteImageOccurrence,
         Collection<SpriteReferenceOccurrence> spriteReferenceOccurrences)
     {
-        // Take SpriteImageDescriptor from the first entry, they should be the same
-        final SpriteReferenceOccurrence firstSpriteEntry = spriteReferenceOccurrences
-            .iterator().next();
-
         // Load images into memory. TODO: impose some limit here?
         final Map<SpriteReferenceOccurrence, BufferedImage> images = Maps
             .newLinkedHashMap();
@@ -128,18 +124,18 @@ public class SpriteImageBuilder
         }
 
         final SpriteImageProperties spriteImageProperties = SpriteImageBuilder
-            .buildSpriteImageProperties(spriteImageDirective, images);
+            .buildSpriteImageProperties(spriteImageOccurrence.spriteImageDirective, images);
 
         // Finally, build the sprite image
         // Create buffer for merged image
         final BufferedImage [] mergedImages = spriteImageMerger.buildMergedSpriteImage(
             images, spriteImageProperties);
 
-        writeSprite(spriteImageDirective, firstSpriteEntry, mergedImages[0], false);
+        writeSprite(spriteImageOccurrence, mergedImages[0], false);
         if (mergedImages[1] != null)
         {
             // Write IE6 version if generated
-            writeSprite(spriteImageDirective, firstSpriteEntry, mergedImages[1], true);
+            writeSprite(spriteImageOccurrence, mergedImages[1], true);
         }
 
         return spriteImageProperties.spriteReferenceReplacements;
@@ -148,21 +144,21 @@ public class SpriteImageBuilder
     /**
      * Writes sprite image to the disk.
      */
-    private void writeSprite(SpriteImageDirective spriteImageDirective,
-        final SpriteReferenceOccurrence firstSpriteEntry,
+    private void writeSprite(SpriteImageOccurrence spriteImageOccurrence,
         final BufferedImage mergedImage, boolean ie6Reduced)
     {
         // Add IE6 suffix if needed
-        String spritePath = addIe6Suffix(spriteImageDirective, ie6Reduced);
+        final SpriteImageDirective spriteImageDirective = spriteImageOccurrence.spriteImageDirective;
+        final String spritePath = addIe6Suffix(spriteImageDirective, ie6Reduced);
 
         // Save the image to the disk
-        final String mergedImageFile = getImageFile(firstSpriteEntry.cssFile, spritePath);
+        final String mergedImageFile = getImageFile(spriteImageOccurrence.cssFile, spritePath);
 
         OutputStream spriteImageOuputStream = null;
         try
         {
             messageLog.info(MessageType.WRITING_SPRITE_IMAGE, mergedImage.getWidth(),
-                mergedImage.getHeight(), spriteImageDirective.spriteId, spritePath);
+                mergedImage.getHeight(), spriteImageDirective.spriteId, mergedImageFile);
             spriteImageOuputStream = resourceHandler
                 .getResourceAsOutputStream(mergedImageFile);
             ImageIO.write(mergedImage, spriteImageDirective.format.toString(),
@@ -243,7 +239,7 @@ public class SpriteImageBuilder
         int spriteWidth = (verticalSprite ? leastCommonMultiple : 0);
         int spriteHeight = (verticalSprite ? 0 : leastCommonMultiple);
         final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReplacements = Maps
-            .newHashMap();
+            .newLinkedHashMap();
 
         for (final Map.Entry<SpriteReferenceOccurrence, BufferedImage> entry : images
             .entrySet())

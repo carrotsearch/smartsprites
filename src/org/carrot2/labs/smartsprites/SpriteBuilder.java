@@ -152,8 +152,16 @@ public class SpriteBuilder
             .collectSpriteImageOccurrences(filePaths);
 
         // Merge them, checking for duplicates
-        final Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId = spriteDirectiveOccurrenceCollector
+        final Map<String, SpriteImageOccurrence> spriteImageOccurrencesBySpriteId = spriteDirectiveOccurrenceCollector
             .mergeSpriteImageOccurrences(spriteImageOccurrencesByFile);
+        final Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId = Maps
+            .newLinkedHashMap();
+        for (Map.Entry<String, SpriteImageOccurrence> entry : spriteImageOccurrencesBySpriteId
+            .entrySet())
+        {
+            spriteImageDirectivesBySpriteId.put(entry.getKey(),
+                entry.getValue().spriteImageDirective);
+        }
 
         // Collect sprite references from all css files
         final Multimap<String, SpriteReferenceOccurrence> spriteEntriesByFile = spriteDirectiveOccurrenceCollector
@@ -166,7 +174,7 @@ public class SpriteBuilder
         // Build the sprite images
         messageLog.setCssFile(null);
         final Multimap<String, SpriteReferenceReplacement> spriteReplacementsByFile = spriteImageBuilder
-            .buildSpriteImages(spriteImageDirectivesBySpriteId,
+            .buildSpriteImages(spriteImageOccurrencesBySpriteId,
                 spriteReferenceOccurrencesBySpriteId);
 
         // Rewrite the CSS
@@ -235,6 +243,8 @@ public class SpriteBuilder
         final String processedCssFile = getProcessedCssFile(originalCssFile);
         final BufferedReader originalCssReader = new BufferedReader(resourceHandler
             .getResourceAsReader(originalCssFile));
+        messageLog.setCssFile(null);
+        messageLog.info(MessageType.CREATING_CSS_STYLE_SHEET, processedCssFile);
         messageLog.info(MessageType.READING_CSS, originalCssFile);
         final BufferedWriter processedCssWriter = new BufferedWriter(resourceHandler
             .getResourceAsWriter(processedCssFile));
@@ -247,7 +257,6 @@ public class SpriteBuilder
         // Generate UID for sprite file
         try
         {
-            messageLog.info(MessageType.CREATING_CSS_STYLE_SHEET, processedCssFile);
             messageLog.setCssFile(originalCssFile);
 
             while ((originalCssLine = originalCssReader.readLine()) != null)

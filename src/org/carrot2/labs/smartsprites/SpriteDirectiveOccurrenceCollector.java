@@ -52,7 +52,9 @@ public class SpriteDirectiveOccurrenceCollector
     {
         final Collection<SpriteImageOccurrence> occurrences = Lists.newArrayList();
         final BufferedReader reader = new BufferedReader(resourceHandler.getResourceAsReader(cssFile));
+        messageLog.setCssFile(null);
         messageLog.info(MessageType.READING_SPRITE_IMAGE_DIRECTIVES, cssFile);
+        messageLog.setCssFile(cssFile);
 
         int lineNumber = -1;
         String line;
@@ -98,7 +100,9 @@ public class SpriteDirectiveOccurrenceCollector
         final Collection<SpriteReferenceOccurrence> directives = Lists.newArrayList();
 
         final BufferedReader reader = new BufferedReader(resourceHandler.getResourceAsReader(cssFile));
+        messageLog.setCssFile(null);
         messageLog.info(MessageType.READING_SPRITE_REFERENCE_DIRECTIVES, cssFile);
+        messageLog.setCssFile(cssFile);
 
         int lineNumber = -1;
         String line;
@@ -186,11 +190,11 @@ public class SpriteDirectiveOccurrenceCollector
     /**
      * Groups {@link SpriteImageDirective}s by sprite id.
      */
-    Map<String, SpriteImageDirective> mergeSpriteImageOccurrences(
+    Map<String, SpriteImageOccurrence> mergeSpriteImageOccurrences(
         final Multimap<String, SpriteImageOccurrence> spriteImageOccurrencesByFile)
     {
-        final Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId = Maps
-            .newHashMap();
+        final Map<String, SpriteImageOccurrence> spriteImageDirectivesBySpriteId = Maps
+            .newLinkedHashMap();
         for (final Map.Entry<String, SpriteImageOccurrence> entry : spriteImageOccurrencesByFile
             .entries())
         {
@@ -209,7 +213,7 @@ public class SpriteDirectiveOccurrenceCollector
             {
                 spriteImageDirectivesBySpriteId.put(
                     spriteImageOccurrence.spriteImageDirective.spriteId,
-                    spriteImageOccurrence.spriteImageDirective);
+                    spriteImageOccurrence);
             }
         }
         return spriteImageDirectivesBySpriteId;
