@@ -33,14 +33,15 @@ public class SpriteDirectiveOccurrenceCollector
 
     /** The resource handler */
     private final ResourceHandler resourceHandler;
-    
+
     /**
      * Creates a {@link SpriteDirectiveOccurrenceCollector} with the provided parameters
      * and log.
      */
-    SpriteDirectiveOccurrenceCollector(MessageLog messageLog, ResourceHandler resourceHandler)
+    SpriteDirectiveOccurrenceCollector(MessageLog messageLog,
+        ResourceHandler resourceHandler)
     {
-    	this.resourceHandler = resourceHandler; 
+        this.resourceHandler = resourceHandler;
         this.messageLog = messageLog;
     }
 
@@ -51,7 +52,8 @@ public class SpriteDirectiveOccurrenceCollector
         throws FileNotFoundException, IOException
     {
         final Collection<SpriteImageOccurrence> occurrences = Lists.newArrayList();
-        final BufferedReader reader = new BufferedReader(resourceHandler.getResourceAsReader(cssFile));
+        final BufferedReader reader = new BufferedReader(resourceHandler
+            .getResourceAsReader(cssFile));
         messageLog.setCssFile(null);
         messageLog.info(MessageType.READING_SPRITE_IMAGE_DIRECTIVES, cssFile);
         messageLog.setCssFile(cssFile);
@@ -93,13 +95,14 @@ public class SpriteDirectiveOccurrenceCollector
     /**
      * Collects {@link SpriteReferenceOccurrence}s from a single CSS file.
      */
-    Collection<SpriteReferenceOccurrence> collectSpriteReferenceOccurrences(String cssFile,
-        Map<String, SpriteImageDirective> spriteImageDirectives)
+    Collection<SpriteReferenceOccurrence> collectSpriteReferenceOccurrences(
+        String cssFile, Map<String, SpriteImageDirective> spriteImageDirectives)
         throws FileNotFoundException, IOException
     {
         final Collection<SpriteReferenceOccurrence> directives = Lists.newArrayList();
 
-        final BufferedReader reader = new BufferedReader(resourceHandler.getResourceAsReader(cssFile));
+        final BufferedReader reader = new BufferedReader(resourceHandler
+            .getResourceAsReader(cssFile));
         messageLog.setCssFile(null);
         messageLog.info(MessageType.READING_SPRITE_REFERENCE_DIRECTIVES, cssFile);
         messageLog.setCssFile(cssFile);
@@ -152,8 +155,8 @@ public class SpriteDirectiveOccurrenceCollector
     Multimap<String, SpriteImageOccurrence> collectSpriteImageOccurrences(
         Collection<String> filePaths) throws FileNotFoundException, IOException
     {
-        final Multimap<String, SpriteImageOccurrence> spriteImageOccurrencesByFile = Multimaps
-            .newArrayListMultimap();
+        final Multimap<String, SpriteImageOccurrence> spriteImageOccurrencesByFile = LinkedListMultimap
+            .create();
         for (final String cssFile : filePaths)
         {
             messageLog.setCssFile(cssFile);
@@ -173,8 +176,8 @@ public class SpriteDirectiveOccurrenceCollector
         final Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId)
         throws FileNotFoundException, IOException
     {
-        final Multimap<String, SpriteReferenceOccurrence> spriteEntriesByFile = Multimaps
-            .newArrayListMultimap();
+        final Multimap<String, SpriteReferenceOccurrence> spriteEntriesByFile = LinkedListMultimap
+            .create();
         for (final String cssFile : files)
         {
             messageLog.setCssFile(cssFile);
@@ -225,8 +228,8 @@ public class SpriteDirectiveOccurrenceCollector
     static Multimap<String, SpriteReferenceOccurrence> mergeSpriteReferenceOccurrences(
         final Multimap<String, SpriteReferenceOccurrence> spriteEntriesByFile)
     {
-        final Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId = Multimaps
-            .newLinkedHashMultimap();
+        final Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId = LinkedListMultimap
+            .create();
         for (final SpriteReferenceOccurrence spriteReferenceOccurrence : spriteEntriesByFile
             .values())
         {

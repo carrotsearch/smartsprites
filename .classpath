@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src-test"/>
-	<classpathentry exported="true" kind="lib" path="lib/google-collections.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-math-1.1.jar"/>
@@ -12,5 +11,6 @@
 	<classpathentry kind="lib" path="lib/compile-time/fest-util-0.4.jar"/>
 	<classpathentry kind="var" path="ANT_HOME/lib/ant.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/google-collections-1.0-rc2.jar"/>
 	<classpathentry kind="output" path="tmp/eclipse"/>
 </classpath>

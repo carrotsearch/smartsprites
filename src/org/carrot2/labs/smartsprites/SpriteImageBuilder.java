@@ -16,9 +16,7 @@ import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
+import com.google.common.collect.*;
 
 /**
  * Lays out and builds sprite images based on the collected SmartSprites directives.
@@ -56,8 +54,8 @@ public class SpriteImageBuilder
         Map<String, SpriteImageOccurrence> spriteImageOccurrencesBySpriteId,
         Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId)
     {
-        final Multimap<String, SpriteReferenceReplacement> spriteReplacementsByFile = Multimaps
-            .newArrayListMultimap();
+        final Multimap<String, SpriteReferenceReplacement> spriteReplacementsByFile = LinkedListMultimap
+            .create();
         for (final Map.Entry<String, Collection<SpriteReferenceOccurrence>> spriteReferenceOccurrences : spriteReferenceOccurrencesBySpriteId
             .asMap().entrySet())
         {
@@ -124,7 +122,8 @@ public class SpriteImageBuilder
         }
 
         final SpriteImageProperties spriteImageProperties = SpriteImageBuilder
-            .buildSpriteImageProperties(spriteImageOccurrence.spriteImageDirective, images);
+            .buildSpriteImageProperties(spriteImageOccurrence.spriteImageDirective,
+                images);
 
         // Finally, build the sprite image
         // Create buffer for merged image
@@ -152,7 +151,8 @@ public class SpriteImageBuilder
         final String spritePath = addIe6Suffix(spriteImageDirective, ie6Reduced);
 
         // Save the image to the disk
-        final String mergedImageFile = getImageFile(spriteImageOccurrence.cssFile, spritePath);
+        final String mergedImageFile = getImageFile(spriteImageOccurrence.cssFile,
+            spritePath);
 
         OutputStream spriteImageOuputStream = null;
         try
