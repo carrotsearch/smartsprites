@@ -525,34 +525,70 @@
 
           <ul>
             <li>
-              <strong>--output-dir-path</strong>: output directory for
+              <a name="root-dir-path"><strong>--root-dir-path</strong></a>: directory in 
+              which SmartSprites processing should be done, required if <tt>css-files</tt>
+              not specified or if <tt><a href="#output-dir-path">output-dir-path</a></tt>
+              specified, default: not specified.
+              <p>
+                SmartSprites will process all files with the <tt>*.css</tt> extension found 
+                in <tt>root-dir-path</tt> or any subdirectory of it. For more fine-grained
+                control over the processed CSS files, see the 
+                <tt><a href="#css-files">css-files</a></tt> option. 
+              </p>
+            </li>
+            
+            <li>
+              <a name="css-files"><strong>--css-files</strong></a>: a list of CSS files to
+              process, required if <tt><a href="#root-dir-path">root-dir-path</a></tt>
+              not specified, default: not specified.
+              <p>
+                SmartSprites will process all CSS files listed using this option. If
+                <tt>css-files</tt> is to be used together with <tt><a href="#output-dir-path">output-dir-path</a></tt>,
+                <tt><a href="#root-dir-path">root-dir-path</a></tt> must also be specified
+                so that SmartSprites can preserve the directory structure found in 
+                <tt>root-dir-path</tt> in <tt>output-dir-path</tt>. If <tt>root-dir-path</tt> 
+                in <tt>output-dir-path</tt> are used, <tt>css-files</tt> outside of 
+                <tt>root-dir-path</tt> will be ignored. 
+              </p>
+              
+              <p>
+                To specify the list of CSS files to process in the SmartSprites Ant task, use
+                one or more nested <tt>fileset</tt> elements. Please see the 
+                <tt>build.xml</tt> file in the distribution archive for an example.
+              </p>
+            </li>
+            
+            <li>
+              <a name="output-dir-path"><strong>--output-dir-path</strong></a>: output directory for
               processed CSS files and CSS-relative sprite images, optional, default: not specified.
               <p>
-                If <tt>root-dir-path</tt> is provided, the directory structure
-                relative to <tt>root-dir-path</tt> will be preserved in the
-                output directory. E.g. if CSS files are contained in the
-                <tt>css/base</tt> directory of <tt>root-dir-path</tt>, the
+                If a non-empty <tt>output-dir-path</tt> is specified, a non-empty
+                <tt><a href="#root-dir-path">root-dir-path</a></tt> must also be provided.
+                The directory structure relative to the <tt>root-dir-path</tt> 
+                will be preserved in the output directory. E.g. if CSS files are contained 
+                in the <tt>css/base</tt> directory of <tt>root-dir-path</tt>, the
                 processed results will be written to
                 <tt>output-dir-path/css/base</tt>. Also, CSS-relative sprite
                 images will be written to the output directory. Sprite images
                 with document-root-relative URLs will be written relative to
-                the <tt>--document-root-dir-path</tt>. If the
+                the <tt>document-root-dir-path</tt>. If the
                 <tt>output-dir-path</tt> directory does not exist, it will be
                 created.
               </p>
               <p>
-                You can leave this property empty, in which case the CSS
-                files will be written next to the original CSS files with
-                <tt>css-file-suffix</tt>, and sprite images will be written relative
-                to CSS files.  If you are using a non-empty <tt>output-dir-path</tt>,
-                you might want to use an empty <tt>css-file-suffix</tt>.
+                You can leave the <tt>output-dir-path</tt> empty, in which case the CSS
+                files will be written next to the original CSS files with the
+                <tt><a href="#css-file-suffix">css-file-suffix</a></tt>, and sprite images 
+                will be written relative to the original CSS files.  If you are using a 
+                non-empty <tt>output-dir-path</tt>, you might want to use an empty 
+                <tt>css-file-suffix</tt>.
               </p>
             </li>
 
             <li>
-              <strong>--document-root-dir-path</strong>: Document root path for
-              document-root-relative (starting with <tt>/</tt>) image urls in
-              CSS, optional, default: not specified.
+              <a name="document-dir-path"><strong>--document-root-dir-path</strong></a>: 
+              Document root path for document-root-relative (starting with <tt>/</tt>) 
+              image urls in CSS, optional, default: not specified.
 
               <p>
                 All document-root-relative image and sprite URLs will be taken relative to
@@ -599,8 +635,7 @@
                   the PNG8 format.  If the sprite image contains partial
                   transparencies (alpha channel) or has more than 255 colors,
                   image quality loss may occur and appropriate warnings will be
-                  issued.  See also the <a
-                  href="#sprite-matte-color"><tt>sprite-matte-color</tt></a>
+                  issued.  See also the <tt><a href="#sprite-matte-color">sprite-matte-color</a></tt>
                   property.
                 </li>
               </ol>
@@ -627,8 +662,7 @@
 }</code>
               
               <p>
-                See also the <a
-                href="#sprite-matte-color"><tt>sprite-matte-color</tt></a>
+                See also the <tt><a href="#sprite-matte-color">sprite-matte-color</a></tt>
                 property.
               </p>
             </li>
@@ -640,7 +674,8 @@
             </li>
 
             <li>
-              <strong>--css-file-suffix</strong>: Suffix to be appended to the processed CSS file name, optional, default: <tt>-sprite</tt>.
+              <a name="css-file-suffix"><strong>--css-file-suffix</strong></a>: Suffix to 
+              be appended to the processed CSS file name, optional, default: <tt>-sprite</tt>.
             </li>
           </ul>
         </li>
