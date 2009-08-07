@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters;
 import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -103,7 +104,7 @@ public class FileSystemResourceHandler implements ResourceHandler
     {
         if (filePath.startsWith("/"))
         {
-            if (documentRootDir != null)
+            if (StringUtils.isNotBlank(documentRootDir))
             {
                 return FilenameUtils.concat(documentRootDir, filePath.substring(1));
             }

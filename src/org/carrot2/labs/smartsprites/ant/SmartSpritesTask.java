@@ -1,12 +1,14 @@
 package org.carrot2.labs.smartsprites.ant;
 
-import static junit.framework.Assert.fail;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
-import java.io.*;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.resources.FileResource;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters;
 import org.carrot2.labs.smartsprites.SpriteBuilder;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters.PngDepth;
@@ -14,32 +16,36 @@ import org.carrot2.labs.smartsprites.message.*;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.carrot2.util.EnumUtils;
 
+import com.google.common.collect.Lists;
+
 /**
  * Ant task for calling SmartSprites processing.
  */
 public class SmartSpritesTask extends Task
 {
-    private File rootDir;
-    private File outputDir;
-    private File documentRootDir;
+    private String rootDir;
+    private String outputDir;
+    private String documentRootDir;
     private MessageLevel logLevel;
-    private MessageLevel failOnLevel;
+    private MessageLevel failOnLevel = MessageLevel.ERROR;
     private String cssFileSuffix = SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX;
     private String cssFileEncoding = SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING;
     private PngDepth spritePngDepth = SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH;
     private boolean spritePngIe6 = SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6;
 
-    public void setRootDir(File dir)
+    private List<String> cssFiles = Lists.newArrayList();
+
+    public void setRootDir(String dir)
     {
         this.rootDir = dir;
     }
 
     public void setOutputDir(String outputDir)
     {
-        this.outputDir = StringUtils.isNotBlank(outputDir) ? new File(outputDir) : null;
+        this.outputDir = outputDir;
     }
 
-    public void setDocumentRootDir(File documentRootDir)
+    public void setDocumentRootDir(String documentRootDir)
     {
         this.documentRootDir = documentRootDir;
     }
@@ -51,7 +57,7 @@ public class SmartSpritesTask extends Task
 
     public void setFailOnLevel(String failOnLevel)
     {
-        this.failOnLevel = getLogLevelFromString(failOnLevel, null);
+        this.failOnLevel = getLogLevelFromString(failOnLevel, MessageLevel.ERROR);
     }
 
     private MessageLevel getLogLevelFromString(String logLevel, MessageLevel defaultLevel)
@@ -90,42 +96,34 @@ public class SmartSpritesTask extends Task
     @Override
     public void execute() throws BuildException
     {
-        final SmartSpritesParameters parameters = new SmartSpritesParameters(
-            absolutePathOrNull(rootDir), null,
-            absolutePathOrNull(outputDir), absolutePathOrNull(documentRootDir), logLevel,
-            cssFileSuffix, spritePngDepth, spritePngIe6, cssFileEncoding);
+        final SmartSpritesParameters parameters = new SmartSpritesParameters(rootDir,
+            cssFiles, outputDir, documentRootDir, logLevel, cssFileSuffix,
+            spritePngDepth, spritePngIe6, cssFileEncoding);
 
         final FailureDetectorMessageSink failureDetectorMessageSink = new FailureDetectorMessageSink();
         MessageLog log = new MessageLog(new AntLogMessageSink(),
             failureDetectorMessageSink);
 
-        if (!parameters.validate(log))
+        if (parameters.validate(log))
         {
-            fail();
-        }
-
-        try
-        {
-            new SpriteBuilder(parameters, log).buildSprites();
-        }
-        catch (FileNotFoundException e)
-        {
-            throw new BuildException(e);
-        }
-        catch (IOException e)
-        {
-            throw new BuildException(e);
+            try
+            {
+                new SpriteBuilder(parameters, log).buildSprites();
+            }
+            catch (FileNotFoundException e)
+            {
+                throw new BuildException(e);
+            }
+            catch (IOException e)
+            {
+                throw new BuildException(e);
+            }
         }
 
         if (failureDetectorMessageSink.shouldFail)
         {
-            fail(failureDetectorMessageSink.failureLevel.name() + " messages found");
+            throw new BuildException(failureDetectorMessageSink.failureLevel.name() + " messages found");
         }
-    }
-
-    private static String absolutePathOrNull(File file)
-    {
-        return file != null ? file.getAbsolutePath() : null;
     }
 
     private class AntLogMessageSink implements MessageSink
@@ -134,7 +132,7 @@ public class SmartSpritesTask extends Task
         {
             if (MessageLevel.COMPARATOR.compare(message.level, logLevel) >= 0)
             {
-                getProject().log(message.toString());
+                log(message.toString());
             }
         }
     }
@@ -153,6 +151,15 @@ public class SmartSpritesTask extends Task
                 failureLevel = message.level;
                 shouldFail = true;
             }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void addConfiguredFileset(FileSet fileset)
+    {
+        for (Iterator<FileResource> it = fileset.iterator(); it.hasNext();)
+        {
+            cssFiles.add(it.next().getFile().getPath());
         }
     }
 }

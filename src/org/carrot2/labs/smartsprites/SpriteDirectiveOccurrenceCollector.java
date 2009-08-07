@@ -52,6 +52,7 @@ public class SpriteDirectiveOccurrenceCollector
     {
         final Collection<SpriteImageOccurrence> occurrences = Lists.newArrayList();
         final BufferedReader reader = new BufferedReader(resourceHandler.getResourceAsReader(cssFile));
+        messageLog.info(MessageType.READING_SPRITE_IMAGE_DIRECTIVES, cssFile);
 
         int lineNumber = -1;
         String line;
@@ -97,6 +98,8 @@ public class SpriteDirectiveOccurrenceCollector
         final Collection<SpriteReferenceOccurrence> directives = Lists.newArrayList();
 
         final BufferedReader reader = new BufferedReader(resourceHandler.getResourceAsReader(cssFile));
+        messageLog.info(MessageType.READING_SPRITE_REFERENCE_DIRECTIVES, cssFile);
+
         int lineNumber = -1;
         String line;
 

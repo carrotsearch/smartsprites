@@ -87,13 +87,13 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         IOException
     {
         final File testDir = testDir("simple-horizontal-sprite-important");
-        buildSprites(testDir);
+        buildSprites(testDir, true);
 
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-            new Dimension(17 + 15 + 48, 47));
+            new Dimension(17 + 15 + 48 + 20, 47));
     }
 
     @Test
@@ -663,7 +663,16 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
 
     private void buildSprites(File dir) throws IOException
     {
-        buildSprites(new SmartSpritesParameters(dir.getPath()));
+        buildSprites(dir, false);
+    }
+
+    private void buildSprites(File dir, boolean ie6) throws IOException
+    {
+        buildSprites(new SmartSpritesParameters(dir.getPath(), null, null, null,
+            SmartSpritesParameters.DEFAULT_LOGGING_LEVEL,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH, ie6,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
     }
 
     private void buildSprites(List<String> cssFiles) throws IOException

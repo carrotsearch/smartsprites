@@ -98,12 +98,19 @@ public class SmartSpritesParametersTest extends TestWithMemoryMessageSink
     @Test
     public void testValidateNoOutputDirAndEmptyCssFileSuffix()
     {
+        checkInvalid(new SmartSpritesParameters(null, Lists.newArrayList("css/file.css"),
+            null, null, null, "", null, false, null), new Message(MessageLevel.ERROR,
+            MessageType.CSS_FILE_SUFFIX_IS_REQUIRED_IF_NO_OUTPUT_DIR));
+    }
+
+    @Test
+    public void testValidateRootDirAndCssFilesWithoutOutputDir()
+    {
         checkInvalid(
-            new SmartSpritesParameters(null, Lists.newArrayList("css/file.css"), null,
-                null, null, "", null, false, null),
+            parameters(existingRootDirPath, Lists.newArrayList("css/file.css"), null),
             new Message(
                 MessageLevel.ERROR,
-                MessageType.CSS_FILE_SUFFIX_IS_REQUIRED_IF_NO_OUTPUT_DIR));
+                MessageType.ROOT_DIR_AND_CSS_FILES_CANNOT_BE_BOTH_SPECIFIED_UNLESS_WITH_OUTPUT_DIR));
     }
 
     @Test

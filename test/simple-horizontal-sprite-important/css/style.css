@@ -18,3 +18,7 @@ div.pubmed {
 div.logo {
   background-image: url(../img/logo.png)!  important  ; /** sprite-ref: test */
 }
+
+div.full-alpha {
+  background-image: url(../img/full-alpha.png) !important; /** sprite-ref: test */
+}

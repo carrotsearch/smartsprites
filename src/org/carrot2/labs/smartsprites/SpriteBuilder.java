@@ -106,17 +106,6 @@ public class SpriteBuilder
         {
             // Take all css files from the root dir
             filePaths = Lists.newArrayList();
-            final File outputDir = parameters.getOutputDir() != null ? new File(
-                parameters.getOutputDir()) : null;
-            if (parameters.getOutputDir() != null && !outputDir.exists())
-            {
-                if (!outputDir.mkdirs())
-                {
-                    messageLog.warning(Message.MessageType.CANNOT_CREATE_DIRECTORIES,
-                        outputDir.getPath());
-                }
-            }
-
             final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
                 new File(parameters.getRootDir()), new String []
                 {
@@ -246,8 +235,10 @@ public class SpriteBuilder
         final String processedCssFile = getProcessedCssFile(originalCssFile);
         final BufferedReader originalCssReader = new BufferedReader(resourceHandler
             .getResourceAsReader(originalCssFile));
+        messageLog.info(MessageType.READING_CSS, originalCssFile);
         final BufferedWriter processedCssWriter = new BufferedWriter(resourceHandler
             .getResourceAsWriter(processedCssFile));
+        messageLog.info(MessageType.WRITING_CSS, processedCssFile);
 
         String originalCssLine;
         int originalCssLineNumber = -1;
@@ -357,7 +348,7 @@ public class SpriteBuilder
             processedCssFile = originalCssFile + parameters.getCssFileSuffix();
         }
 
-        if (parameters.getOutputDir() != null)
+        if (parameters.hasOutputDir())
         {
             return FileUtils.changeRoot(processedCssFile, parameters.getRootDir(),
                 parameters.getOutputDir());

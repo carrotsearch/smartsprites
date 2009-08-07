@@ -106,7 +106,7 @@ public final class SmartSpritesParameters
     /** By default, we use full color only when necessary */
     public static final PngDepth DEFAULT_SPRITE_PNG_DEPTH = PngDepth.AUTO;
 
-    /** By default, we'll generate separate sprites for IE6 if needed */
+    /** By default, we don't generate separate sprites for IE6 */
     public static final boolean DEFAULT_SPRITE_PNG_IE6 = false;
 
     /** By default, we'll assume CSS files are UTF-8 encoded */
@@ -167,13 +167,23 @@ public final class SmartSpritesParameters
     {
         boolean valid = true;
 
-        if (StringUtils.isBlank(rootDir) && !hasCssFiles())
+        // Either root dir or css files are required
+        if (!hasRootDir() && !hasCssFiles())
         {
             log.error(MessageType.EITHER_ROOT_DIR_OR_CSS_FILES_IS_REQIRED);
             return false;
         }
 
-        if (StringUtils.isNotBlank(this.rootDir))
+        // If there is no output dir, we can't have both root dir or css files
+        if (!hasOutputDir() && hasRootDir() && hasCssFiles())
+        {
+            log
+                .error(MessageType.ROOT_DIR_AND_CSS_FILES_CANNOT_BE_BOTH_SPECIFIED_UNLESS_WITH_OUTPUT_DIR);
+            return false;
+        }
+
+        // Check root dir if provided
+        if (hasRootDir())
         {
             final File rootDir = FileUtils.getCanonicalOrAbsoluteFile(this.rootDir);
             if ((!rootDir.exists() || !rootDir.isDirectory()))
@@ -184,9 +194,11 @@ public final class SmartSpritesParameters
             }
         }
 
-        if (StringUtils.isNotBlank(this.outputDir))
+        // Check output dir if provided
+        if (hasOutputDir())
         {
-            if (StringUtils.isBlank(this.rootDir))
+            // For output dir, we need root dir
+            if (!hasRootDir())
             {
                 log.error(MessageType.ROOT_DIR_IS_REQIRED_FOR_OUTPUT_DIR);
                 return false;
@@ -200,14 +212,13 @@ public final class SmartSpritesParameters
             }
         }
 
-        if (StringUtils.isBlank(this.outputDir) && StringUtils.isBlank(cssFileSuffix))
+        if (!hasOutputDir() && StringUtils.isBlank(cssFileSuffix))
         {
-            log
-                .error(MessageType.CSS_FILE_SUFFIX_IS_REQUIRED_IF_NO_OUTPUT_DIR);
+            log.error(MessageType.CSS_FILE_SUFFIX_IS_REQUIRED_IF_NO_OUTPUT_DIR);
             valid = false;
         }
 
-        if (StringUtils.isNotBlank(documentRootDir))
+        if (hasDocumentRootDir())
         {
             final File documentRootDir = FileUtils
                 .getCanonicalOrAbsoluteFile(this.documentRootDir);
@@ -243,10 +254,15 @@ public final class SmartSpritesParameters
             return suffix;
         }
     }
-    
+
     public String getRootDir()
     {
         return rootDir;
+    }
+
+    public boolean hasRootDir()
+    {
+        return StringUtils.isNotBlank(rootDir);
     }
 
     public List<String> getCssFiles()
@@ -264,9 +280,19 @@ public final class SmartSpritesParameters
         return outputDir;
     }
 
+    public boolean hasOutputDir()
+    {
+        return StringUtils.isNotBlank(outputDir);
+    }
+
     public String getDocumentRootDir()
     {
         return documentRootDir;
+    }
+
+    public boolean hasDocumentRootDir()
+    {
+        return StringUtils.isNotBlank(documentRootDir);
     }
 
     public MessageLevel getLogLevel()

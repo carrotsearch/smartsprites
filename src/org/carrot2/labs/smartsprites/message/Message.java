@@ -78,6 +78,8 @@ public class Message implements Serializable
 
         CREATING_CSS_STYLE_SHEET("Creating CSS style sheet: %s"),
 
+        WRITING_CSS("Writing CSS to %s"),
+        
         WRITING_SPRITE_IMAGE("Writing sprite image of size %s x %s for sprite '%s' to %s"),
 
         IGNORING_SPRITE_IMAGE_REDEFINITION("Ignoring sprite image redefinition"),
@@ -95,7 +97,10 @@ public class Message implements Serializable
             "No 'background-image' CSS rule next to sprite reference comment: %s"),
 
         EITHER_ROOT_DIR_OR_CSS_FILES_IS_REQIRED(
-            "Either root directory or list of individual CSS files is required."),
+            "Either root directory or non-empty list of individual CSS files is required."),
+            
+        ROOT_DIR_AND_CSS_FILES_CANNOT_BE_BOTH_SPECIFIED_UNLESS_WITH_OUTPUT_DIR(
+            "Root directory and individual CSS files cannot be both specified, unless output dir is also specified."),
 
         ROOT_DIR_IS_REQIRED_FOR_OUTPUT_DIR(
             "If output directory is specified, root directory must also be provided."),
@@ -120,7 +125,13 @@ public class Message implements Serializable
         ONLY_TOP_OR_BOTTOM_ALIGNMENT_ALLOWED(
             "Only 'top' or 'bottom' alignment allowed on horizontal sprites, found: %s. Using 'top'."),
 
-        READING_IMAGE("Reading image from: %s"),
+        READING_SPRITE_IMAGE_DIRECTIVES("Reading sprite image directives from %s"),
+        
+        READING_SPRITE_REFERENCE_DIRECTIVES("Reading sprite reference directives from %s"),
+        
+        READING_CSS("Reading CSS from %s"),
+        
+        READING_IMAGE("Reading image from %s"),
 
         REFERENCED_SPRITE_NOT_FOUND("Referenced sprite: %s not found"),
 

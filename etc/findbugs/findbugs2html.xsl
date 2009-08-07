@@ -211,11 +211,13 @@
 		</xsl:call-template>
 	</xsl:for-each>
 
-    <h1>Bug Explanations</h1>
-	<xsl:apply-templates select="/BugCollection/BugPattern">
-		<xsl:sort select="@abbrev"/>
-		<xsl:sort select="ShortDescription"/>
-	</xsl:apply-templates>
+    <xsl:if test="/BugCollection/BugPattern">
+      <h1>Bug Explanations</h1>
+      <xsl:apply-templates select="/BugCollection/BugPattern">
+          <xsl:sort select="@abbrev"/>
+          <xsl:sort select="ShortDescription"/>
+      </xsl:apply-templates>
+    </xsl:if>
 
 	</body>
 	</html>
