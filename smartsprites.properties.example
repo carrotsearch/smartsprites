@@ -2,7 +2,7 @@
 # Path to the directory that contains the css files to be processed.
 # Directories containing CSS and image files must be writable, unless
 # output.dir.path is provided. The root.dir.path can be either absolute, e.g.
-# c:/myproject/web or relative to the directory in which this script is run.
+# c:/myproject/web or relative to the current working directory.
 #
 root.dir.path=test/real-world-example
 
@@ -15,7 +15,9 @@ root.dir.path=test/real-world-example
 # the output directory. Sprite images with document-root-relative URLs will be
 # written relative to the document.root.dir.path. 
 #
-# If the output.dir.path directory does not exist, it will be created.
+# If the output.dir.path directory does not exist, it will be created. The 
+# output.dir.path can be either absolute or relative to the current working 
+# directory.
 #
 # You can leave this property empty, in which case the CSS files will be
 # written next to the original CSS files with css.file.suffix, and sprite
@@ -32,6 +34,9 @@ output.dir.path=
 # document.root.dir.path. Also document-root-relative sprite URLs will be
 # written relative to document.root.dir.path.  You can leave this property
 # empty if your CSS uses only CSS-relative image URLs.
+#
+# The output.dir.path can be either absolute or relative to the current working
+# directory.
 #
 document.root.dir.path=
 
