@@ -535,20 +535,32 @@
                 control over the processed CSS files, see the 
                 <tt><a href="#css-files">css-files</a></tt> option. 
               </p>
+              <p>
+                If the provided root directory path is relative, it will be resolved 
+                against the current working directory. 
+              </p>
             </li>
             
             <li>
-              <a name="css-files"><strong>--css-files</strong></a>: a list of CSS files to
+              <a name="css-files"><strong>--css-files</strong></a>: paths of CSS files to
               process, required if <tt><a href="#root-dir-path">root-dir-path</a></tt>
               not specified, default: not specified.
+              
               <p>
                 SmartSprites will process all CSS files listed using this option. If
                 <tt>css-files</tt> is to be used together with <tt><a href="#output-dir-path">output-dir-path</a></tt>,
                 <tt><a href="#root-dir-path">root-dir-path</a></tt> must also be specified
                 so that SmartSprites can preserve the directory structure found in 
                 <tt>root-dir-path</tt> in <tt>output-dir-path</tt>. If <tt>root-dir-path</tt> 
-                in <tt>output-dir-path</tt> are used, <tt>css-files</tt> outside of 
+                and <tt>output-dir-path</tt> are used, <tt>css-files</tt> outside of 
                 <tt>root-dir-path</tt> will be ignored. 
+              </p>
+              
+              <p>
+                Relative CSS file paths provided using this option will be resolved
+                against the current working directory. Please note that SmartSprites will 
+                not expand any wildcards (like <tt>style/*.css</tt>), it assumes
+                the expansion is performed at the command line shell level.
               </p>
               
               <p>
@@ -573,7 +585,8 @@
                 with document-root-relative URLs will be written relative to
                 the <tt>document-root-dir-path</tt>. If the
                 <tt>output-dir-path</tt> directory does not exist, it will be
-                created.
+                created. If the provided output directory path is relative, it will be resolved 
+                against the current working directory. 
               </p>
               <p>
                 You can leave the <tt>output-dir-path</tt> empty, in which case the CSS
@@ -596,6 +609,8 @@
                 sprite URLs will be written relative to
                 <tt>document-root-dir-path</tt>.  You can leave this property
                 empty if your CSS uses only CSS-relative image URLs.
+                If the provided document root directory path is relative, it will be resolved 
+                against the current working directory. 
               </p>
             </li>
 

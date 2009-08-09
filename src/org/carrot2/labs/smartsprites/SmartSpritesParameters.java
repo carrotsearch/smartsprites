@@ -33,7 +33,7 @@ public final class SmartSpritesParameters
      * are not empty, {@link #outputDir} is supported but only {@link #cssFiles} from
      * {@link #rootDir} are processed.
      */
-    @Argument
+    @Argument(metaVar = "CSS-FILES")
     @Option(name = "--css-files", required = false, metaVar = "FILES")
     private List<String> cssFiles;
 

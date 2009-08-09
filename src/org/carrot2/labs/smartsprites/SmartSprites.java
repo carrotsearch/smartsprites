@@ -23,16 +23,19 @@ public class SmartSprites
         final CmdLineParser parser = new CmdLineParser(parameters);
         parser.setUsageWidth(80);
 
+        if (args.length == 0)
+        {
+            printUsage(parser);
+            return;
+        }
+        
         try
         {
             parser.parseArgument(args);
         }
         catch (CmdLineException e)
         {
-            System.out.print("Usage: smartsprites");
-            parser.printSingleLineUsage(System.out);
-            System.out.println();
-            System.out.println("\nPlease see http://smartsprites.osinski.name for detailed option descriptions.");
+            printUsage(parser);
             System.out.println("\n" + e.getMessage());
             return;
         }
@@ -41,5 +44,13 @@ public class SmartSprites
         final MessageLog messageLog = new MessageLog(new PrintStreamMessageSink(
             System.out, parameters.getLogLevel()));
         new SpriteBuilder(parameters, messageLog).buildSprites();
+    }
+
+    private static void printUsage(final CmdLineParser parser)
+    {
+        System.out.print("Usage: smartsprites");
+        parser.printSingleLineUsage(System.out);
+        System.out.println();
+        System.out.println("\nPlease see http://smartsprites.osinski.name for detailed option descriptions.");
     }
 }
