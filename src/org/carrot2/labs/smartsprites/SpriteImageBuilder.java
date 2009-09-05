@@ -13,8 +13,7 @@ import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
-import org.carrot2.util.CloseableUtils;
-import org.carrot2.util.FileUtils;
+import org.carrot2.util.*;
 
 import com.google.common.collect.*;
 
@@ -30,7 +29,7 @@ public class SpriteImageBuilder
     private final MessageLog messageLog;
 
     /** Image merger for this builder */
-    private SpriteImageMerger spriteImageMerger;
+    private SpriteImageRenderer spriteImageRenderer;
 
     /** The resource handler */
     private ResourceHandler resourceHandler;
@@ -44,7 +43,7 @@ public class SpriteImageBuilder
         this.messageLog = messageLog;
         this.parameters = parameters;
         this.resourceHandler = resourceHandler;
-        spriteImageMerger = new SpriteImageMerger(parameters, messageLog);
+        spriteImageRenderer = new SpriteImageRenderer(parameters, messageLog);
     }
 
     /**
@@ -121,14 +120,13 @@ public class SpriteImageBuilder
             messageLog.setCssFile(null);
         }
 
-        final SpriteImageProperties spriteImageProperties = SpriteImageBuilder
-            .buildSpriteImageProperties(spriteImageOccurrence.spriteImageDirective,
+        // Build the sprite image bitmap
+        final SpriteImage spriteImage = SpriteImageBuilder
+            .buildSpriteImage(spriteImageOccurrence.spriteImageDirective,
                 images);
 
-        // Finally, build the sprite image
-        // Create buffer for merged image
-        final BufferedImage [] mergedImages = spriteImageMerger.buildMergedSpriteImage(
-            images, spriteImageProperties);
+        // Render the sprite into the required formats, perform quantization if needed
+        final BufferedImage [] mergedImages = spriteImageRenderer.render(spriteImage);
 
         writeSprite(spriteImageOccurrence, mergedImages[0], false);
         if (mergedImages[1] != null)
@@ -137,7 +135,7 @@ public class SpriteImageBuilder
             writeSprite(spriteImageOccurrence, mergedImages[1], true);
         }
 
-        return spriteImageProperties.spriteReferenceReplacements;
+        return spriteImage.spriteReferenceReplacements;
     }
 
     /**
@@ -224,103 +222,106 @@ public class SpriteImageBuilder
     /**
      * Calculates total dimensions and lays out a single sprite image.
      */
-    static SpriteImageProperties buildSpriteImageProperties(
+    static SpriteImage buildSpriteImage(
         SpriteImageDirective spriteImageDirective,
         Map<SpriteReferenceOccurrence, BufferedImage> images)
     {
         // First find the least common multiple of the images with 'repeat' alignment
-        final boolean verticalSprite = spriteImageDirective.layout
-            .equals(SpriteImageLayout.VERTICAL);
-
+        final SpriteImageLayout layout = spriteImageDirective.layout;
         final int leastCommonMultiple = SpriteImageBuilder.calculateLeastCommonMultiple(
-            images, verticalSprite);
+            images, layout);
 
-        // Now compute sprite width and height and build sprite replacements
-        int spriteWidth = (verticalSprite ? leastCommonMultiple : 0);
-        int spriteHeight = (verticalSprite ? 0 : leastCommonMultiple);
-        final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReplacements = Maps
-            .newLinkedHashMap();
-
+        // Compute sprite dimension (width for vertical, height for horizontal sprites)
+        final boolean vertical = layout.equals(SpriteImageLayout.VERTICAL);
+        int dimension = leastCommonMultiple;
         for (final Map.Entry<SpriteReferenceOccurrence, BufferedImage> entry : images
             .entrySet())
         {
-            // Compute dimensions
             final BufferedImage image = entry.getValue();
-            final SpriteReferenceDirective spriteReferenceDirective = entry.getKey().spriteReferenceDirective;
+            final SpriteReferenceOccurrence spriteReferenceOcurrence = entry.getKey();
 
-            final int requiredWidth = image.getWidth()
-                + spriteReferenceDirective.marginRight
-                + spriteReferenceDirective.marginLeft;
-            final int requiredHeight = image.getHeight()
-                + spriteReferenceDirective.marginTop
-                + spriteReferenceDirective.marginBottom;
+            // Compute dimensions
+            dimension = Math.max(dimension, vertical ? spriteReferenceOcurrence
+                .getRequiredWidth(image, layout) : spriteReferenceOcurrence
+                .getRequiredHeight(image, layout));
 
-            SpriteReferenceReplacement spriteReferenceReplacement;
-            if (verticalSprite)
+            // Correct for least common multiple
+            if (dimension % leastCommonMultiple != 0)
             {
-                spriteReferenceReplacement = new SpriteReferenceReplacement(entry
-                    .getKey(), spriteHeight, (spriteReferenceDirective.alignment
-                    .equals(SpriteAlignment.RIGHT) ? "right" : "left"));
-
-                spriteWidth = Math.max(spriteWidth, requiredWidth);
-
-                // Correct for least common multiple
-                if (spriteWidth % leastCommonMultiple != 0)
-                {
-                    spriteWidth += leastCommonMultiple
-                        - (spriteWidth % leastCommonMultiple);
-                }
-
-                spriteHeight += requiredHeight;
+                dimension += leastCommonMultiple - (dimension % leastCommonMultiple);
             }
-            else
-            {
-                spriteReferenceReplacement = new SpriteReferenceReplacement(entry
-                    .getKey(), (spriteReferenceDirective.alignment
-                    .equals(SpriteAlignment.BOTTOM) ? "bottom" : "top"), spriteWidth);
-
-                spriteHeight = Math.max(spriteHeight, requiredHeight);
-
-                // Correct for least common multiple
-                if (spriteHeight % leastCommonMultiple != 0)
-                {
-                    spriteHeight += leastCommonMultiple
-                        - (spriteHeight % leastCommonMultiple);
-                }
-
-                spriteWidth += requiredWidth;
-            }
-
-            spriteReplacements.put(entry.getKey(), spriteReferenceReplacement);
         }
 
-        return new SpriteImageProperties(spriteWidth, spriteHeight, spriteImageDirective,
-            spriteReplacements);
+        // Compute the other sprite dimension.
+        int currentOffset = 0;
+        final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReplacements = Maps
+            .newLinkedHashMap();
+        final Map<BufferedImageEqualsWrapper, Integer> renderedImageToOffset = Maps
+            .newLinkedHashMap();
+        for (final Map.Entry<SpriteReferenceOccurrence, BufferedImage> entry : images
+            .entrySet())
+        {
+            final SpriteReferenceOccurrence spriteReferenceOccurrence = entry.getKey();
+            final BufferedImage image = entry.getValue();
+
+            final BufferedImage rendered = spriteReferenceOccurrence.render(image,
+                layout, dimension);
+            final BufferedImageEqualsWrapper imageWrapper = new BufferedImageEqualsWrapper(
+                rendered);
+            Integer imageOffset = renderedImageToOffset.get(imageWrapper);
+            if (imageOffset == null)
+            {
+                // Draw a new image
+                imageOffset = currentOffset;
+                renderedImageToOffset.put(imageWrapper, imageOffset);
+                currentOffset += vertical ? rendered.getHeight() : rendered.getWidth();
+            }
+
+            spriteReplacements.put(spriteReferenceOccurrence, spriteReferenceOccurrence
+                .buildReplacement(layout, imageOffset));
+        }
+
+        // Render the sprite image and build sprite reference replacements
+        final BufferedImage sprite = new BufferedImage(vertical ? dimension
+            : currentOffset, vertical ? currentOffset : dimension,
+            BufferedImage.TYPE_4BYTE_ABGR);
+
+        for (final Map.Entry<BufferedImageEqualsWrapper, Integer> entry : renderedImageToOffset
+            .entrySet())
+        {
+
+            BufferedImageUtils.drawImage(entry.getKey().image, sprite, vertical ? 0
+                : entry.getValue(), vertical ? entry.getValue() : 0);
+        }
+
+        return new SpriteImage(sprite, spriteImageDirective, spriteReplacements);
     }
 
     /**
      * Calculates the width/ height of "repeated" sprites.
      */
     static int calculateLeastCommonMultiple(
-        Map<SpriteReferenceOccurrence, BufferedImage> images, final boolean verticalSprite)
+        Map<SpriteReferenceOccurrence, BufferedImage> images, SpriteImageLayout layout)
     {
         int leastCommonMultiple = 1;
         for (final Map.Entry<SpriteReferenceOccurrence, BufferedImage> entry : images
             .entrySet())
         {
-            if ((entry.getValue() != null)
-                && entry.getKey().spriteReferenceDirective.alignment
-                    .equals(SpriteAlignment.REPEAT))
+            final BufferedImage image = entry.getValue();
+            final SpriteReferenceOccurrence spriteReferenceOccurrence = entry.getKey();
+            if (image != null
+                && SpriteAlignment.REPEAT
+                    .equals(spriteReferenceOccurrence.spriteReferenceDirective.alignment))
             {
-                if (verticalSprite)
+                if (SpriteImageLayout.VERTICAL.equals(layout))
                 {
-                    leastCommonMultiple = MathUtils.lcm(leastCommonMultiple, entry
-                        .getValue().getWidth());
+                    leastCommonMultiple = MathUtils.lcm(leastCommonMultiple,
+                        spriteReferenceOccurrence.getRequiredWidth(image, layout));
                 }
                 else
                 {
-                    leastCommonMultiple = MathUtils.lcm(leastCommonMultiple, entry
-                        .getValue().getHeight());
+                    leastCommonMultiple = MathUtils.lcm(leastCommonMultiple,
+                        spriteReferenceOccurrence.getRequiredHeight(image, layout));
                 }
             }
         }
@@ -362,4 +363,97 @@ public class SpriteImageBuilder
         return result;
     }
 
+    /**
+     * A wrapper that implements content-aware {@link Object#equals(Object)} and
+     * {@link Object#hashCode()} on {@link BufferedImage}s.
+     */
+    static final class BufferedImageEqualsWrapper
+    {
+        BufferedImage image;
+
+        BufferedImageEqualsWrapper(BufferedImage image)
+        {
+            this.image = image;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (!(obj instanceof BufferedImageEqualsWrapper))
+            {
+                return false;
+            }
+
+            if (obj == this)
+            {
+                return true;
+            }
+
+            final BufferedImage other = ((BufferedImageEqualsWrapper) obj).image;
+
+            boolean equal = other.getWidth() == image.getWidth()
+                && other.getHeight() == other.getHeight()
+                && other.getType() == image.getType();
+
+            if (equal)
+            {
+                for (int y = 0; y < image.getWidth(); y++)
+                {
+                    for (int x = 0; x < image.getWidth(); x++)
+                    {
+                        if (ignoreFullTransparency(image.getRGB(x, y)) != ignoreFullTransparency(other
+                            .getRGB(x, y)))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return equal;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            if (image == null)
+            {
+                return 0;
+            }
+
+            int hash = image.getWidth() ^ (image.getHeight() << 16);
+
+            // Computes the hashCode based on an 4 x 4 to 7 x 7 grid of image's pixels
+            final int xIncrement = image.getWidth() > 7 ? image.getWidth() >> 2 : 1;
+            final int yIncrement = image.getHeight() > 7 ? image.getHeight() >> 2 : 1;
+
+            for (int y = 0; y < image.getHeight(); y += yIncrement)
+            {
+                for (int x = 0; x < image.getWidth(); x += xIncrement)
+                {
+                    hash ^= ignoreFullTransparency(image.getRGB(x, y));
+                }
+            }
+
+            return hash;
+        }
+
+        /**
+         * If the pixel is fully transparent, returns 0. Otherwise, returns the pixel.
+         * This is useful in {@link #equals(Object)} and {@link #hashCode()} to ignore
+         * pixels that have different colors but are invisible anyway because of full
+         * transparency.
+         */
+        private static int ignoreFullTransparency(int pixel)
+        {
+            if ((pixel & 0xff000000) == 0x00000000)
+            {
+                return 0;
+            }
+            else
+            {
+                return pixel;
+            }
+        }
+    }
 }

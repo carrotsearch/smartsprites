@@ -79,6 +79,11 @@ public class FileUtils
      */
     public static void mkdirsThrowingExceptions(File dirs) throws IOException
     {
+        if (dirs.exists())
+        {
+            return;
+        }
+        
         if (!dirs.mkdirs())
         {
             throw new IOException("Unable to create directories: " + dirs.getPath());

@@ -288,22 +288,22 @@ public class SpriteBuilder
                     // Write some extra css as a replacement and ignore the directive
                     processedCssWriter
                         .write("  background-image: url('"
-                            + spriteReferenceReplacement.spriteImageProperties.spriteImageDirective.imagePath
+                            + spriteReferenceReplacement.spriteImage.spriteImageDirective.imagePath
                             + generateUidSuffix(
                                 originalCssFile,
-                                spriteReferenceReplacement.spriteImageProperties.spriteImageDirective,
+                                spriteReferenceReplacement.spriteImage.spriteImageDirective,
                                 false) + "')" + (important ? " !important" : "") + ";\n");
-                    if (spriteReferenceReplacement.spriteImageProperties.hasReducedForIe6)
+                    if (spriteReferenceReplacement.spriteImage.hasReducedForIe6)
                     {
                         processedCssWriter
                             .write("  -background-image: url('"
                                 + SpriteImageBuilder
                                     .addIe6Suffix(
-                                        spriteReferenceReplacement.spriteImageProperties.spriteImageDirective,
+                                        spriteReferenceReplacement.spriteImage.spriteImageDirective,
                                         true)
                                 + generateUidSuffix(
                                     originalCssFile,
-                                    spriteReferenceReplacement.spriteImageProperties.spriteImageDirective,
+                                    spriteReferenceReplacement.spriteImage.spriteImageDirective,
                                     true) + "')" + (important ? " !important" : "")
                                 + ";\n");
                     }

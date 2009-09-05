@@ -112,15 +112,22 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     }
 
     @Test
-    public void testLargeVerticalRepeat() throws FileNotFoundException, IOException
+    public void testLargeRepeat() throws FileNotFoundException, IOException
     {
-        final File testDir = testDir("large-vertical-repeat");
+        final File testDir = testDir("large-repeat");
         buildSprites(testDir);
 
+        final String spriteHorizontalPath = "img/sprite-horizontal.png";
+        final String spriteVerticalPath = "img/sprite-vertical.png";
+        
         assertThat(processedCss()).hasSameContentAs(expectedCss());
-        assertThat(new File(testDir, "img/sprite.png")).exists();
-        org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
+        assertThat(new File(testDir, spriteHorizontalPath)).exists();
+        assertThat(new File(testDir, spriteVerticalPath)).exists();
+        org.fest.assertions.Assertions.assertThat(
+            sprite(testDir, spriteHorizontalPath)).hasSize(
             new Dimension(17 + 15, 16 * 17 /* lcm(16, 17) */));
+        org.fest.assertions.Assertions.assertThat(sprite(testDir, spriteVerticalPath))
+            .hasSize(new Dimension(15 * 17 /* lcm(15, 17) */, 17 + 16));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
@@ -273,12 +280,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         FileUtils.deleteDirectory(outputDir.getParentFile());
     }
 
-    /**
-     * Currently multiple references to the same image generate multiple copies of the
-     * image in the sprite, hence the test is ignored.
-     */
     @Test
-    @Ignore
     public void testRepeatedImageReferences() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("repeated-image-references");
@@ -287,7 +289,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-            new Dimension(17, 17));
+            new Dimension(17 + 19, 19));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
@@ -548,7 +550,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
                 new File(testDir, "css-other/style-expected.css"));
             assertThat(sprite).exists();
             org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-                new Dimension(17, 51));
+                new Dimension(17, 17));
         }
         finally
         {
@@ -579,7 +581,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             assertThat(otherCss).doesNotExist();
             assertThat(sprite).exists();
             org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-                new Dimension(17, 34));
+                new Dimension(17, 17));
             assertThat(messages).contains(
                 new Message(MessageLevel.WARN,
                     MessageType.IGNORING_CSS_FILE_OUTSIDE_OF_ROOT_DIR, otherCssPath));

@@ -11,10 +11,8 @@ import javax.imageio.ImageIO;
  */
 public class BufferedImageTestBase
 {
-
     protected BufferedImage image(String fileName) throws IOException
     {
         return ImageIO.read(new File(fileName));
     }
-
 }

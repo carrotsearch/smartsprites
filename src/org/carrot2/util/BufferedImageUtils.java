@@ -47,7 +47,7 @@ public class BufferedImageUtils
         {
             return false;
         }
-        
+
         int [] pixels = alphaRaster.getPixels(0, 0, alphaRaster.getWidth(), alphaRaster
             .getHeight(), (int []) null);
         for (int i : pixels)
@@ -57,10 +57,10 @@ public class BufferedImageUtils
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * Returns the number of distinct colors (excluding transparency) in the
      * <code>image</code>.
@@ -138,7 +138,7 @@ public class BufferedImageUtils
     }
 
     /**
-     * Performs matting of the <code>cource</code> image using <code>matteColor</code>.
+     * Performs matting of the <code>source</code> image using <code>matteColor</code>.
      * Matting is rendering partial transparencies using solid color as if the original
      * image was put on top of a bitmap filled with <code>matteColor</code>.
      */
@@ -173,6 +173,19 @@ public class BufferedImageUtils
             .getRaster());
 
         return matted;
+    }
+
+    /**
+     * Draws <code>image<code> on the <code>canvas</code> placing the top left corner of
+     * <code>image</code> at <code>x</code> / <code>y</code> offset from the top left
+     * corner of <code>canvas</code>.
+     */
+    public static void drawImage(BufferedImage image, BufferedImage canvas, int x, int y)
+    {
+        final int [] imgRGB = image.getRGB(0, 0, image.getWidth(), image.getHeight(),
+            null, 0, image.getWidth());
+        canvas.setRGB(x, y, image.getWidth(), image.getHeight(), imgRGB, 0, image
+            .getWidth());
     }
 
     private BufferedImageUtils()
