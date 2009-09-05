@@ -1,7 +1,6 @@
 package org.carrot2.labs.smartsprites.ant;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,19 +34,19 @@ public class SmartSpritesTask extends Task
 
     private List<String> cssFiles = Lists.newArrayList();
 
-    public void setRootDir(String dir)
+    public void setRootDir(File dir)
     {
-        this.rootDir = dir;
+        this.rootDir = dir.getPath();
     }
 
-    public void setOutputDir(String outputDir)
+    public void setOutputDir(File outputDir)
     {
-        this.outputDir = outputDir;
+        this.outputDir = outputDir.getPath();
     }
 
-    public void setDocumentRootDir(String documentRootDir)
+    public void setDocumentRootDir(File documentRootDir)
     {
-        this.documentRootDir = documentRootDir;
+        this.documentRootDir = documentRootDir.getPath();
     }
 
     public void setLogLevel(String logLevel)
