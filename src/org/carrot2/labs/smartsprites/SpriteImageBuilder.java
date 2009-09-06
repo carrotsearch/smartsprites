@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.math.util.MathUtils;
+import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -121,9 +122,8 @@ public class SpriteImageBuilder
         }
 
         // Build the sprite image bitmap
-        final SpriteImage spriteImage = SpriteImageBuilder
-            .buildSpriteImage(spriteImageOccurrence.spriteImageDirective,
-                images);
+        final SpriteImage spriteImage = SpriteImageBuilder.buildSpriteImage(
+            spriteImageOccurrence.spriteImageDirective, images);
 
         // Render the sprite into the required formats, perform quantization if needed
         final BufferedImage [] mergedImages = spriteImageRenderer.render(spriteImage);
@@ -159,7 +159,20 @@ public class SpriteImageBuilder
                 mergedImage.getHeight(), spriteImageDirective.spriteId, mergedImageFile);
             spriteImageOuputStream = resourceHandler
                 .getResourceAsOutputStream(mergedImageFile);
-            ImageIO.write(mergedImage, spriteImageDirective.format.toString(),
+
+            // If writing to a JPEG, we need to make a 3-byte-encoded image
+            final BufferedImage imageToWrite;
+            if (SpriteImageFormat.JPG.equals(spriteImageDirective.format))
+            {
+                imageToWrite = new BufferedImage(mergedImage.getWidth(), mergedImage
+                    .getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+                BufferedImageUtils.drawImage(mergedImage, imageToWrite, 0, 0);
+            }
+            else
+            {
+                imageToWrite = mergedImage;
+            }
+            ImageIO.write(imageToWrite, spriteImageDirective.format.toString(),
                 spriteImageOuputStream);
         }
         catch (final IOException e)
@@ -222,8 +235,7 @@ public class SpriteImageBuilder
     /**
      * Calculates total dimensions and lays out a single sprite image.
      */
-    static SpriteImage buildSpriteImage(
-        SpriteImageDirective spriteImageDirective,
+    static SpriteImage buildSpriteImage(SpriteImageDirective spriteImageDirective,
         Map<SpriteReferenceOccurrence, BufferedImage> images)
     {
         // First find the least common multiple of the images with 'repeat' alignment
