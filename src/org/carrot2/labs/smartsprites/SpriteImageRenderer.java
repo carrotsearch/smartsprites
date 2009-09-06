@@ -53,13 +53,6 @@ public class SpriteImageRenderer
 
         if (isPngDirect || (isPngAuto && !canReduceWithoutQualityLoss) || isJpg)
         {
-            // Can't or no need to handle indexed color
-            if (spriteImage.spriteImageDirective.matteColor != null)
-            {
-                messageLog.warning(MessageType.IGNORING_MATTE_COLOR_NO_SUPPORT,
-                    spriteImage.spriteImageDirective.spriteId);
-            }
-
             result[0] = sprite;
 
             // If needed, generate a quantized version for IE6. If the image has >255
@@ -72,6 +65,12 @@ public class SpriteImageRenderer
                 result[1] = quantize(sprite, spriteImage, colorReductionInfo,
                     MessageLevel.IE6NOTICE);
                 spriteImage.hasReducedForIe6 = true;
+            }
+            else if (spriteImage.spriteImageDirective.matteColor != null)
+            {
+                // Can't or no need to handle indexed color
+                messageLog.warning(MessageType.IGNORING_MATTE_COLOR_NO_SUPPORT,
+                    spriteImage.spriteImageDirective.spriteId);
             }
 
             return result;
@@ -99,9 +98,8 @@ public class SpriteImageRenderer
     /**
      * Performs quantization, logs the appropriate messages if needed.
      */
-    private BufferedImage quantize(BufferedImage sprite,
-        SpriteImage spriteImage, final ColorReductionInfo colorReductionInfo,
-        MessageLevel logLevel)
+    private BufferedImage quantize(BufferedImage sprite, SpriteImage spriteImage,
+        final ColorReductionInfo colorReductionInfo, MessageLevel logLevel)
     {
         // Need to quantize
         if (colorReductionInfo.hasPartialTransparency)

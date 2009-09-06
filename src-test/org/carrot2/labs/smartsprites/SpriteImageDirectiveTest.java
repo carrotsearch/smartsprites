@@ -8,6 +8,7 @@ import java.awt.Color;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.Ie6Mode;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteUidType;
 import org.carrot2.labs.smartsprites.message.Message;
+import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.junit.Test;
 
 /**
@@ -160,6 +161,21 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertThat(messages).isEquivalentTo(
             new Message(Message.MessageLevel.WARN,
                 Message.MessageType.UNSUPPORTED_FORMAT, null, 0, "jpgx"));
+    }
+    
+    @Test
+    public void testLeadingSpaceInUrl()
+    {
+        final SpriteImageDirective directive = SpriteImageDirective.parse(
+            "sprite: sprite; sprite-image: url(../sprite.png )", messageLog);
+        
+        assertNotNull(directive);
+        assertEquals(directive.spriteId, "sprite");
+        assertEquals(directive.imagePath, "../sprite.png");
+        assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
+        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
+        
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
     @Test

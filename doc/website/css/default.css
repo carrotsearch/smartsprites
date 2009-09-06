@@ -1,6 +1,7 @@
 /**
  * Design based on the Blackbox design by Viktor Persson (http://arcsin.se).
  */
+/** sprite: vert; sprite-image: url(../img/vert.png); sprite-layout: vertical; sprite-matte-color: #000000 */
 * {
 	margin: 0;
 	padding: 0;
@@ -75,7 +76,7 @@ tt {
 }
 
 code span.nobreak {
-  background-image: url('../img/arrow_undo.png');
+  background-image: url('../img/arrow_undo.png'); /** sprite-ref: vert */
   background-repeat: no-repeat;
   float: right;
   position: relative;
@@ -115,9 +116,9 @@ div.quote {
 /* Header */
 .gfx {
 	background-color: #000;
-  background-image: url(../img/dark_pixel.jpg);
+  background-position: right top;
+  background-image: url(../img/dark_pixel.jpg); /** sprite-ref: vert; sprite-alignment: right */
   background-repeat: no-repeat;
-  background-position: 160px bottom;
 	height: 230px;
 }
 .gfx h1, h2 {
@@ -158,7 +159,9 @@ ul.menu {
 ul.menu li {
   padding: 0;
   margin: 0;
-	background: #000 url(../img/bgmenu.png) repeat-x;
+  background-color: #000;
+	background-image: url(../img/bgmenu.png); /** sprite-ref: vert; sprite-alignment: repeat */
+  background-repeat: repeat-x;
 	border-right: 1px solid #222;
 	border-top: 1px solid #1A1A1A;
 	color: #444;
@@ -204,12 +207,6 @@ ul.menu li a {
   margin: 10px 0px;
 }
 
-.item {
-	background: #030303 url(../img/bgitem.gif) repeat-x;
-	padding: 8px 10px;
-}
-
-
 /* Footer */
 .footer {
 	padding: 10px;
@@ -251,3 +248,52 @@ ul.menu li a {
 div.build-info {
   margin-left: 10px;
 }
+
+#donate {
+  float: right;
+  width: 150px;
+}
+
+#donate-10,
+#donate-25,
+#donate-50,
+#donate-other {
+  width: 125px;
+  height: 38px;
+  margin-left: 2px;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+#donate-10 span,
+#donate-25 span,
+#donate-50 span,
+#donate-other span {
+  display: none;
+}
+
+#donate-10 {
+  background-image: url(../img/donate-10.png); /** sprite-ref: vert */
+}
+
+#donate-25 {
+  background-image: url(../img/donate-25.png); /** sprite-ref: vert */
+}
+
+#donate-50 {
+  background-image: url(../img/donate-50.png); /** sprite-ref: vert */
+}
+
+#donate-other {
+  background-image: url(../img/donate-other.png); /** sprite-ref: vert */
+}
+
+.item {
+  background-color: #030303;
+	background-image: url(../img/bgitem.gif); /** sprite-ref: vert; sprite-alignment: repeat */
+	background-repeat: repeat-x;
+	padding: 8px 10px;
+}
+
+

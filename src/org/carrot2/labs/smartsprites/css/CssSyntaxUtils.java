@@ -137,7 +137,8 @@ public class CssSyntaxUtils
             }
             return null;
         }
-        return matcher.group(2);
+        final String url = matcher.group(2);
+        return url != null ? url.trim() : url;
     }
 
     /**
