@@ -76,16 +76,17 @@ public class CssSyntaxUtilsTest extends TestWithMemoryMessageSink
     }
 
     @Test
-    public void testTooManyColons()
+    public void testColonsInPropertyValue()
     {
         final List<CssProperty> actualRules = CssSyntaxUtils.extractRules(
-            "rule-1: value1 : v2; rule-2: value2;", messageLog);
+            "rule-1: value1 : v2; rule-2: url(jar:/test.png);", messageLog);
 
-        assertThat(actualRules).isEquivalentTo(new CssProperty("rule-2", "value2"));
+        // This isn't really valid in CSS, but until we switch to full
+        // parsing, this should be enough.
+        assertThat(actualRules).isEquivalentTo(new CssProperty("rule-1", "value2 : v2"),
+            new CssProperty("rule-2", "url(jar:/test.png)"));
 
-        assertThat(messages).isEquivalentTo(
-            new Message(Message.MessageLevel.WARN,
-                Message.MessageType.MALFORMED_CSS_RULE, null, 0, "rule-1: value1 : v2"));
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
     @Test

@@ -44,7 +44,7 @@ public class CssSyntaxUtils
         final String [] chunks = text.split(";");
         for (final String chunk : chunks)
         {
-            final String [] parts = chunk.split(":");
+            final String [] parts = chunk.split(":", 2);
 
             if (parts.length == 2)
             {
