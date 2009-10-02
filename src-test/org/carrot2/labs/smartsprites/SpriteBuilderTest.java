@@ -119,13 +119,12 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
 
         final String spriteHorizontalPath = "img/sprite-horizontal.png";
         final String spriteVerticalPath = "img/sprite-vertical.png";
-        
+
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, spriteHorizontalPath)).exists();
         assertThat(new File(testDir, spriteVerticalPath)).exists();
-        org.fest.assertions.Assertions.assertThat(
-            sprite(testDir, spriteHorizontalPath)).hasSize(
-            new Dimension(17 + 15, 16 * 17 /* lcm(16, 17) */));
+        org.fest.assertions.Assertions.assertThat(sprite(testDir, spriteHorizontalPath))
+            .hasSize(new Dimension(17 + 15, 16 * 17 /* lcm(16, 17) */));
         org.fest.assertions.Assertions.assertThat(sprite(testDir, spriteVerticalPath))
             .hasSize(new Dimension(15 * 17 /* lcm(15, 17) */, 17 + 16));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
@@ -153,6 +152,23 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
                 Message.MessageType.CANNOT_NOT_LOAD_IMAGE, new File(testDir,
                     "css/style-expected.css").getPath(), 15, new File(testDir,
                     "img/logo.png").getPath(), "Can't read input file!"));
+    }
+
+    @Test
+    public void testUnsupportedIndividualImageFormat() throws FileNotFoundException,
+        IOException
+    {
+        final File testDir = testDir("unsupported-image-format");
+        buildSprites(testDir);
+
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
+        assertThat(new File(testDir, "img/sprite.png")).doesNotExist();
+
+        assertThat(messages).contains(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.UNSUPPORTED_INDIVIDUAL_IMAGE_FORMAT, new File(
+                    testDir, "css/style.css").getPath(), 8, new File(testDir,
+                    "img/web.iff").getPath()));
     }
 
     @Test

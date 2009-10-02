@@ -147,7 +147,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
     }
 
     @Test
-    public void testUnsupportedFormat()
+    public void testUnsupportedSpriteImageFormat()
     {
         final SpriteImageDirective directive = SpriteImageDirective.parse(
             "sprite: sprite; sprite-image: url('../sprite.jpgx')", messageLog);
@@ -160,7 +160,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
 
         assertThat(messages).isEquivalentTo(
             new Message(Message.MessageLevel.WARN,
-                Message.MessageType.UNSUPPORTED_FORMAT, null, 0, "jpgx"));
+                Message.MessageType.UNSUPPORTED_SPRITE_IMAGE_FORMAT, null, 0, "jpgx"));
     }
     
     @Test

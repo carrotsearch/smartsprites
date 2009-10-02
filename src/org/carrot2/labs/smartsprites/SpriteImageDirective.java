@@ -1,7 +1,8 @@
 package org.carrot2.labs.smartsprites;
 
 import java.awt.Color;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.carrot2.labs.smartsprites.css.CssProperty;
@@ -10,8 +11,7 @@ import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.CollectionUtils;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 
 /**
  * Represents a directive that declares an individual sprite image.
@@ -58,6 +58,12 @@ public class SpriteImageDirective
         {
             return value;
         }
+
+        public static String valuesAsString()
+        {
+            final String list = Lists.newArrayList(values()).toString();
+            return list.substring(1, list.length() - 1);
+        }
     }
 
     /**
@@ -92,6 +98,12 @@ public class SpriteImageDirective
         {
             return value;
         }
+
+        public static String valuesAsString()
+        {
+            final String list = Lists.newArrayList(values()).toString();
+            return list.substring(1, list.length() - 1);
+        }
     }
 
     /**
@@ -118,6 +130,12 @@ public class SpriteImageDirective
         {
             return valueOf(value.toUpperCase());
         }
+
+        public static String valuesAsString()
+        {
+            final String list = Lists.newArrayList(values()).toString();
+            return list.substring(1, list.length() - 1);
+        }
     }
 
     /**
@@ -142,6 +160,12 @@ public class SpriteImageDirective
         public String toString()
         {
             return value;
+        }
+
+        public static String valuesAsString()
+        {
+            final String list = Lists.newArrayList(values()).toString();
+            return list.substring(1, list.length() - 1);
         }
     }
 
@@ -256,7 +280,7 @@ public class SpriteImageDirective
             }
             catch (final IllegalArgumentException e)
             {
-                messageCollector.warning(MessageType.UNSUPPORTED_FORMAT, formatValue);
+                messageCollector.warning(MessageType.UNSUPPORTED_SPRITE_IMAGE_FORMAT, formatValue);
                 format = SpriteImageFormat.PNG;
             }
         }

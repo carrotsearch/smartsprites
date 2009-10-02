@@ -2,8 +2,7 @@ package org.carrot2.labs.smartsprites;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
@@ -101,7 +100,17 @@ public class SpriteImageBuilder
                 if (is != null)
                 {
                     messageLog.info(MessageType.READING_IMAGE, realImagePath);
-                    images.put(spriteReferenceOccurrence, ImageIO.read(is));
+                    final BufferedImage image = ImageIO.read(is);
+                    if (image != null)
+                    {
+                        images.put(spriteReferenceOccurrence, image);
+                    }
+                    else
+                    {
+                        messageLog.warning(
+                            MessageType.UNSUPPORTED_INDIVIDUAL_IMAGE_FORMAT,
+                            realImagePath);
+                    }
                 }
                 else
                 {
@@ -124,6 +133,11 @@ public class SpriteImageBuilder
         // Build the sprite image bitmap
         final SpriteImage spriteImage = SpriteImageBuilder.buildSpriteImage(
             spriteImageOccurrence.spriteImageDirective, images);
+        if (spriteImage == null)
+        {
+            return Collections
+                .<SpriteReferenceOccurrence, SpriteReferenceReplacement> emptyMap();
+        }
 
         // Render the sprite into the required formats, perform quantization if needed
         final BufferedImage [] mergedImages = spriteImageRenderer.render(spriteImage);
@@ -294,8 +308,14 @@ public class SpriteImageBuilder
         }
 
         // Render the sprite image and build sprite reference replacements
-        final BufferedImage sprite = new BufferedImage(vertical ? dimension
-            : currentOffset, vertical ? currentOffset : dimension,
+        final int spriteWidth = vertical ? dimension : currentOffset;
+        final int spriteHeight = vertical ? currentOffset : dimension;
+        if (spriteWidth == 0 || spriteHeight == 0)
+        {
+            return null;
+        }
+
+        final BufferedImage sprite = new BufferedImage(spriteWidth, spriteHeight,
             BufferedImage.TYPE_4BYTE_ABGR);
 
         for (final Map.Entry<BufferedImageEqualsWrapper, Integer> entry : renderedImageToOffset

@@ -9,6 +9,7 @@ import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.CollectionUtils;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -74,6 +75,12 @@ public class SpriteReferenceDirective
         public static SpriteAlignment getValue(String value)
         {
             return valueOf(value.toUpperCase());
+        }
+
+        public static String valuesAsString()
+        {
+            final String list = Lists.newArrayList(values()).toString();
+            return list.substring(1, list.length() - 1);
         }
     }
 

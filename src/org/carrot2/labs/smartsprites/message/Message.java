@@ -3,7 +3,10 @@ package org.carrot2.labs.smartsprites.message;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.carrot2.labs.smartsprites.*;
+import org.carrot2.labs.smartsprites.SpriteImageDirective;
+import org.carrot2.labs.smartsprites.SpriteReferenceDirective;
+import org.carrot2.labs.smartsprites.SpriteImageDirective.*;
+import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 
 /**
  * Represents a processing message, can be an information message or a warning.
@@ -144,15 +147,17 @@ public class Message implements Serializable
         SPRITE_REF_NOT_FOUND("'" + SpriteReferenceDirective.PROPERTY_SPRITE_REF
             + "' rule is required"),
 
-        UNSUPPORTED_ALIGNMENT("Unsupported alignment: %s"),
+        UNSUPPORTED_ALIGNMENT("Unsupported alignment: %s. Supported alignments are: " + SpriteAlignment.valuesAsString()),
 
-        UNSUPPORTED_FORMAT("Unsupported format: %s"),
+        UNSUPPORTED_INDIVIDUAL_IMAGE_FORMAT("Unsupported format of image loaded from: %s."),
 
-        UNSUPPORTED_LAYOUT("Unsupported layout: %s"),
+        UNSUPPORTED_SPRITE_IMAGE_FORMAT("Format of image: %s is not supported. Supported formats are: " + SpriteImageFormat.valuesAsString()),
 
-        UNSUPPORTED_IE6_MODE("Unsupported ie6 mode: %s"),
+        UNSUPPORTED_LAYOUT("Unsupported layout: %s. Supported layouts are: " + SpriteImageLayout.valuesAsString()),
 
-        UNSUPPORTED_UID_TYPE("Unsupported uid type: %s"),
+        UNSUPPORTED_IE6_MODE("Unsupported ie6 mode: %s. Supported ie6 modes are: " + Ie6Mode.valuesAsString()),
+
+        UNSUPPORTED_UID_TYPE("Unsupported uid type: %s. Supported uid types are: " + SpriteUidType.valuesAsString()),
 
         IGNORING_IE6_MODE(
             "The sprite-ie6-mode applies only to PNG sprites. Ignoring for a %s sprite."),
