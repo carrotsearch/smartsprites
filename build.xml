@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="master" default="process">
-  <import file="build-autonomous.xml" />
+<project name="smartsprites.master" default="process">
+  <dirname property="smartsprites.master.basedir" file="${ant.file.smartsprites.master}"/> 
 
   <property file="smartsprites.version" />
   <property file="build.properties" />
   
   <property name="etc.dir" location="etc" />
+  <property name="tmp.dir" location="tmp" />
+  <property name="dist.dir" location="${tmp.dir}/dist" />
   <property name="classes.production.dir" location="tmp/classes" />
   <property name="classes.test.dir" location="tmp/classes-test" />
 
@@ -14,6 +16,13 @@
   <property name="coverage.report.dir" location="tmp/coverage-report" />
   <property name="findbugs.report.dir" location="tmp/findbugs-report" />
   <property name="duplication.report.dir" location="tmp/duplication-report" />
+
+  <!-- Maven artifacts dir -->
+  <property name="maven.repository.dir" location="${dist.dir}/maven2" />
+
+  <!-- Import utility build scripts -->
+  <import file="etc/maven/build.xml" />
+  <import file="build-autonomous.xml" />
 
   <!-- Source files for coverage analysis -->
   <fileset id="src.coverage" dir="${basedir}">
@@ -111,10 +120,11 @@
           depends="jar"
           description="Builds SmartSprites distribution">
     <property file="smartsprites.version" />
-    <mkdir dir="tmp/dist" />
+    <property name="archive-prefix" value="smartsprites-${smartsprites.version}" />
+    <mkdir dir="${dist.dir}" />
 
-    <zip destfile="tmp/dist/smartsprites-${smartsprites.version}.zip">
-      <zipfileset dir="." prefix="smartsprites">
+    <zip destfile="${dist.dir}/smartsprites-${smartsprites.version}.zip">
+      <zipfileset dir="." prefix="${archive-prefix}">
         <include name="lib/*" />
         <exclude name="lib/compile-time" />
         <include name="test/**" />
@@ -122,11 +132,11 @@
         <include name="smartsprites.LICENSE" />
         <include name="readme.txt" />
       </zipfileset>
-      <zipfileset dir="." includes="build-autonomous.xml" fullpath="smartsprites/build.xml" />
-      <zipfileset dir="." includes="smartsprites.sh" prefix="smartsprites" filemode="755" />
-      <zipfileset dir="." includes="smartsprites.properties.example" fullpath="smartsprites/smartsprites.properties" />
-      <zipfileset dir="doc/website" prefix="smartsprites/doc" />
-      <zipfileset dir="lib/compile-time" includes="junit*" prefix="smartsprites/lib" />
+      <zipfileset dir="." includes="build-autonomous.xml" fullpath="${archive-prefix}/build.xml" />
+      <zipfileset dir="." includes="smartsprites.sh" prefix="${archive-prefix}" filemode="755" />
+      <zipfileset dir="." includes="smartsprites.properties.example" fullpath="${archive-prefix}/smartsprites.properties" />
+      <zipfileset dir="doc/website" prefix="${archive-prefix}/doc" />
+      <zipfileset dir="lib/compile-time" includes="junit*" prefix="${archive-prefix}/lib" />
     </zip>
   </target>
 
@@ -242,5 +252,11 @@
           style="${etc.dir}/cpd/cpd2html.xsl"
           out="${duplication.report.dir}/index.html" />
   </target>
+
+  <!--
+       Maven artifacts.
+    -->
+  <target name="maven" description="Builds SmartSprites Maven2 artifacts"
+          depends="jar, smartsprites.maven.deploy" />
 </project>
 

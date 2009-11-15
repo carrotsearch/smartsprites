@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project name="carrot2.common.antlib">
+  <!-- Base dir determined from the build file location -->
+  <dirname property="carrot2.common.antlib.basedir"
+           file="${ant.file.carrot2.common.antlib}" />
+
+  <taskdef resource="org.carrot2.antlib.xml">
+    <classpath>
+      <pathelement location="${carrot2.common.antlib.basedir}/org.carrot2.antlib.jar" />
+    </classpath>
+  </taskdef>    
+</project>
