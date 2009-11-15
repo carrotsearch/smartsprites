@@ -17,11 +17,15 @@
         <ant dir="${smartsprites.dir}" antfile="build.xml" target="dist" inheritall="true" />
     </target>
 
-    <target name="publish">
-        <fail unless="dist.dir">Define: dist.dir property.</fail>
+    <target name="maven" description="Build SmartSprites Maven2 artifacts">
+        <ant dir="${smartsprites.dir}" antfile="build.xml" target="maven" inheritall="true" />
+    </target>
 
-        <copy todir="${dist.dir}" overwrite="true">
-          <fileset dir="tmp/dist" />
+    <target name="publish">
+        <fail unless="publish.dir">Define: publish.dir property.</fail>
+
+        <copy todir="${publish.dir}" overwrite="true">
+          <fileset dir="${dist.dir}" />
         </copy>
     </target>
 
