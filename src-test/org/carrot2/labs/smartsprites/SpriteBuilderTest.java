@@ -609,6 +609,25 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         }
     }
 
+    @Test
+    public void testSpriteMargins() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("sprite-margins");
+        buildSprites(testDir);
+
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
+        final String horizontalSpritePath = "img/sprite-horizontal.png";
+        assertThat(new File(testDir, horizontalSpritePath)).exists();
+        org.fest.assertions.Assertions.assertThat(sprite(testDir, horizontalSpritePath))
+            .hasSize(new Dimension(48 + 100 + 100 + 48 + 48, 47 * 6));
+
+        final String verticalSpritePath = "img/sprite-vertical.png";
+        org.fest.assertions.Assertions.assertThat(sprite(testDir, verticalSpritePath))
+            .hasSize(new Dimension(48 * 6, 47 + 100 + 100 + 47 + 47));
+        
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+    }
+
     @After
     public void cleanUp() throws IOException
     {

@@ -270,12 +270,12 @@ public class SpriteImageBuilder
             dimension = Math.max(dimension, vertical ? spriteReferenceOcurrence
                 .getRequiredWidth(image, layout) : spriteReferenceOcurrence
                 .getRequiredHeight(image, layout));
-
-            // Correct for least common multiple
-            if (dimension % leastCommonMultiple != 0)
-            {
-                dimension += leastCommonMultiple - (dimension % leastCommonMultiple);
-            }
+        }
+        
+        // Correct for least common multiple
+        if (dimension % leastCommonMultiple != 0)
+        {
+            dimension += leastCommonMultiple - (dimension % leastCommonMultiple);
         }
 
         // Compute the other sprite dimension.
