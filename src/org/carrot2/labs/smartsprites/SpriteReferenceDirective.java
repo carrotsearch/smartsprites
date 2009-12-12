@@ -209,7 +209,7 @@ public class SpriteReferenceDirective
         else
         {
             if (alignment.equals(SpriteAlignment.TOP)
-                || alignment.equals(SpriteAlignment.LEFT))
+                || alignment.equals(SpriteAlignment.BOTTOM))
             {
                 messageCollector.warning(
                     MessageType.ONLY_LEFT_OR_RIGHT_ALIGNMENT_ALLOWED, alignment.value);

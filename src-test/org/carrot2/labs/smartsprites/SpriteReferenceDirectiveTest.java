@@ -10,6 +10,7 @@ import org.carrot2.labs.smartsprites.SpriteImageDirective.*;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.MessageLog;
+import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
@@ -131,23 +132,48 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
     @Test
     public void testMismatchedTopAlignment()
     {
+        checkMismatchedAlignment("sprite", "top", SpriteAlignment.LEFT,
+            Message.MessageType.ONLY_LEFT_OR_RIGHT_ALIGNMENT_ALLOWED);
+    }
+
+    @Test
+    public void testMismatchedBottomAlignment()
+    {
+        checkMismatchedAlignment("sprite", "bottom", SpriteAlignment.LEFT,
+            Message.MessageType.ONLY_LEFT_OR_RIGHT_ALIGNMENT_ALLOWED);
+    }
+    
+    @Test
+    public void testMismatchedLeftAlignment()
+    {
+        checkMismatchedAlignment("hsprite", "left", SpriteAlignment.TOP,
+            Message.MessageType.ONLY_TOP_OR_BOTTOM_ALIGNMENT_ALLOWED);
+    }
+    
+    @Test
+    public void testMismatchedRightAlignment()
+    {
+        checkMismatchedAlignment("hsprite", "right", SpriteAlignment.TOP,
+            Message.MessageType.ONLY_TOP_OR_BOTTOM_ALIGNMENT_ALLOWED);
+    }
+
+    private void checkMismatchedAlignment(String sprite, final String alignment,
+        SpriteAlignment correctedAlignment, MessageType message)
+    {
         final SpriteReferenceDirective directive = SpriteReferenceDirective.parse(
-            "sprite-ref: sprite; sprite-alignment: top", SPRITE_IMAGE_DIRECTIVES,
-            messageLog);
+            "sprite-ref: " + sprite + "; sprite-alignment: " + alignment,
+            SPRITE_IMAGE_DIRECTIVES, messageLog);
 
         assertNotNull(directive);
-        assertEquals("sprite", directive.spriteRef);
-        assertEquals(SpriteAlignment.LEFT, directive.alignment);
+        assertEquals(sprite, directive.spriteRef);
+        assertEquals(correctedAlignment, directive.alignment);
         assertEquals(0, directive.marginLeft);
         assertEquals(0, directive.marginRight);
         assertEquals(0, directive.marginTop);
         assertEquals(0, directive.marginBottom);
 
-        assertThat(messages)
-            .isEquivalentTo(
-                new Message(Message.MessageLevel.WARN,
-                    Message.MessageType.ONLY_LEFT_OR_RIGHT_ALIGNMENT_ALLOWED, null, 0,
-                    "top"));
+        assertThat(messages).isEquivalentTo(
+            new Message(Message.MessageLevel.WARN, message, null, 0, alignment));
     }
 
     @Test
