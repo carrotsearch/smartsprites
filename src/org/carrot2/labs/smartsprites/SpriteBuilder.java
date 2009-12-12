@@ -101,13 +101,33 @@ public class SpriteBuilder
             {
                 filterFilesOutsideRootDir(filePaths);
             }
+
+            // Make sure the files exist and are really files
+            for (Iterator<String> it = filePaths.iterator(); it.hasNext();)
+            {
+                final String path = it.next();
+                final File file = new File(path);
+                if (file.exists())
+                {
+                    if (!file.isFile())
+                    {
+                        messageLog.warning(MessageType.CSS_PATH_IS_NOT_A_FILE, path);
+                        it.remove();
+                    }
+                }
+                else
+                {
+                    messageLog.warning(MessageType.CSS_FILE_DOES_NOT_EXIST, path);
+                    it.remove();
+                }
+            }
         }
         else
         {
             // Take all css files from the root dir
             filePaths = Lists.newArrayList();
             final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
-                new File(parameters.getRootDir()), new String []
+                parameters.getRootDirFile(), new String []
                 {
                     "css"
                 }, true);
@@ -122,12 +142,12 @@ public class SpriteBuilder
     }
 
     private void filterFilesOutsideRootDir(Collection<String> filePaths)
+        throws IOException
     {
-        final File rootDir = new File(parameters.getRootDir());
         for (Iterator<String> it = filePaths.iterator(); it.hasNext();)
         {
             final String filePath = it.next();
-            if (!FileUtils.isFileInParent(new File(filePath), rootDir))
+            if (!FileUtils.isFileInParent(new File(filePath), parameters.getRootDirFile()))
             {
                 it.remove();
                 messageLog.warning(MessageType.IGNORING_CSS_FILE_OUTSIDE_OF_ROOT_DIR,

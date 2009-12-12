@@ -1,6 +1,7 @@
 package org.carrot2.labs.smartsprites;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -258,6 +259,12 @@ public final class SmartSpritesParameters
     public String getRootDir()
     {
         return rootDir;
+    }
+
+    public File getRootDirFile() throws IOException
+    {
+        return rootDir.startsWith("..") ? new File(rootDir).getCanonicalFile()
+            : new File(rootDir);
     }
 
     public boolean hasRootDir()

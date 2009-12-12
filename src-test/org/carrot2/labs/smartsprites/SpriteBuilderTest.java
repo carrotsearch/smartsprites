@@ -545,6 +545,24 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     }
 
     @Test
+    public void testIndividualCssFileDoesNotExist() throws IOException
+    {
+        final String path = testDir("does-not-exist").getPath();
+        buildSprites(Lists.newArrayList(path));
+        assertThat(messages).contains(
+            new Message(MessageLevel.WARN, MessageType.CSS_FILE_DOES_NOT_EXIST, path));
+    }
+
+    @Test
+    public void testDirectoryProvidedAsIndividualCssFile() throws IOException
+    {
+        final String path = testDir(".").getPath();
+        buildSprites(Lists.newArrayList(path));
+        assertThat(messages).contains(
+            new Message(MessageLevel.WARN, MessageType.CSS_PATH_IS_NOT_A_FILE, path));
+    }
+
+    @Test
     public void testIndividualCssFilesWithoutOutputDir() throws IOException
     {
         final File testDir = testDir("individual-css-files-without-output-dir");
@@ -624,7 +642,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final String verticalSpritePath = "img/sprite-vertical.png";
         org.fest.assertions.Assertions.assertThat(sprite(testDir, verticalSpritePath))
             .hasSize(new Dimension(48 * 6, 47 + 100 + 100 + 47 + 47));
-        
+
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
