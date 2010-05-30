@@ -121,10 +121,13 @@ public class SpriteImageBuilder
             }
             catch (final IOException e)
             {
-                CloseableUtils.closeIgnoringException(is);
                 messageLog.warning(MessageType.CANNOT_NOT_LOAD_IMAGE, realImagePath,
                     "Can't read input file!");
                 continue;
+            }
+            finally 
+            {
+                CloseableUtils.closeIgnoringException(is);
             }
 
             messageLog.setCssFile(null);
