@@ -6,7 +6,8 @@ import java.security.*;
 import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
-import org.carrot2.labs.smartsprites.message.*;
+import org.carrot2.labs.smartsprites.message.LevelCounterMessageSink;
+import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.resource.FileSystemResourceHandler;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
@@ -125,13 +126,20 @@ public class SpriteBuilder
         else
         {
             // Take all css files from the root dir
-            filePaths = Lists.newArrayList();
-            final Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
+            final List<File> files = Lists.newArrayList(org.apache.commons.io.FileUtils.listFiles(
                 parameters.getRootDirFile(), new String []
                 {
                     "css"
-                }, true);
+                }, true));
+            Collections.sort(files, new Comparator<File>()
+            {
+                public int compare(File f1, File f2)
+                {
+                    return f1.getAbsolutePath().compareTo(f2.getAbsolutePath());
+                }
+            });
 
+            filePaths = Lists.newArrayList();
             for (File file : files)
             {
                 filePaths.add(file.getPath());
