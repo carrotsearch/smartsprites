@@ -1,6 +1,7 @@
 package org.carrot2.labs.smartsprites.css;
 
 import static org.carrot2.labs.test.Assertions.assertThat;
+import static org.carrot2.labs.test.Assertions.assertThatCssPropertyList;
 import static org.junit.Assert.assertEquals;
 
 import java.awt.Color;
@@ -21,7 +22,7 @@ public class CssSyntaxUtilsTest extends TestWithMemoryMessageSink
     public void testEmpty()
     {
         final List<CssProperty> actualRules = CssSyntaxUtils.extractProperties("   ");
-        assertThat(actualRules).isEmpty();
+        assertThatCssPropertyList(actualRules).isEmpty();
     }
 
     @Test
@@ -30,7 +31,7 @@ public class CssSyntaxUtilsTest extends TestWithMemoryMessageSink
         final List<CssProperty> actualRules = CssSyntaxUtils
             .extractProperties("test-rule: test-value");
 
-        assertThat(actualRules)
+        assertThatCssPropertyList(actualRules)
             .isEquivalentTo(new CssProperty("test-rule", "test-value"));
     }
 
@@ -40,7 +41,7 @@ public class CssSyntaxUtilsTest extends TestWithMemoryMessageSink
         final List<CssProperty> actualRules = CssSyntaxUtils
             .extractProperties("background-image: url(test.png) !important; color: red!   important");
 
-        assertThat(actualRules).isEquivalentTo(
+        assertThatCssPropertyList(actualRules).isEquivalentTo(
             new CssProperty("background-image", "url(test.png)", true),
             new CssProperty("color", "red", true));
     }
@@ -51,7 +52,7 @@ public class CssSyntaxUtilsTest extends TestWithMemoryMessageSink
         final List<CssProperty> actualRules = CssSyntaxUtils
             .extractProperties("TEST-rule: test-value");
 
-        assertThat(actualRules)
+        assertThatCssPropertyList(actualRules)
             .isEquivalentTo(new CssProperty("test-rule", "test-value"));
     }
 
@@ -61,7 +62,7 @@ public class CssSyntaxUtilsTest extends TestWithMemoryMessageSink
         final List<CssProperty> actualRules = CssSyntaxUtils
             .extractProperties("rule-1: value1; rule-2: value2;");
 
-        assertThat(actualRules).isEquivalentTo(new CssProperty("rule-1", "value1"),
+        assertThatCssPropertyList(actualRules).isEquivalentTo(new CssProperty("rule-1", "value1"),
             new CssProperty("rule-2", "value2"));
     }
 
@@ -71,7 +72,7 @@ public class CssSyntaxUtilsTest extends TestWithMemoryMessageSink
         final List<CssProperty> actualRules = CssSyntaxUtils
             .extractProperties("\trule-1  : value1  ; \trule-2  : value2\t;");
 
-        assertThat(actualRules).isEquivalentTo(new CssProperty("rule-1", "value1"),
+        assertThatCssPropertyList(actualRules).isEquivalentTo(new CssProperty("rule-1", "value1"),
             new CssProperty("rule-2", "value2"));
     }
 
@@ -83,7 +84,7 @@ public class CssSyntaxUtilsTest extends TestWithMemoryMessageSink
 
         // This isn't really valid in CSS, but until we switch to full
         // parsing, this should be enough.
-        assertThat(actualRules).isEquivalentTo(new CssProperty("rule-1", "value2 : v2"),
+        assertThatCssPropertyList(actualRules).isEquivalentTo(new CssProperty("rule-1", "value2 : v2"),
             new CssProperty("rule-2", "url(jar:/test.png)"));
 
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);

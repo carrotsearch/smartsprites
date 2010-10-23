@@ -205,8 +205,22 @@ public class SpriteImageDirective
      */
     public final Color matteColor;
 
+    /**
+     * Sprite layout properties defined at the sprite image directive level. The defaults
+     * provided here can be overridden at the sprite reference directive level.
+     */
+    public final SpriteLayoutProperties spriteLayoutProperties;
+
     public SpriteImageDirective(String id, String imageUrl, SpriteImageLayout layout,
         SpriteImageFormat format, Ie6Mode ie6Mode, Color matteColor, SpriteUidType uidType)
+    {
+        this(id, imageUrl, layout, format, ie6Mode, matteColor, uidType,
+            new SpriteLayoutProperties(layout));
+    }
+
+    public SpriteImageDirective(String id, String imageUrl, SpriteImageLayout layout,
+        SpriteImageFormat format, Ie6Mode ie6Mode, Color matteColor,
+        SpriteUidType uidType, SpriteLayoutProperties spriteLayoutProperties)
     {
         this.spriteId = id;
         this.imagePath = imageUrl;
@@ -215,6 +229,7 @@ public class SpriteImageDirective
         this.ie6Mode = ie6Mode;
         this.matteColor = matteColor;
         this.uidType = uidType;
+        this.spriteLayoutProperties = spriteLayoutProperties;
     }
 
     /**
@@ -230,6 +245,7 @@ public class SpriteImageDirective
 
         final Set<String> properties = Sets.newLinkedHashSet(rules.keySet());
         properties.removeAll(ALLOWED_PROPERTIES);
+        properties.removeAll(SpriteLayoutProperties.ALLOWED_PROPERTIES);
         if (!properties.isEmpty())
         {
             messageCollector.warning(MessageType.UNSUPPORTED_PROPERTIES_FOUND,
@@ -250,17 +266,19 @@ public class SpriteImageDirective
 
         final String id = rules.get(PROPERTY_SPRITE_ID).value;
 
-        final SpriteUidType uidGenerator = valueOf(CssSyntaxUtils.getValue(rules,
-            PROPERTY_SPRITE_IMAGE_UID_SUFFIX), SpriteUidType.class, SpriteUidType.NONE,
-            messageCollector, MessageType.UNSUPPORTED_UID_TYPE);
+        final SpriteUidType uidGenerator = valueOf(
+            CssSyntaxUtils.getValue(rules, PROPERTY_SPRITE_IMAGE_UID_SUFFIX),
+            SpriteUidType.class, SpriteUidType.NONE, messageCollector,
+            MessageType.UNSUPPORTED_UID_TYPE);
 
         final String imagePath = CssSyntaxUtils.unpackUrl(rules
             .get(PROPERTY_SPRITE_IMAGE_URL).value);
 
         // Layout is optional
-        final SpriteImageLayout layout = valueOf(CssSyntaxUtils.getValue(rules,
-            PROPERTY_SPRITE_IMAGE_LAYOUT), SpriteImageLayout.class,
-            SpriteImageLayout.VERTICAL, messageCollector, MessageType.UNSUPPORTED_LAYOUT);
+        final SpriteImageLayout layout = valueOf(
+            CssSyntaxUtils.getValue(rules, PROPERTY_SPRITE_IMAGE_LAYOUT),
+            SpriteImageLayout.class, SpriteImageLayout.VERTICAL, messageCollector,
+            MessageType.UNSUPPORTED_LAYOUT);
 
         // Infer format from image path
         SpriteImageFormat format;
@@ -280,7 +298,8 @@ public class SpriteImageDirective
             }
             catch (final IllegalArgumentException e)
             {
-                messageCollector.warning(MessageType.UNSUPPORTED_SPRITE_IMAGE_FORMAT, formatValue);
+                messageCollector.warning(MessageType.UNSUPPORTED_SPRITE_IMAGE_FORMAT,
+                    formatValue);
                 format = SpriteImageFormat.PNG;
             }
         }
@@ -308,7 +327,8 @@ public class SpriteImageDirective
         }
 
         return new SpriteImageDirective(id, imagePath, layout, format, ie6Mode,
-            matteColor, uidGenerator);
+            matteColor, uidGenerator, SpriteLayoutProperties.parse(directiveString,
+                layout, messageCollector));
     }
 
     private static <T extends Enum<T>> T valueOf(String stringValue, Class<T> enumClass,

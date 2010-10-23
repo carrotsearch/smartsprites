@@ -3,7 +3,7 @@ package org.carrot2.labs.smartsprites;
 import java.awt.image.BufferedImage;
 
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
-import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
+import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
 import org.carrot2.util.BufferedImageUtils;
 
 /**
@@ -34,7 +34,8 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
      */
     public int getRequiredWidth(BufferedImage image, SpriteImageLayout layout)
     {
-        if (SpriteAlignment.REPEAT.equals(spriteReferenceDirective.alignment)
+        if (SpriteAlignment.REPEAT
+            .equals(spriteReferenceDirective.spriteLayoutProperties.alignment)
             && SpriteImageLayout.VERTICAL.equals(layout))
         {
             // Ignoring left/right margins on repeated
@@ -43,8 +44,9 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
         }
         else
         {
-            return image.getWidth() + spriteReferenceDirective.marginLeft
-                + spriteReferenceDirective.marginRight;
+            return image.getWidth()
+                + spriteReferenceDirective.spriteLayoutProperties.marginLeft
+                + spriteReferenceDirective.spriteLayoutProperties.marginRight;
         }
     }
 
@@ -53,7 +55,8 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
      */
     public int getRequiredHeight(BufferedImage image, SpriteImageLayout layout)
     {
-        if (SpriteAlignment.REPEAT.equals(spriteReferenceDirective.alignment)
+        if (SpriteAlignment.REPEAT
+            .equals(spriteReferenceDirective.spriteLayoutProperties.alignment)
             && SpriteImageLayout.HORIZONTAL.equals(layout))
         {
             // Ignoring top/bottom margins on repeated
@@ -62,8 +65,9 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
         }
         else
         {
-            return image.getHeight() + spriteReferenceDirective.marginTop
-                + spriteReferenceDirective.marginBottom;
+            return image.getHeight()
+                + spriteReferenceDirective.spriteLayoutProperties.marginTop
+                + spriteReferenceDirective.spriteLayoutProperties.marginBottom;
         }
     }
 
@@ -84,17 +88,21 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
             rendered = new BufferedImage(dimension, getRequiredHeight(image, layout),
                 BufferedImage.TYPE_4BYTE_ABGR);
 
-            if (SpriteAlignment.LEFT.equals(spriteReferenceDirective.alignment))
+            if (SpriteAlignment.LEFT
+                .equals(spriteReferenceDirective.spriteLayoutProperties.alignment))
             {
                 BufferedImageUtils.drawImage(image, rendered,
-                    spriteReferenceDirective.marginLeft,
-                    spriteReferenceDirective.marginTop);
+                    spriteReferenceDirective.spriteLayoutProperties.marginLeft,
+                    spriteReferenceDirective.spriteLayoutProperties.marginTop);
             }
-            else if (SpriteAlignment.RIGHT.equals(spriteReferenceDirective.alignment))
+            else if (SpriteAlignment.RIGHT
+                .equals(spriteReferenceDirective.spriteLayoutProperties.alignment))
             {
-                BufferedImageUtils.drawImage(image, rendered, dimension
-                    - spriteReferenceDirective.marginRight - image.getWidth(),
-                    spriteReferenceDirective.marginTop);
+                BufferedImageUtils.drawImage(image, rendered,
+                    dimension
+                        - spriteReferenceDirective.spriteLayoutProperties.marginRight
+                        - image.getWidth(),
+                    spriteReferenceDirective.spriteLayoutProperties.marginTop);
             }
             else
             {
@@ -102,7 +110,7 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
                 for (int x = 0; x < dimension; x += image.getWidth())
                 {
                     BufferedImageUtils.drawImage(image, rendered, x,
-                        spriteReferenceDirective.marginTop);
+                        spriteReferenceDirective.spriteLayoutProperties.marginTop);
                 }
             }
         }
@@ -111,17 +119,20 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
             rendered = new BufferedImage(getRequiredWidth(image, layout), dimension,
                 BufferedImage.TYPE_4BYTE_ABGR);
 
-            if (SpriteAlignment.TOP.equals(spriteReferenceDirective.alignment))
+            if (SpriteAlignment.TOP
+                .equals(spriteReferenceDirective.spriteLayoutProperties.alignment))
             {
                 BufferedImageUtils.drawImage(image, rendered,
-                    spriteReferenceDirective.marginLeft,
-                    spriteReferenceDirective.marginTop);
+                    spriteReferenceDirective.spriteLayoutProperties.marginLeft,
+                    spriteReferenceDirective.spriteLayoutProperties.marginTop);
             }
-            else if (SpriteAlignment.BOTTOM.equals(spriteReferenceDirective.alignment))
+            else if (SpriteAlignment.BOTTOM
+                .equals(spriteReferenceDirective.spriteLayoutProperties.alignment))
             {
                 BufferedImageUtils.drawImage(image, rendered,
-                    spriteReferenceDirective.marginLeft, dimension
-                        - spriteReferenceDirective.marginBottom - image.getHeight());
+                    spriteReferenceDirective.spriteLayoutProperties.marginLeft, dimension
+                        - spriteReferenceDirective.spriteLayoutProperties.marginBottom
+                        - image.getHeight());
             }
             else
             {
@@ -129,7 +140,7 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
                 for (int y = 0; y < dimension; y += image.getHeight())
                 {
                     BufferedImageUtils.drawImage(image, rendered,
-                        spriteReferenceDirective.marginLeft, y);
+                        spriteReferenceDirective.spriteLayoutProperties.marginLeft, y);
                 }
             }
         }
@@ -146,13 +157,20 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
     {
         if (SpriteImageLayout.VERTICAL.equals(layout))
         {
-            return new SpriteReferenceReplacement(this, offset, SpriteAlignment.RIGHT
-                .equals(spriteReferenceDirective.alignment) ? "right" : "left");
+            return new SpriteReferenceReplacement(
+                this,
+                offset,
+                SpriteAlignment.RIGHT
+                    .equals(spriteReferenceDirective.spriteLayoutProperties.alignment) ? "right"
+                    : "left");
         }
         else
         {
-            return new SpriteReferenceReplacement(this, SpriteAlignment.BOTTOM
-                .equals(spriteReferenceDirective.alignment) ? "bottom" : "top", offset);
+            return new SpriteReferenceReplacement(
+                this,
+                SpriteAlignment.BOTTOM
+                    .equals(spriteReferenceDirective.spriteLayoutProperties.alignment) ? "bottom"
+                    : "top", offset);
         }
     }
 }

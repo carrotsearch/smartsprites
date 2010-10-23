@@ -1,21 +1,29 @@
 package org.carrot2.labs.smartsprites;
 
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.math.util.MathUtils;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
-import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
-import org.carrot2.labs.smartsprites.message.MessageLog;
+import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
+import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
-import org.carrot2.util.*;
+import org.carrot2.util.BufferedImageUtils;
+import org.carrot2.util.CloseableUtils;
+import org.carrot2.util.FileUtils;
 
-import com.google.common.collect.*;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 
 /**
  * Lays out and builds sprite images based on the collected SmartSprites directives.
@@ -125,7 +133,7 @@ public class SpriteImageBuilder
                     "Can't read input file!");
                 continue;
             }
-            finally 
+            finally
             {
                 CloseableUtils.closeIgnoringException(is);
             }
@@ -181,8 +189,8 @@ public class SpriteImageBuilder
             final BufferedImage imageToWrite;
             if (SpriteImageFormat.JPG.equals(spriteImageDirective.format))
             {
-                imageToWrite = new BufferedImage(mergedImage.getWidth(), mergedImage
-                    .getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+                imageToWrite = new BufferedImage(mergedImage.getWidth(),
+                    mergedImage.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
                 BufferedImageUtils.drawImage(mergedImage, imageToWrite, 0, 0);
             }
             else
@@ -194,8 +202,8 @@ public class SpriteImageBuilder
         }
         catch (final IOException e)
         {
-            messageLog.warning(MessageType.CANNOT_WRITE_SPRITE_IMAGE, mergedImageFile, e
-                .getMessage());
+            messageLog.warning(MessageType.CANNOT_WRITE_SPRITE_IMAGE, mergedImageFile,
+                e.getMessage());
         }
         finally
         {
@@ -240,8 +248,8 @@ public class SpriteImageBuilder
         // Just handle the root directory changing
         if (!imagePath.startsWith("/") && parameters.hasOutputDir())
         {
-            return FileUtils.changeRoot(path, parameters.getRootDir(), parameters
-                .getOutputDir());
+            return FileUtils.changeRoot(path, parameters.getRootDir(),
+                parameters.getOutputDir());
         }
         else
         {
@@ -270,11 +278,11 @@ public class SpriteImageBuilder
             final SpriteReferenceOccurrence spriteReferenceOcurrence = entry.getKey();
 
             // Compute dimensions
-            dimension = Math.max(dimension, vertical ? spriteReferenceOcurrence
-                .getRequiredWidth(image, layout) : spriteReferenceOcurrence
-                .getRequiredHeight(image, layout));
+            dimension = Math.max(dimension,
+                vertical ? spriteReferenceOcurrence.getRequiredWidth(image, layout)
+                    : spriteReferenceOcurrence.getRequiredHeight(image, layout));
         }
-        
+
         // Correct for least common multiple
         if (dimension % leastCommonMultiple != 0)
         {
@@ -306,8 +314,8 @@ public class SpriteImageBuilder
                 currentOffset += vertical ? rendered.getHeight() : rendered.getWidth();
             }
 
-            spriteReplacements.put(spriteReferenceOccurrence, spriteReferenceOccurrence
-                .buildReplacement(layout, imageOffset));
+            spriteReplacements.put(spriteReferenceOccurrence,
+                spriteReferenceOccurrence.buildReplacement(layout, imageOffset));
         }
 
         // Render the sprite image and build sprite reference replacements
@@ -346,7 +354,7 @@ public class SpriteImageBuilder
             final SpriteReferenceOccurrence spriteReferenceOccurrence = entry.getKey();
             if (image != null
                 && SpriteAlignment.REPEAT
-                    .equals(spriteReferenceOccurrence.spriteReferenceDirective.alignment))
+                    .equals(spriteReferenceOccurrence.spriteReferenceDirective.spriteLayoutProperties.alignment))
             {
                 if (SpriteImageLayout.VERTICAL.equals(layout))
                 {

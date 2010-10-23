@@ -38,7 +38,7 @@ public class Assertions
     /**
      * Creates a {@link CssPropertyListAssertion}.
      */
-    public static CssPropertyListAssertion assertThat(List<CssProperty> actual)
+    public static CssPropertyListAssertion assertThatCssPropertyList(List<CssProperty> actual)
     {
         return new CssPropertyListAssertion(actual);
     }

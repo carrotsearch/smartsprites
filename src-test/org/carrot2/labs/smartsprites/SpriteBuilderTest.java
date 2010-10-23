@@ -96,6 +96,21 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             new Dimension(17 + 15 + 48 + 20, 47));
     }
 
+
+    @Test
+    public void testLayoutPropertiesFromSpriteImageDirective() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("layout-properties-from-sprite-image-directive");
+        buildSprites(testDir);
+
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
+        assertThat(new File(testDir, "img/sprite.png")).exists();
+        org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
+            new Dimension(17 + 15 + 48 + 3 * (2 + 3), 47 + 5 + 7));
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+    }
+
+    
     @Test
     public void testMultipleCssFiles() throws FileNotFoundException, IOException
     {

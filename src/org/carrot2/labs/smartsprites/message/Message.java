@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.carrot2.labs.smartsprites.SpriteImageDirective;
+import org.carrot2.labs.smartsprites.SpriteImageDirective.Ie6Mode;
+import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
+import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
+import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteUidType;
+import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective;
-import org.carrot2.labs.smartsprites.SpriteImageDirective.*;
-import org.carrot2.labs.smartsprites.SpriteReferenceDirective.SpriteAlignment;
 
 /**
  * Represents a processing message, can be an information message or a warning.

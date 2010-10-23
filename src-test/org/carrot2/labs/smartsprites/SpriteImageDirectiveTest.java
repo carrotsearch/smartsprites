@@ -7,6 +7,7 @@ import java.awt.Color;
 
 import org.carrot2.labs.smartsprites.SpriteImageDirective.Ie6Mode;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteUidType;
+import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.junit.Test;
@@ -162,19 +163,19 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
             new Message(Message.MessageLevel.WARN,
                 Message.MessageType.UNSUPPORTED_SPRITE_IMAGE_FORMAT, null, 0, "jpgx"));
     }
-    
+
     @Test
     public void testLeadingSpaceInUrl()
     {
         final SpriteImageDirective directive = SpriteImageDirective.parse(
             "sprite: sprite; sprite-image: url(../sprite.png )", messageLog);
-        
+
         assertNotNull(directive);
         assertEquals(directive.spriteId, "sprite");
         assertEquals(directive.imagePath, "../sprite.png");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
         assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
-        
+
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
@@ -243,6 +244,29 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
                 "sprites-image, sprites-layout"),
             new Message(Message.MessageLevel.WARN,
                 Message.MessageType.SPRITE_IMAGE_URL_NOT_FOUND, null, 0));
+    }
+
+    @Test
+    public void testSpriteLayoutProperties()
+    {
+        final SpriteImageDirective directive = SpriteImageDirective
+            .parse(
+                "sprite: sprite; sprite-image: url('../sprite.png'); sprite-layout: horizontal; "
+                    + "sprite-alignment: bottom; sprite-margin-left: 10px; sprite-margin-right: 20; sprite-margin-top: 30px; sprite-margin-bottom: 40;",
+                messageLog);
+
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+        assertNotNull(directive);
+        assertEquals(directive.spriteId, "sprite");
+        assertEquals(directive.imagePath, "../sprite.png");
+        assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
+        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.HORIZONTAL);
+        
+        assertEquals(directive.spriteLayoutProperties.alignment, SpriteAlignment.BOTTOM);
+        assertEquals(directive.spriteLayoutProperties.marginLeft, 10);
+        assertEquals(directive.spriteLayoutProperties.marginRight, 20);
+        assertEquals(directive.spriteLayoutProperties.marginTop, 30);
+        assertEquals(directive.spriteLayoutProperties.marginBottom, 40);
     }
 
     private void checkUidType(String uidDeclaration, SpriteUidType expectedUidType)
