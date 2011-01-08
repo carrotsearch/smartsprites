@@ -36,8 +36,9 @@ public class SpriteImageRenderer
     BufferedImage [] render(SpriteImage spriteImage)
     {
         final BufferedImage sprite = spriteImage.sprite;
-        final boolean isPng = spriteImage.spriteImageDirective.format == SpriteImageFormat.PNG;
-        final boolean isJpg = spriteImage.spriteImageDirective.format == SpriteImageFormat.JPG;
+        final SpriteImageDirective spriteImageDirective = spriteImage.spriteImageOccurrence.spriteImageDirective;
+        final boolean isPng = spriteImageDirective.format == SpriteImageFormat.PNG;
+        final boolean isJpg = spriteImageDirective.format == SpriteImageFormat.JPG;
 
         final boolean isPngAuto = isPng
             && parameters.getSpritePngDepth() == PngDepth.AUTO;
@@ -60,17 +61,17 @@ public class SpriteImageRenderer
             // because IE6 can handle PNG24 with no transparency correctly.
             if (parameters.isSpritePngIe6() && isPng
                 && BufferedImageUtils.hasTransparency(sprite)
-                && spriteImage.spriteImageDirective.ie6Mode != Ie6Mode.NONE)
+                && spriteImageDirective.ie6Mode != Ie6Mode.NONE)
             {
                 result[1] = quantize(sprite, spriteImage, colorReductionInfo,
                     MessageLevel.IE6NOTICE);
                 spriteImage.hasReducedForIe6 = true;
             }
-            else if (spriteImage.spriteImageDirective.matteColor != null)
+            else if (spriteImageDirective.matteColor != null)
             {
                 // Can't or no need to handle indexed color
                 messageLog.warning(MessageType.IGNORING_MATTE_COLOR_NO_SUPPORT,
-                    spriteImage.spriteImageDirective.spriteId);
+                    spriteImageDirective.spriteId);
             }
 
             return result;
@@ -78,11 +79,11 @@ public class SpriteImageRenderer
         else if (canReduceWithoutQualityLoss)
         {
             // Can perform reduction to indexed color without data loss
-            if (spriteImage.spriteImageDirective.matteColor != null)
+            if (spriteImageDirective.matteColor != null)
             {
                 messageLog.warning(
                     MessageType.IGNORING_MATTE_COLOR_NO_PARTIAL_TRANSPARENCY,
-                    spriteImage.spriteImageDirective.spriteId);
+                    spriteImageDirective.spriteId);
             }
             result[0] = ColorQuantizer.reduce(sprite);
             return result;
@@ -101,30 +102,32 @@ public class SpriteImageRenderer
     private BufferedImage quantize(BufferedImage sprite, SpriteImage spriteImage,
         final ColorReductionInfo colorReductionInfo, MessageLevel logLevel)
     {
+        final SpriteImageDirective spriteImageDirective = spriteImage.spriteImageOccurrence.spriteImageDirective;
+
         // Need to quantize
         if (colorReductionInfo.hasPartialTransparency)
         {
             messageLog.log(logLevel, MessageType.ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR,
-                spriteImage.spriteImageDirective.spriteId);
+                spriteImageDirective.spriteId);
         }
         else
         {
             messageLog.log(logLevel, MessageType.TOO_MANY_COLORS_FOR_INDEXED_COLOR,
-                spriteImage.spriteImageDirective.spriteId,
+                spriteImageDirective.spriteId,
                 colorReductionInfo.distictColors, ColorQuantizer.MAX_INDEXED_COLORS);
         }
 
         final Color matte;
-        if (spriteImage.spriteImageDirective.matteColor != null)
+        if (spriteImageDirective.matteColor != null)
         {
-            matte = spriteImage.spriteImageDirective.matteColor;
+            matte = spriteImageDirective.matteColor;
         }
         else
         {
             if (colorReductionInfo.hasPartialTransparency)
             {
                 messageLog.log(logLevel, MessageType.USING_WHITE_MATTE_COLOR_AS_DEFAULT,
-                    spriteImage.spriteImageDirective.spriteId);
+                    spriteImageDirective.spriteId);
             }
             matte = Color.WHITE;
         }

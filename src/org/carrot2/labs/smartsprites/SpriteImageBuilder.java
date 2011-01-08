@@ -143,7 +143,7 @@ public class SpriteImageBuilder
 
         // Build the sprite image bitmap
         final SpriteImage spriteImage = SpriteImageBuilder.buildSpriteImage(
-            spriteImageOccurrence.spriteImageDirective, images);
+            spriteImageOccurrence, images);
         if (spriteImage == null)
         {
             return Collections
@@ -171,7 +171,7 @@ public class SpriteImageBuilder
     {
         // Add IE6 suffix if needed
         final SpriteImageDirective spriteImageDirective = spriteImageOccurrence.spriteImageDirective;
-        final String spritePath = addIe6Suffix(spriteImageDirective, ie6Reduced);
+        final String spritePath = addIe6Suffix(spriteImageDirective.imagePath, ie6Reduced);
 
         // Save the image to the disk
         final String mergedImageFile = getImageFile(spriteImageOccurrence.cssFile,
@@ -214,10 +214,9 @@ public class SpriteImageBuilder
     /**
      * Adds IE6 suffix to the sprite image path for IE6 reduced images.
      */
-    static String addIe6Suffix(SpriteImageDirective spriteImageDirective,
+    static String addIe6Suffix(String spritePath,
         boolean ie6Reduced)
     {
-        String spritePath = spriteImageDirective.imagePath;
         if (ie6Reduced)
         {
             final int dotIndex = spritePath.lastIndexOf('.');
@@ -260,11 +259,11 @@ public class SpriteImageBuilder
     /**
      * Calculates total dimensions and lays out a single sprite image.
      */
-    static SpriteImage buildSpriteImage(SpriteImageDirective spriteImageDirective,
+    static SpriteImage buildSpriteImage(SpriteImageOccurrence spriteImageOccurrence,
         Map<SpriteReferenceOccurrence, BufferedImage> images)
     {
         // First find the least common multiple of the images with 'repeat' alignment
-        final SpriteImageLayout layout = spriteImageDirective.layout;
+        final SpriteImageLayout layout = spriteImageOccurrence.spriteImageDirective.layout;
         final int leastCommonMultiple = SpriteImageBuilder.calculateLeastCommonMultiple(
             images, layout);
 
@@ -337,7 +336,7 @@ public class SpriteImageBuilder
                 : entry.getValue(), vertical ? entry.getValue() : 0);
         }
 
-        return new SpriteImage(sprite, spriteImageDirective, spriteReplacements);
+        return new SpriteImage(sprite, spriteImageOccurrence, spriteReplacements);
     }
 
     /**

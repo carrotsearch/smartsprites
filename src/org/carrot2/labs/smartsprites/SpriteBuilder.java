@@ -13,6 +13,7 @@ import org.carrot2.labs.smartsprites.resource.FileSystemResourceHandler;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
+import org.carrot2.util.PathUtils;
 
 import com.google.common.collect.*;
 
@@ -58,8 +59,8 @@ public class SpriteBuilder
      */
     public SpriteBuilder(SmartSpritesParameters parameters, MessageLog messageLog)
     {
-        this(parameters, messageLog, new FileSystemResourceHandler(parameters
-            .getDocumentRootDir(), parameters.getCssFileEncoding(), messageLog));
+        this(parameters, messageLog, new FileSystemResourceHandler(
+            parameters.getDocumentRootDir(), parameters.getCssFileEncoding(), messageLog));
     }
 
     /**
@@ -126,8 +127,8 @@ public class SpriteBuilder
         else
         {
             // Take all css files from the root dir
-            final List<File> files = Lists.newArrayList(org.apache.commons.io.FileUtils.listFiles(
-                parameters.getRootDirFile(), new String []
+            final List<File> files = Lists.newArrayList(org.apache.commons.io.FileUtils
+                .listFiles(parameters.getRootDirFile(), new String []
                 {
                     "css"
                 }, true));
@@ -155,7 +156,8 @@ public class SpriteBuilder
         for (Iterator<String> it = filePaths.iterator(); it.hasNext();)
         {
             final String filePath = it.next();
-            if (!FileUtils.isFileInParent(new File(filePath), parameters.getRootDirFile()))
+            if (!FileUtils
+                .isFileInParent(new File(filePath), parameters.getRootDirFile()))
             {
                 it.remove();
                 messageLog.warning(MessageType.IGNORING_CSS_FILE_OUTSIDE_OF_ROOT_DIR,
@@ -238,9 +240,11 @@ public class SpriteBuilder
             {
                 final String cssFile = entry.getKey();
 
-                createProcessedCss(cssFile, SpriteImageBuilder
-                    .getSpriteImageOccurrencesByLineNumber(spriteImageOccurrencesByFile
-                        .get(cssFile)),
+                createProcessedCss(
+                    cssFile,
+                    SpriteImageBuilder
+                        .getSpriteImageOccurrencesByLineNumber(spriteImageOccurrencesByFile
+                            .get(cssFile)),
                     new HashMap<Integer, SpriteReferenceReplacement>());
             }
         }
@@ -253,9 +257,11 @@ public class SpriteBuilder
                 final Map<Integer, SpriteReferenceReplacement> spriteReplacementsByLineNumber = SpriteImageBuilder
                     .getSpriteReplacementsByLineNumber(entry.getValue());
 
-                createProcessedCss(cssFile, SpriteImageBuilder
-                    .getSpriteImageOccurrencesByLineNumber(spriteImageOccurrencesByFile
-                        .get(cssFile)), spriteReplacementsByLineNumber);
+                createProcessedCss(
+                    cssFile,
+                    SpriteImageBuilder
+                        .getSpriteImageOccurrencesByLineNumber(spriteImageOccurrencesByFile
+                            .get(cssFile)), spriteReplacementsByLineNumber);
             }
         }
     }
@@ -269,13 +275,13 @@ public class SpriteBuilder
         throws IOException
     {
         final String processedCssFile = getProcessedCssFile(originalCssFile);
-        final BufferedReader originalCssReader = new BufferedReader(resourceHandler
-            .getResourceAsReader(originalCssFile));
+        final BufferedReader originalCssReader = new BufferedReader(
+            resourceHandler.getResourceAsReader(originalCssFile));
         messageLog.setCssFile(null);
         messageLog.info(MessageType.CREATING_CSS_STYLE_SHEET, processedCssFile);
         messageLog.info(MessageType.READING_CSS, originalCssFile);
-        final BufferedWriter processedCssWriter = new BufferedWriter(resourceHandler
-            .getResourceAsWriter(processedCssFile));
+        final BufferedWriter processedCssWriter = new BufferedWriter(
+            resourceHandler.getResourceAsWriter(processedCssFile));
         messageLog.info(MessageType.WRITING_CSS, processedCssFile);
 
         String originalCssLine;
@@ -313,25 +319,42 @@ public class SpriteBuilder
                     final boolean important = spriteReferenceReplacement.spriteReferenceOccurrence.important;
                     lastReferenceReplacementLine = originalCssLineNumber;
 
-                    // Write some extra css as a replacement and ignore the directive
+                    // Sprite image's path is relative to the CSS which declared the
+                    // sprite image. As it may happen that the image is referenced in
+                    // another CSS file, we must make sure the paths are correctly
+                    // translated.
+                    final String declaringCssPath = spriteReferenceReplacement.spriteImage.spriteImageOccurrence.cssFile;
+                    final String declarationReplacementRelativePath = PathUtils
+                        .getRelativeFilePath(
+                            originalCssFile.substring(0,
+                                originalCssFile.lastIndexOf(File.separatorChar)),
+                            declaringCssPath.substring(0,
+                                declaringCssPath.lastIndexOf(File.separatorChar)))
+                        .replace(File.separatorChar, '/');
+                    final String imagePathRelativeToReplacement = FileUtils
+                        .canonicalize(
+                            (StringUtils.isEmpty(declarationReplacementRelativePath)
+                                || StringUtils.indexOfDifference(originalCssFile,
+                                    declaringCssPath) <= 0 ? ""
+                                : declarationReplacementRelativePath + '/')
+                                + spriteReferenceReplacement.spriteImage.spriteImageOccurrence.spriteImageDirective.imagePath,
+                            "/");
                     processedCssWriter
                         .write("  background-image: url('"
-                            + spriteReferenceReplacement.spriteImage.spriteImageDirective.imagePath
+                            + imagePathRelativeToReplacement
                             + generateUidSuffix(
                                 originalCssFile,
-                                spriteReferenceReplacement.spriteImage.spriteImageDirective,
+                                spriteReferenceReplacement.spriteImage.spriteImageOccurrence.spriteImageDirective,
                                 false) + "')" + (important ? " !important" : "") + ";\n");
                     if (spriteReferenceReplacement.spriteImage.hasReducedForIe6)
                     {
                         processedCssWriter
                             .write("  -background-image: url('"
-                                + SpriteImageBuilder
-                                    .addIe6Suffix(
-                                        spriteReferenceReplacement.spriteImage.spriteImageDirective,
-                                        true)
+                                + SpriteImageBuilder.addIe6Suffix(
+                                    imagePathRelativeToReplacement, true)
                                 + generateUidSuffix(
                                     originalCssFile,
-                                    spriteReferenceReplacement.spriteImage.spriteImageDirective,
+                                    spriteReferenceReplacement.spriteImage.spriteImageOccurrence.spriteImageDirective,
                                     true) + "')" + (important ? " !important" : "")
                                 + ";\n");
                     }
@@ -418,7 +441,7 @@ public class SpriteBuilder
         else if (directive.uidType == SpriteImageDirective.SpriteUidType.MD5)
         {
             final String imageFile = spriteImageBuilder.getImageFile(cssFile,
-                (ie6 ? SpriteImageBuilder.addIe6Suffix(directive, true)
+                (ie6 ? SpriteImageBuilder.addIe6Suffix(directive.imagePath, true)
                     : directive.imagePath));
             if (spriteImageUidBySpriteImageFile.containsKey(imageFile))
             {

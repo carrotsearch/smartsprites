@@ -18,10 +18,10 @@ public class SpriteImage
     public final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReferenceReplacements;
 
     /**
-     * {@link SpriteImageDirective} for which this {@link SpriteImage} has been
+     * {@link SpriteImageOccurrence} for which this {@link SpriteImage} has been
      * built.
      */
-    public final SpriteImageDirective spriteImageDirective;
+    public final SpriteImageOccurrence spriteImageOccurrence;
 
     /**
      * Indicates whether this sprite has been also generated in an alpha/color degraded
@@ -30,12 +30,12 @@ public class SpriteImage
     public boolean hasReducedForIe6 = false;
 
     public SpriteImage(BufferedImage sprite,
-        SpriteImageDirective spriteImageDirective,
+        SpriteImageOccurrence spriteImageOccurrence,
         Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReplacements)
     {
         this.sprite = sprite;
         this.spriteReferenceReplacements = spriteReplacements;
-        this.spriteImageDirective = spriteImageDirective;
+        this.spriteImageOccurrence = spriteImageOccurrence;
 
         for (SpriteReferenceReplacement replacement : spriteReplacements.values())
         {

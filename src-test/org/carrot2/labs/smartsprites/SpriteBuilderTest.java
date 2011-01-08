@@ -661,6 +661,27 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
+    /**
+     * Test case for bug SMARTSPRITES-69.
+     */
+    @Test
+    public void testCssSubfolders() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("css-in-subfolders");
+        buildSprites(testDir);
+
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
+        assertThat(css("css/library/common-sprite.css")).hasSameContentAs(
+            css("css/library/common-expected.css"));
+        assertThat(new File(testDir, "img/sprite.png")).exists();
+        org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
+            new Dimension(17, 17 + 16));
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+        
+        org.carrot2.util.FileUtils.deleteThrowingExceptions(css("css/library/common-sprite.css"));
+
+    }
+
     @After
     public void cleanUp() throws IOException
     {

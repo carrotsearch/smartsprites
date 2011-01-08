@@ -3,6 +3,7 @@ package org.carrot2.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -40,6 +41,25 @@ public class FileUtils
         // shouldn't return null here.
         final String relativePath = PathUtils.getRelativeFilePath(oldRoot, file);
         return FilenameUtils.concat(newRoot, relativePath);
+    }
+
+    /**
+     * Removes useless segments in relative paths, e.g. replaces
+     * <code>../path/../other/file.css</code> with <code>../other/file.css</code>
+     */
+    public static String canonicalize(String path, String separator)
+    {
+        String replaced = path;
+        String toReplace = null;
+        final String separatorEscaped = Pattern.quote(separator);
+        final Pattern pattern = Pattern.compile("[^" + separatorEscaped + "\\.]+"
+            + separatorEscaped + "\\.\\." + separatorEscaped + "?");
+        while (!replaced.equals(toReplace))
+        {
+            toReplace = replaced;
+            replaced = pattern.matcher(toReplace).replaceFirst("");
+        }
+        return replaced;
     }
 
     /**
@@ -83,7 +103,7 @@ public class FileUtils
         {
             return;
         }
-        
+
         if (!dirs.mkdirs())
         {
             throw new IOException("Unable to create directories: " + dirs.getPath());
