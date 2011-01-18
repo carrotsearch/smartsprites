@@ -75,7 +75,7 @@ public class Message implements Serializable
 
         CANNOT_NOT_LOAD_IMAGE("Cannot load image: %s due to: %s."),
 
-        CANNOT_PARSE_MARGIN_VALUE("Cannot parse margin value: %s."),
+        CANNOT_PARSE_MARGIN_VALUE("Cannot parse margin value: %s. Only 'px' units are supported."),
 
         CANNOT_WRITE_SPRITE_IMAGE("Cannot write sprite image: %s due to %s."),
 
