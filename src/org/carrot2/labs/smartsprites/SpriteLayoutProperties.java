@@ -243,7 +243,15 @@ public class SpriteLayoutProperties
             }
             try
             {
-                return Integer.parseInt(marginValue);
+                int marginIntValue = Integer.parseInt(marginValue);
+                if (marginIntValue < 0)
+                {
+                    messageLog.warning(MessageType.IGNORING_NEGATIVE_MARGIN_VALUE,
+                        marginRule);
+                    marginIntValue = 0;
+                }
+
+                return marginIntValue;
             }
             catch (final NumberFormatException e)
             {

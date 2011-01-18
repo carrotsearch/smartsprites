@@ -261,12 +261,41 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.imagePath, "../sprite.png");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
         assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.HORIZONTAL);
-        
+
         assertEquals(directive.spriteLayoutProperties.alignment, SpriteAlignment.BOTTOM);
         assertEquals(directive.spriteLayoutProperties.marginLeft, 10);
         assertEquals(directive.spriteLayoutProperties.marginRight, 20);
         assertEquals(directive.spriteLayoutProperties.marginTop, 30);
         assertEquals(directive.spriteLayoutProperties.marginBottom, 40);
+    }
+
+    @Test
+    public void testNegativeMarginValues()
+    {
+        final SpriteImageDirective directive = SpriteImageDirective
+            .parse(
+                "sprite: sprite; sprite-image: url('../sprite.png'); sprite-layout: horizontal; "
+                    + "sprite-alignment: bottom; sprite-margin-left: -5px; sprite-margin-right: 20; sprite-margin-top: 30px; sprite-margin-bottom: -40;",
+                messageLog);
+
+        assertThat(messages).contains(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.IGNORING_NEGATIVE_MARGIN_VALUE, null, 0,
+                "sprite-margin-left"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.IGNORING_NEGATIVE_MARGIN_VALUE, null, 0,
+                "sprite-margin-bottom"));
+        assertNotNull(directive);
+        assertEquals(directive.spriteId, "sprite");
+        assertEquals(directive.imagePath, "../sprite.png");
+        assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
+        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.HORIZONTAL);
+
+        assertEquals(directive.spriteLayoutProperties.alignment, SpriteAlignment.BOTTOM);
+        assertEquals(0, directive.spriteLayoutProperties.marginLeft);
+        assertEquals(20, directive.spriteLayoutProperties.marginRight);
+        assertEquals(30, directive.spriteLayoutProperties.marginTop);
+        assertEquals(0, directive.spriteLayoutProperties.marginBottom);
     }
 
     private void checkUidType(String uidDeclaration, SpriteUidType expectedUidType)

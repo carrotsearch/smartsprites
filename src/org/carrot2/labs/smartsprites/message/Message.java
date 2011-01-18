@@ -63,8 +63,7 @@ public class Message implements Serializable
                 return levelA.level - levelB.level;
             }
         };
-        
-        
+
     }
 
     /**
@@ -85,8 +84,9 @@ public class Message implements Serializable
         CREATING_CSS_STYLE_SHEET("Creating CSS style sheet: %s."),
 
         WRITING_CSS("Writing CSS to %s."),
-        
-        WRITING_SPRITE_IMAGE("Writing sprite image of size %s x %s for sprite '%s' to %s."),
+
+        WRITING_SPRITE_IMAGE(
+            "Writing sprite image of size %s x %s for sprite '%s' to %s."),
 
         IGNORING_SPRITE_IMAGE_REDEFINITION("Ignoring sprite image redefinition."),
 
@@ -104,7 +104,7 @@ public class Message implements Serializable
 
         EITHER_ROOT_DIR_OR_CSS_FILES_IS_REQIRED(
             "Either root directory or non-empty list of individual CSS files is required."),
-            
+
         ROOT_DIR_AND_CSS_FILES_CANNOT_BE_BOTH_SPECIFIED_UNLESS_WITH_OUTPUT_DIR(
             "Root directory and individual CSS files cannot be both specified, unless output dir is also specified."),
 
@@ -115,9 +115,9 @@ public class Message implements Serializable
             "Root directory must exist and be a directory: %s."),
 
         CSS_FILE_DOES_NOT_EXIST("Ignoring CSS file %s, it does not exist."),
-            
+
         CSS_PATH_IS_NOT_A_FILE("Ignoring CSS path %s, it is not a file."),
-        
+
         OUTPUT_DIR_IS_NOT_DIRECTORY("Output directory must be a directory: %s."),
 
         DOCUMENT_ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY(
@@ -125,10 +125,10 @@ public class Message implements Serializable
 
         IGNORING_CSS_FILE_OUTSIDE_OF_ROOT_DIR(
             "Ignoring a CSS file outside of root directory: %s."),
-            
+
         CSS_FILE_SUFFIX_IS_REQUIRED_IF_NO_OUTPUT_DIR(
             "A non-empty CSS file suffix is required when no output directory is specified."),
-            
+
         ONLY_LEFT_OR_RIGHT_ALIGNMENT_ALLOWED(
             "Only 'left' or 'right' alignment allowed on vertical sprites, found: %s. Using 'left'."),
 
@@ -136,11 +136,12 @@ public class Message implements Serializable
             "Only 'top' or 'bottom' alignment allowed on horizontal sprites, found: %s. Using 'top'."),
 
         READING_SPRITE_IMAGE_DIRECTIVES("Reading sprite image directives from %s."),
-        
-        READING_SPRITE_REFERENCE_DIRECTIVES("Reading sprite reference directives from %s."),
-        
+
+        READING_SPRITE_REFERENCE_DIRECTIVES(
+            "Reading sprite reference directives from %s."),
+
         READING_CSS("Reading CSS from %s."),
-        
+
         READING_IMAGE("Reading image from %s."),
 
         REFERENCED_SPRITE_NOT_FOUND("Referenced sprite: %s not found."),
@@ -154,17 +155,24 @@ public class Message implements Serializable
         SPRITE_REF_NOT_FOUND("'" + SpriteReferenceDirective.PROPERTY_SPRITE_REF
             + "' rule is required."),
 
-        UNSUPPORTED_ALIGNMENT("Unsupported alignment: %s. Supported alignments are: " + SpriteAlignment.valuesAsString() + "."),
+        UNSUPPORTED_ALIGNMENT("Unsupported alignment: %s. Supported alignments are: "
+            + SpriteAlignment.valuesAsString() + "."),
 
-        UNSUPPORTED_INDIVIDUAL_IMAGE_FORMAT("Unsupported format of image loaded from: %s."),
+        UNSUPPORTED_INDIVIDUAL_IMAGE_FORMAT(
+            "Unsupported format of image loaded from: %s."),
 
-        UNSUPPORTED_SPRITE_IMAGE_FORMAT("Format of image: %s is not supported. Supported formats are: " + SpriteImageFormat.valuesAsString() + "."),
+        UNSUPPORTED_SPRITE_IMAGE_FORMAT(
+            "Format of image: %s is not supported. Supported formats are: "
+                + SpriteImageFormat.valuesAsString() + "."),
 
-        UNSUPPORTED_LAYOUT("Unsupported layout: %s. Supported layouts are: " + SpriteImageLayout.valuesAsString() + "."),
+        UNSUPPORTED_LAYOUT("Unsupported layout: %s. Supported layouts are: "
+            + SpriteImageLayout.valuesAsString() + "."),
 
-        UNSUPPORTED_IE6_MODE("Unsupported ie6 mode: %s. Supported ie6 modes are: " + Ie6Mode.valuesAsString() + "."),
+        UNSUPPORTED_IE6_MODE("Unsupported ie6 mode: %s. Supported ie6 modes are: "
+            + Ie6Mode.valuesAsString() + "."),
 
-        UNSUPPORTED_UID_TYPE("Unsupported uid type: %s. Supported uid types are: " + SpriteUidType.valuesAsString() + "."),
+        UNSUPPORTED_UID_TYPE("Unsupported uid type: %s. Supported uid types are: "
+            + SpriteUidType.valuesAsString() + "."),
 
         IGNORING_IE6_MODE(
             "The sprite-ie6-mode applies only to PNG sprites. Ignoring for a %s sprite."),
@@ -185,6 +193,8 @@ public class Message implements Serializable
 
         IGNORING_MATTE_COLOR_NO_SUPPORT(
             "Ignoring sprite-mate-color on sprite '%s' because its output format does not require matting or does not support transparency."),
+
+        IGNORING_NEGATIVE_MARGIN_VALUE("Values of %s must not be negative, using 0."),
 
         PROCESSING_COMPLETED("SmartSprites processing completed in %d ms."),
 

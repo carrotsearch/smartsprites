@@ -288,4 +288,29 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
 
         assertThat(messages).isEmpty();
     }
+    
+    @Test
+    public void testNegativeMarginValues()
+    {
+        final SpriteReferenceDirective directive = SpriteReferenceDirective
+        .parse(
+            "sprite-ref: vlsprite; sprite-alignment: right; sprite-margin-left: -10px; sprite-margin-right: 20; sprite-margin-top: 30px; sprite-margin-bottom: -40;",
+            SPRITE_IMAGE_DIRECTIVES, messageLog);
+        
+        assertNotNull(directive);
+        assertEquals("vlsprite", directive.spriteRef);
+        assertEquals(SpriteAlignment.RIGHT, directive.spriteLayoutProperties.alignment);
+        assertEquals(0, directive.spriteLayoutProperties.marginLeft);
+        assertEquals(20, directive.spriteLayoutProperties.marginRight);
+        assertEquals(30, directive.spriteLayoutProperties.marginTop);
+        assertEquals(0, directive.spriteLayoutProperties.marginBottom);
+        
+        assertThat(messages).contains(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.IGNORING_NEGATIVE_MARGIN_VALUE, null, 0,
+                "sprite-margin-left"),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.IGNORING_NEGATIVE_MARGIN_VALUE, null, 0,
+                "sprite-margin-bottom"));
+    }
 }
