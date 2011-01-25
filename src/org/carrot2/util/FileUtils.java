@@ -81,7 +81,7 @@ public class FileUtils
                 continue;
             }
 
-            if (!file.delete())
+            if (file.exists() && !file.delete())
             {
                 undeletedFiles.add(file.getPath());
             }

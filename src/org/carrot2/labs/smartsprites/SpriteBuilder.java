@@ -168,6 +168,10 @@ public class SpriteBuilder
 
     /**
      * Performs processing from the list of file paths for this builder's parameters.
+     * 
+     * @param filePaths paths of CSS files to process. Non-absolute paths will be taken
+     *            relative to the current working directory. Both platform-specific and
+     *            '/' as the file separator are supported.
      */
     public void buildSprites(Collection<String> filePaths) throws FileNotFoundException,
         IOException
@@ -293,6 +297,8 @@ public class SpriteBuilder
         {
             messageLog.setCssFile(originalCssFile);
 
+            originalCssFile = originalCssFile.replace(File.separatorChar, '/');
+
             while ((originalCssLine = originalCssReader.readLine()) != null)
             {
                 originalCssLineNumber++;
@@ -323,14 +329,15 @@ public class SpriteBuilder
                     // sprite image. As it may happen that the image is referenced in
                     // another CSS file, we must make sure the paths are correctly
                     // translated.
-                    final String declaringCssPath = spriteReferenceReplacement.spriteImage.spriteImageOccurrence.cssFile;
+                    final String declaringCssPath = spriteReferenceReplacement.spriteImage.spriteImageOccurrence.cssFile
+                        .replace(File.separatorChar, '/');
                     final String declarationReplacementRelativePath = PathUtils
                         .getRelativeFilePath(
-                            originalCssFile.substring(0,
-                                originalCssFile.lastIndexOf(File.separatorChar)),
+                            originalCssFile
+                                .substring(0, originalCssFile.lastIndexOf('/')),
                             declaringCssPath.substring(0,
-                                declaringCssPath.lastIndexOf(File.separatorChar)))
-                        .replace(File.separatorChar, '/');
+                                declaringCssPath.lastIndexOf('/'))).replace(
+                            File.separatorChar, '/');
                     final String imagePathRelativeToReplacement = FileUtils
                         .canonicalize(
                             (StringUtils.isEmpty(declarationReplacementRelativePath)

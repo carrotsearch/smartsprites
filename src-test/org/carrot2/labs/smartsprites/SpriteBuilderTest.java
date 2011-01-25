@@ -96,9 +96,9 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             new Dimension(17 + 15 + 48 + 20, 47));
     }
 
-
     @Test
-    public void testLayoutPropertiesFromSpriteImageDirective() throws FileNotFoundException, IOException
+    public void testLayoutPropertiesFromSpriteImageDirective()
+        throws FileNotFoundException, IOException
     {
         final File testDir = testDir("layout-properties-from-sprite-image-directive");
         buildSprites(testDir);
@@ -110,7 +110,6 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
-    
     @Test
     public void testMultipleCssFiles() throws FileNotFoundException, IOException
     {
@@ -161,8 +160,8 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(messages).contains(
             new Message(Message.MessageLevel.WARN,
                 Message.MessageType.CANNOT_NOT_LOAD_IMAGE, new File(testDir,
-                    "css/style.css").getPath(), 15, new File(testDir, "img/logo.png")
-                    .getPath(), "Can't read input file!"),
+                    "css/style.css").getPath(), 15,
+                new File(testDir, "img/logo.png").getPath(), "Can't read input file!"),
             new Message(Message.MessageLevel.WARN,
                 Message.MessageType.CANNOT_NOT_LOAD_IMAGE, new File(testDir,
                     "css/style-expected.css").getPath(), 15, new File(testDir,
@@ -330,14 +329,17 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("indexed-color");
         buildSprites(testDir);
 
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor().hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor().hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-full-alpha.png")).isDirectColor().hasTrueAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-many-colors.png")).isDirectColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor()
+            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor()
+            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-full-alpha.png")).isDirectColor()
+            .hasTrueAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-many-colors.png")).isDirectColor()
             .doesNotHaveAlpha();
 
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
@@ -352,14 +354,17 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             PngDepth.DIRECT, SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
             SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor().hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-bit-alpha.png")).isDirectColor().hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-full-alpha.png")).isDirectColor().hasTrueAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-many-colors.png")).isDirectColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor()
+            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-bit-alpha.png")).isDirectColor()
+            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-full-alpha.png")).isDirectColor()
+            .hasTrueAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-many-colors.png")).isDirectColor()
             .doesNotHaveAlpha();
 
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
@@ -374,14 +379,17 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             PngDepth.INDEXED, SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
             SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor().hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor().hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-full-alpha.png")).isIndexedColor().hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-many-colors.png")).isIndexedColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor()
+            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor()
+            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-full-alpha.png")).isIndexedColor()
+            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-many-colors.png")).isIndexedColor()
             .doesNotHaveAlpha();
 
         assertThat(messages).isEquivalentTo(
@@ -403,19 +411,20 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File testDir = testDir("matte-color");
         buildSprites(testDir);
 
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor().hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-full-alpha-m1.png")).isDirectColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor()
+            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-full-alpha-m1.png")).isDirectColor()
             .hasTrueAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-full-alpha-m2.png")).isDirectColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-full-alpha-m2.png")).isDirectColor()
             .hasTrueAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-full-alpha-m3.png")).isDirectColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-full-alpha-m3.png")).isDirectColor()
             .hasTrueAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-many-colors.png")).isDirectColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-many-colors.png")).isDirectColor()
             .doesNotHaveAlpha();
 
         assertThat(messages).isEquivalentTo(
@@ -446,21 +455,22 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             PngDepth.INDEXED, SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
             SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor().hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-full-alpha-m1.png")).isIndexedColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor()
+            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-full-alpha-m1.png")).isIndexedColor()
             .hasBitAlpha().isEqualTo(sprite(testDir, "img/sprite-full-alpha-m2.png"))
             .isNotEqualTo(sprite(testDir, "img/sprite-full-alpha-m3.png"));
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-full-alpha-m2.png")).isIndexedColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-full-alpha-m2.png")).isIndexedColor()
             .hasBitAlpha().isEqualTo(sprite(testDir, "img/sprite-full-alpha-m1.png"))
             .isNotEqualTo(sprite(testDir, "img/sprite-full-alpha-m3.png"));
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-full-alpha-m3.png")).isIndexedColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-full-alpha-m3.png")).isIndexedColor()
             .hasBitAlpha().isNotEqualTo(sprite(testDir, "img/sprite-full-alpha-m1.png"));
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-many-colors.png")).isIndexedColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-many-colors.png")).isIndexedColor()
             .doesNotHaveAlpha();
 
         assertThat(messages).isEquivalentTo(
@@ -490,27 +500,30 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             MessageLevel.INFO, SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
             PngDepth.AUTO, true, SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
 
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor().hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor().hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-full-alpha.png")).isDirectColor().hasTrueAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-full-alpha-ie6.png")).isIndexedColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-bit-alpha.gif")).isIndexedColor()
             .hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-many-colors.png")).isDirectColor()
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-bit-alpha.png")).isIndexedColor()
+            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-full-alpha.png")).isDirectColor()
+            .hasTrueAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-full-alpha-ie6.png"))
+            .isIndexedColor().hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-many-colors.png")).isDirectColor()
             .doesNotHaveAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-many-colors-bit-alpha-ie6.png")).isIndexedColor()
-            .hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-many-colors-bit-alpha-no-ie6.png"))
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-many-colors-bit-alpha-ie6.png"))
+            .isIndexedColor().hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-many-colors-bit-alpha-no-ie6.png"))
             .isDirectColor().hasBitAlpha();
-        org.carrot2.labs.test.Assertions.assertThat(
-            sprite(testDir, "img/sprite-many-colors-bit-alpha.png")).isDirectColor()
-            .hasBitAlpha();
+        org.carrot2.labs.test.Assertions
+            .assertThat(sprite(testDir, "img/sprite-many-colors-bit-alpha.png"))
+            .isDirectColor().hasBitAlpha();
 
         assertThat(processedCss()).hasSameContentAs(expectedCss());
 
@@ -677,9 +690,38 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
             new Dimension(17, 17 + 16));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
-        
-        org.carrot2.util.FileUtils.deleteThrowingExceptions(css("css/library/common-sprite.css"));
 
+        org.carrot2.util.FileUtils
+            .deleteThrowingExceptions(css("css/library/common-sprite.css"));
+    }
+
+    /**
+     * Test case for bug SMARTSPRITES-78. The bug was caused by the lack of clear contract
+     * on the format of paths in {@link SpriteBuilder#buildSprites(java.util.Collection)}.
+     */
+    @Test
+    public void testCssFileApiInvocation() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("simple-horizontal-sprite");
+        final File outputCss = new File(testDir, "css/style-sprite.css");
+        final File sprite = new File(testDir, "img/sprite.png");
+
+        try
+        {
+            buildSprites(Lists.newArrayList(new File(testDir, "css/style.css").getPath()
+                .replace(File.separatorChar, '/')));
+
+            assertThat(outputCss).hasSameContentAs(
+                new File(testDir, "css/style-expected.css"));
+            assertThat(sprite).exists();
+            org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
+                new Dimension(17 + 15 + 48, 47));
+            assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+        }
+        finally
+        {
+            org.carrot2.util.FileUtils.deleteThrowingExceptions(outputCss, sprite);
+        }
     }
 
     @After
