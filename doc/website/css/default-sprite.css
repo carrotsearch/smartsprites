@@ -76,7 +76,6 @@ tt {
 
 code span.nobreak {
   background-image: url('../img/vert.png');
-  -background-image: url('../img/vert-ie6.png');
   background-position: left -0px;
   background-repeat: no-repeat;
   float: right;
@@ -119,7 +118,6 @@ div.quote {
 	background-color: #000;
   background-position: right top;
   background-image: url('../img/vert.png');
-  -background-image: url('../img/vert-ie6.png');
   background-position: right -16px;
   background-repeat: no-repeat;
 	height: 230px;
@@ -151,6 +149,15 @@ code strong,
   color: #606060;
 }
 
+#other-language {
+	color: #888;
+  padding: 8px 0 0 26px;
+  background-position: 4px 10px;
+  background-repeat: no-repeat;
+  background-image: url('../img/vert.png');
+  background-position: left -246px;
+}
+
 /* Menu */
 ul.menu {
 	border-top: 1px solid #1A1A1A;
@@ -164,8 +171,7 @@ ul.menu li {
   margin: 0;
   background-color: #000;
   background-image: url('../img/vert.png');
-  -background-image: url('../img/vert-ie6.png');
-  background-position: left -246px;
+  background-position: left -267px;
   background-repeat: repeat-x;
 	border-right: 1px solid #222;
 	border-top: 1px solid #1A1A1A;
@@ -280,33 +286,28 @@ div.build-info {
 
 #donate-10 {
   background-image: url('../img/vert.png');
-  -background-image: url('../img/vert-ie6.png');
-  background-position: left -286px;
+  background-position: left -307px;
 }
 
 #donate-25 {
   background-image: url('../img/vert.png');
-  -background-image: url('../img/vert-ie6.png');
-  background-position: left -324px;
+  background-position: left -345px;
 }
 
 #donate-50 {
   background-image: url('../img/vert.png');
-  -background-image: url('../img/vert-ie6.png');
-  background-position: left -362px;
+  background-position: left -383px;
 }
 
 #donate-other {
   background-image: url('../img/vert.png');
-  -background-image: url('../img/vert-ie6.png');
-  background-position: left -400px;
+  background-position: left -421px;
 }
 
 .item {
   background-color: #030303;
   background-image: url('../img/vert.png');
-  -background-image: url('../img/vert-ie6.png');
-  background-position: left -438px;
+  background-position: left -459px;
 	background-repeat: repeat-x;
 	padding: 8px 10px;
 }

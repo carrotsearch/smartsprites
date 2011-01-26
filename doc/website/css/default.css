@@ -1,7 +1,7 @@
 /**
  * Design based on the Blackbox design by Viktor Persson (http://arcsin.se).
  */
-/** sprite: vert; sprite-image: url(../img/vert.png); sprite-layout: vertical; sprite-matte-color: #000000 */
+/** sprite: vert; sprite-image: url(../img/vert.png); sprite-layout: vertical */
 * {
 	margin: 0;
 	padding: 0;
@@ -146,6 +146,14 @@ code strong,
 #alpha {
   font-size: 25px;
   color: #606060;
+}
+
+#other-language {
+	color: #888;
+  padding: 8px 0 0 26px;
+  background-position: 4px 10px;
+  background-repeat: no-repeat;
+  background-image: url(../img/fr.png); /** sprite-ref: vert; sprite-margin-top: 10px; sprite-margin-left: 4px; */
 }
 
 /* Menu */
