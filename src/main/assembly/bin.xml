@@ -14,7 +14,6 @@
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>*.LICENSE</include>
-        <include>*.cmd</include>
         <include>readme.txt</include>
         <include>test/</include>
       </includes>
@@ -22,6 +21,10 @@
     <fileSet>
       <directory>doc/website</directory>
       <outputDirectory>/doc</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/ant</directory>
+      <outputDirectory>/</outputDirectory>
     </fileSet>
     <fileSet>
       <directory>${project.build.directory}</directory>
@@ -37,20 +40,15 @@
   </fileSets>
   <files>
     <file>
-      <source>smartsprites.sh</source>
+      <source>src/main/bin/smartsprites.sh</source>
       <outputDirectory>/</outputDirectory>
       <fileMode>755</fileMode>
       <lineEnding>unix</lineEnding>
     </file>
     <file>
-      <source>build-autonomous.xml</source>
+      <source>src/main/bin/smartsprites.cmd</source>
       <outputDirectory>/</outputDirectory>
-      <destName>build.xml</destName>
-    </file>
-    <file>
-      <source>smartsprites.properties.example</source>
-      <outputDirectory>/</outputDirectory>
-      <destName>smartsprites.properties</destName>
+      <lineEnding>dos</lineEnding>
     </file>
   </files>
   
