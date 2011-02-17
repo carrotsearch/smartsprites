@@ -1,8 +1,0 @@
-# Path to Clover for Ant binaries, required to generate coverage reports
-#clover.home=D:/dev/java/clover/ant
-
-# Path to PMD, required to generate code duplication reports
-#pmd.home=D:/dev/java/pmd
-
-# Path to FindBugs, required for static code analysis
-#findbugs.home=D:/dev/java/findbugs
