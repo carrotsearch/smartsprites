@@ -28,7 +28,7 @@ public final class CloseableUtils
             }
             catch (final IOException e)
             {
-                // Ignore.
+                throw new RuntimeException(e);
             }
         }
     }
