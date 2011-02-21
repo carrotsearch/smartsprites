@@ -226,13 +226,22 @@ ul.menu li a {
 /* Bamboo build status */
 div.build-info {
   margin-left: 10px;
-  clear: both;
 }
 
 #plan-status {
-  float: left;
+  background-color: transparent;
+  border: none;
+  display: inline;
+  padding: 0;
 }
 
+#plan-status > p {
+  display: inline;
+  padding-right: 18px;
+}
+#plan-status > p.success {
+  color: #090;
+}
 #plan-status strong {
   display: none;
 }
