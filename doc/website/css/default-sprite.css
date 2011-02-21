@@ -227,32 +227,25 @@ ul.menu li a {
 } 
 
 /* Bamboo build status */
-#buildStatus,
-#buildStatusInner,
-#buildStatusInner2,
-#buildStatusInner3 {
+div.build-info {
+  margin-left: 10px;
+}
+
+#plan-status {
+  background-color: transparent;
+  border: none;
   display: inline;
-	background-image: none;
+  padding: 0;
 }
 
-#buildStatus
-{
-  font-size: 100%;
-	background-image: none;
-  float: none;
-  width: auto;
-}
-
-#buildStatus p {
-  background-position: left center;
-  line-height: 20px;
-  padding: 0 0 0 20px;
+#plan-status > p {
   display: inline;
-  color: #808080;
-  margin-left: 4px;
+  padding-right: 18px;
 }
-
-#buildStatus strong {
+#plan-status > p.success {
+  color: #090;
+}
+#plan-status strong {
   display: none;
 }
 
