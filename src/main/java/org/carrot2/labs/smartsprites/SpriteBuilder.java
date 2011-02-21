@@ -1,21 +1,33 @@
 package org.carrot2.labs.smartsprites;
 
-import java.io.*;
-import java.math.BigInteger;
-import java.security.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.carrot2.labs.smartsprites.message.LevelCounterMessageSink;
-import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
+import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.resource.FileSystemResourceHandler;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 import org.carrot2.util.PathUtils;
 
-import com.google.common.collect.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 
 /**
  * Performs all stages of sprite building. This class is not thread-safe.
@@ -37,19 +49,6 @@ public class SpriteBuilder
 
     /** SpriteImageBuilder for this builder */
     private final SpriteImageBuilder spriteImageBuilder;
-
-    /**
-     * A cache of sprite image UIDs by sprite image file. This cache will help us to avoid
-     * generating the MD5 each time we replace sprite image ocurrence in the CSS.
-     */
-    private final Map<String, String> spriteImageUidBySpriteImageFile;
-
-    /**
-     * A timestamp to use for timestamp-based sprite image UIDs. We need this time stamp
-     * as a field to make sure the timestamp is the same for all sprite image
-     * replacements.
-     */
-    private final String timestamp;
 
     /** Resource handler */
     private ResourceHandler resourceHandler;
@@ -76,8 +75,6 @@ public class SpriteBuilder
             messageLog, resourceHandler);
         spriteImageBuilder = new SpriteImageBuilder(parameters, messageLog,
             resourceHandler);
-        spriteImageUidBySpriteImageFile = Maps.newHashMap();
-        timestamp = Long.toString(new Date().getTime());
     }
 
     /**
@@ -325,45 +322,19 @@ public class SpriteBuilder
                     final boolean important = spriteReferenceReplacement.spriteReferenceOccurrence.important;
                     lastReferenceReplacementLine = originalCssLineNumber;
 
-                    // Sprite image's path is relative to the CSS which declared the
-                    // sprite image. As it may happen that the image is referenced in
-                    // another CSS file, we must make sure the paths are correctly
-                    // translated.
-                    final String declaringCssPath = spriteReferenceReplacement.spriteImage.spriteImageOccurrence.cssFile
-                        .replace(File.separatorChar, '/');
-                    final String declarationReplacementRelativePath = PathUtils
-                        .getRelativeFilePath(
-                            originalCssFile
-                                .substring(0, originalCssFile.lastIndexOf('/')),
-                            declaringCssPath.substring(0,
-                                declaringCssPath.lastIndexOf('/'))).replace(
-                            File.separatorChar, '/');
-                    final String imagePathRelativeToReplacement = FileUtils
-                        .canonicalize(
-                            (StringUtils.isEmpty(declarationReplacementRelativePath)
-                                || StringUtils.indexOfDifference(originalCssFile,
-                                    declaringCssPath) <= 0 ? ""
-                                : declarationReplacementRelativePath + '/')
-                                + spriteReferenceReplacement.spriteImage.spriteImageOccurrence.spriteImageDirective.imagePath,
-                            "/");
-                    processedCssWriter
-                        .write("  background-image: url('"
-                            + imagePathRelativeToReplacement
-                            + generateUidSuffix(
-                                originalCssFile,
-                                spriteReferenceReplacement.spriteImage.spriteImageOccurrence.spriteImageDirective,
-                                false) + "')" + (important ? " !important" : "") + ";\n");
+                    processedCssWriter.write("  background-image: url('"
+                        + getRelativeToReplacementLocation(
+                            spriteReferenceReplacement.spriteImage.resolvedPath,
+                            originalCssFile, spriteReferenceReplacement) + "')"
+                        + (important ? " !important" : "") + ";\n");
+                    
                     if (spriteReferenceReplacement.spriteImage.hasReducedForIe6)
                     {
-                        processedCssWriter
-                            .write("  -background-image: url('"
-                                + SpriteImageBuilder.addIe6Suffix(
-                                    imagePathRelativeToReplacement, true)
-                                + generateUidSuffix(
-                                    originalCssFile,
-                                    spriteReferenceReplacement.spriteImage.spriteImageOccurrence.spriteImageDirective,
-                                    true) + "')" + (important ? " !important" : "")
-                                + ";\n");
+                        processedCssWriter.write("  -background-image: url('"
+                            + getRelativeToReplacementLocation(
+                                spriteReferenceReplacement.spriteImage.resolvedPathIe6,
+                                originalCssFile, spriteReferenceReplacement) + "')"
+                            + (important ? " !important" : "") + ";\n");
                     }
 
                     processedCssWriter.write("  background-position: "
@@ -399,6 +370,31 @@ public class SpriteBuilder
     }
 
     /**
+     * Returns the sprite image's imagePath relative to the CSS in which we're making
+     * replacements. The imagePath is relative to the CSS which declared the sprite image.
+     * As it may happen that the image is referenced in another CSS file, we must make
+     * sure the paths are correctly translated.
+     */
+    private String getRelativeToReplacementLocation(String imagePath,
+        String originalCssFile,
+        final SpriteReferenceReplacement spriteReferenceReplacement)
+    {
+        final String declaringCssPath = spriteReferenceReplacement.spriteImage.spriteImageOccurrence.cssFile
+            .replace(File.separatorChar, '/');
+        final String declarationReplacementRelativePath = PathUtils.getRelativeFilePath(
+            originalCssFile.substring(0, originalCssFile.lastIndexOf('/')),
+            declaringCssPath.substring(0, declaringCssPath.lastIndexOf('/'))).replace(
+            File.separatorChar, '/');
+        final String imagePathRelativeToReplacement = FileUtils
+            .canonicalize(
+                (StringUtils.isEmpty(declarationReplacementRelativePath)
+                    || StringUtils.indexOfDifference(originalCssFile, declaringCssPath) <= 0 ? ""
+                    : declarationReplacementRelativePath + '/')
+                    + imagePath, "/");
+        return imagePathRelativeToReplacement;
+    }
+
+    /**
      * Gets the name of the processed CSS file.
      */
     String getProcessedCssFile(String originalCssFile)
@@ -424,69 +420,5 @@ public class SpriteBuilder
         {
             return processedCssFile;
         }
-    }
-
-    /**
-     * Gets the appropriate extension based on the sprite UID generation mode.
-     * 
-     * @param cssFile The CSS File
-     * @param directive The Image Directive for the generated CSS file
-     * @param ie6 of true, the ie6 version of the sprite will be loaded
-     * @return the value to be extered after '?' in the CSS
-     */
-    private String generateUidSuffix(String cssFile, SpriteImageDirective directive,
-        boolean ie6) throws IOException
-    {
-        if (directive.uidType == SpriteImageDirective.SpriteUidType.NONE)
-        {
-            return "";
-        }
-        else if (directive.uidType == SpriteImageDirective.SpriteUidType.DATE)
-        {
-            return "?" + timestamp;
-        }
-        else if (directive.uidType == SpriteImageDirective.SpriteUidType.MD5)
-        {
-            final String imageFile = spriteImageBuilder.getImageFile(cssFile,
-                (ie6 ? SpriteImageBuilder.addIe6Suffix(directive.imagePath, true)
-                    : directive.imagePath));
-            if (spriteImageUidBySpriteImageFile.containsKey(imageFile))
-            {
-                return "?" + spriteImageUidBySpriteImageFile.get(imageFile);
-            }
-
-            try
-            {
-                final byte [] buffer = new byte [4069];
-                final MessageDigest digest = java.security.MessageDigest
-                    .getInstance("MD5");
-                InputStream is = null, digestInputStream = null;
-                try
-                {
-                    is = resourceHandler.getResourceAsInputStream(imageFile);
-                    digestInputStream = new DigestInputStream(is, digest);
-                    while (digestInputStream.read(buffer) >= 0)
-                    {
-                    }
-
-                    final String md5 = new BigInteger(1, digest.digest()).toString(16);
-                    spriteImageUidBySpriteImageFile.put(imageFile, md5);
-                    return "?" + md5;
-                }
-                finally
-                {
-                    CloseableUtils.closeIgnoringException(is);
-                    CloseableUtils.closeIgnoringException(digestInputStream);
-                    digest.reset();
-                }
-            }
-            catch (NoSuchAlgorithmException nsaex)
-            {
-                throw new RuntimeException(nsaex);
-            }
-        }
-
-        // No valid value set
-        return "";
     }
 }

@@ -3,15 +3,18 @@ package org.carrot2.labs.smartsprites;
 import java.awt.Color;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.carrot2.labs.smartsprites.css.CssProperty;
 import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
-import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
+import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.util.CollectionUtils;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Represents a directive that declares an individual sprite image.
@@ -88,9 +91,12 @@ public class SpriteImageDirective
 
         private String value;
 
+        public final Pattern pattern;
+
         private SpriteUidType()
         {
             this.value = name().toLowerCase();
+            this.pattern = Pattern.compile("${" + value + "}", Pattern.LITERAL);
         }
 
         @Override

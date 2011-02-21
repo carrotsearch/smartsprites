@@ -1,11 +1,13 @@
 package org.carrot2.labs.smartsprites;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -43,6 +45,13 @@ public class SpriteImageBuilder
     private ResourceHandler resourceHandler;
 
     /**
+     * A timestamp to use for timestamp-based sprite image UIDs. We need this time stamp
+     * as a field to make sure the timestamp is the same for all sprite image
+     * replacements.
+     */
+    private String timestamp;
+
+    /**
      * Creates a {@link SpriteImageBuilder} with the provided parameters and log.
      */
     SpriteImageBuilder(SmartSpritesParameters parameters, MessageLog messageLog,
@@ -61,6 +70,8 @@ public class SpriteImageBuilder
         Map<String, SpriteImageOccurrence> spriteImageOccurrencesBySpriteId,
         Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId)
     {
+        timestamp = Long.toString(new Date().getTime());
+
         final Multimap<String, SpriteReferenceReplacement> spriteReplacementsByFile = LinkedListMultimap
             .create();
         for (final Map.Entry<String, Collection<SpriteReferenceOccurrence>> spriteReferenceOccurrences : spriteReferenceOccurrencesBySpriteId
@@ -153,11 +164,11 @@ public class SpriteImageBuilder
         // Render the sprite into the required formats, perform quantization if needed
         final BufferedImage [] mergedImages = spriteImageRenderer.render(spriteImage);
 
-        writeSprite(spriteImageOccurrence, mergedImages[0], false);
+        writeSprite(spriteImage, mergedImages[0], false);
         if (mergedImages[1] != null)
         {
             // Write IE6 version if generated
-            writeSprite(spriteImageOccurrence, mergedImages[1], true);
+            writeSprite(spriteImage, mergedImages[1], true);
         }
 
         return spriteImage.spriteReferenceReplacements;
@@ -166,16 +177,53 @@ public class SpriteImageBuilder
     /**
      * Writes sprite image to the disk.
      */
-    private void writeSprite(SpriteImageOccurrence spriteImageOccurrence,
-        final BufferedImage mergedImage, boolean ie6Reduced)
+    private void writeSprite(SpriteImage spriteImage, final BufferedImage mergedImage,
+        boolean ie6Reduced)
     {
-        // Add IE6 suffix if needed
+        final SpriteImageOccurrence spriteImageOccurrence = spriteImage.spriteImageOccurrence;
         final SpriteImageDirective spriteImageDirective = spriteImageOccurrence.spriteImageDirective;
-        final String spritePath = addIe6Suffix(spriteImageDirective.imagePath, ie6Reduced);
+
+        // Write the image to a byte array first. We need the data to compute an md5 hash.
+        final ByteArrayOutputStream spriteImageByteArrayOuputStream = new ByteArrayOutputStream();
+
+        // If writing to a JPEG, we need to make a 3-byte-encoded image
+        final BufferedImage imageToWrite;
+        if (SpriteImageFormat.JPG.equals(spriteImageDirective.format))
+        {
+            imageToWrite = new BufferedImage(mergedImage.getWidth(),
+                mergedImage.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+            BufferedImageUtils.drawImage(mergedImage, imageToWrite, 0, 0);
+        }
+        else
+        {
+            imageToWrite = mergedImage;
+        }
+
+        try
+        {
+            ImageIO.write(imageToWrite, spriteImageDirective.format.toString(),
+                spriteImageByteArrayOuputStream);
+        }
+        catch (IOException e)
+        {
+            // Unlikely to happen.
+            messageLog.warning(MessageType.CANNOT_WRITE_SPRITE_IMAGE,
+                spriteImageDirective.imagePath, e.getMessage());
+        }
+
+        // Build file name
+        byte [] spriteImageBytes = spriteImageByteArrayOuputStream.toByteArray();
+        String resolvedImagePath = spriteImage.resolveImagePath(spriteImageBytes,
+            timestamp, ie6Reduced);
+        if (resolvedImagePath.indexOf('?') >= 0)
+        {
+            resolvedImagePath = resolvedImagePath.substring(0,
+                resolvedImagePath.indexOf('?'));
+        }
 
         // Save the image to the disk
         final String mergedImageFile = getImageFile(spriteImageOccurrence.cssFile,
-            spritePath);
+            resolvedImagePath);
 
         OutputStream spriteImageOuputStream = null;
         try
@@ -185,20 +233,7 @@ public class SpriteImageBuilder
             spriteImageOuputStream = resourceHandler
                 .getResourceAsOutputStream(mergedImageFile);
 
-            // If writing to a JPEG, we need to make a 3-byte-encoded image
-            final BufferedImage imageToWrite;
-            if (SpriteImageFormat.JPG.equals(spriteImageDirective.format))
-            {
-                imageToWrite = new BufferedImage(mergedImage.getWidth(),
-                    mergedImage.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-                BufferedImageUtils.drawImage(mergedImage, imageToWrite, 0, 0);
-            }
-            else
-            {
-                imageToWrite = mergedImage;
-            }
-            ImageIO.write(imageToWrite, spriteImageDirective.format.toString(),
-                spriteImageOuputStream);
+            spriteImageOuputStream.write(spriteImageBytes);
         }
         catch (final IOException e)
         {
@@ -209,29 +244,6 @@ public class SpriteImageBuilder
         {
             CloseableUtils.closeIgnoringException(spriteImageOuputStream);
         }
-    }
-
-    /**
-     * Adds IE6 suffix to the sprite image path for IE6 reduced images.
-     */
-    static String addIe6Suffix(String spritePath,
-        boolean ie6Reduced)
-    {
-        if (ie6Reduced)
-        {
-            final int dotIndex = spritePath.lastIndexOf('.');
-            if (dotIndex >= 0)
-            {
-                StringBuilder ie6Path = new StringBuilder(spritePath);
-                ie6Path.insert(dotIndex, "-ie6");
-                spritePath = ie6Path.toString();
-            }
-            else
-            {
-                spritePath = spritePath + "-ie6";
-            }
-        }
-        return spritePath;
     }
 
     /**
