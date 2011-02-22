@@ -185,6 +185,8 @@
         <configuration>
           <useReleaseProfile>true</useReleaseProfile>
           <releaseProfiles>release,maven-release</releaseProfiles>
+          <pushChanges>false</pushChanges>
+          <scmCommentPrefix>Release: </scmCommentPrefix>
         </configuration>
       </plugin>
     </plugins>
