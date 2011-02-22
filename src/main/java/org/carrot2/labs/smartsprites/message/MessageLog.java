@@ -57,6 +57,14 @@ public class MessageLog
     /**
      * Logs a warning message to this log.
      */
+    public void deprecation(Message.MessageType type, Object... arguments)
+    {
+        log(Message.MessageLevel.DEPRECATION, type, arguments);
+    }
+    
+    /**
+     * Logs a warning message to this log.
+     */
     public void warning(Message.MessageType type, Object... arguments)
     {
         log(Message.MessageLevel.WARN, type, arguments);

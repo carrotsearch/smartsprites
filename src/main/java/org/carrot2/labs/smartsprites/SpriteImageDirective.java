@@ -295,6 +295,12 @@ public class SpriteImageDirective
             CssSyntaxUtils.getValue(rules, PROPERTY_SPRITE_IMAGE_UID_SUFFIX),
             SpriteUidType.class, SpriteUidType.NONE, messageCollector,
             MessageType.UNSUPPORTED_UID_TYPE);
+        if (uidGenerator != SpriteUidType.NONE)
+        {
+            messageCollector.deprecation(
+                MessageType.DEPRECATED_SPRITE_IMAGE_UID,
+                uidGenerator.toString());
+        }
 
         // Image path. If the path does not match a regular expression, issue a warning.
         final String imagePath = CssSyntaxUtils.unpackUrl(rules

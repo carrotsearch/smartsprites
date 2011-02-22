@@ -34,19 +34,24 @@ public class Message implements Serializable
         IE6NOTICE(2),
 
         /**
+         * Notice messages related to deprecated features.
+         */
+        DEPRECATION(2),
+        
+        /**
          * Warning messages, ignoring can lead to the converted designs looking broken.
          */
-        WARN(3),
+        WARN(4),
 
         /**
          * Error messages, SmartSpricess cannot perform processing.
          */
-        ERROR(4),
+        ERROR(5),
 
         /**
          * Status messages displayed at the end of processing.
          */
-        STATUS(5);
+        STATUS(6);
 
         /** Numeric level for comparisons */
         final private int level;
@@ -213,6 +218,8 @@ public class Message implements Serializable
         ABSOLUTE_PATH_AND_NO_DOCUMENT_ROOT(
             "Found an absolute image path '%s' and no document.root.dir.path was defined. Taking relative to the CSS file."),
 
+        DEPRECATED_SPRITE_IMAGE_UID("The sprite-image-uid property is deprecated and will be removed in version 0.4.0. Please insert the ${%s} variable into the sprite-image property instead."),
+            
         GENERIC("%s");
 
         /**

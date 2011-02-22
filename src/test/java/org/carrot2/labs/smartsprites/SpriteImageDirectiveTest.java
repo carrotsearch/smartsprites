@@ -1,6 +1,8 @@
 package org.carrot2.labs.smartsprites;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static org.carrot2.labs.test.Assertions.assertThat;
 
 import java.awt.Color;
@@ -10,6 +12,7 @@ import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteUidType;
 import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
 import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
+import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.junit.Test;
 
 /**
@@ -66,31 +69,31 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
     {
         checkImagePathVariableCorrect("../${sprite}-${md5}.png?${date}");
     }
-    
+
     @Test
     public void variablesUnbalancedBrackets()
     {
         checkImagePathVariableIncorrect("../$sprite}-${md5}.png?${date}");
     }
-    
+
     @Test
     public void variablesMissingDollar()
     {
         checkImagePathVariableIncorrect("../{sprite}-${md5}.png?${date}");
     }
-    
+
     @Test
     public void variablesUnsupportedVariable()
     {
         checkImagePathUnsupportedVariable("abc");
     }
-    
+
     @Test
     public void variablesEmptyVariable()
     {
         checkImagePathUnsupportedVariable("");
     }
-    
+
     private void checkImagePathVariableCorrect(String path)
     {
         assertNotNull(SpriteImageDirective.parse("sprite: sprite; sprite-image: url('"
@@ -102,16 +105,20 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
     {
         assertNotNull(SpriteImageDirective.parse("sprite: sprite; sprite-image: url('"
             + path + "')", messageLog));
-        assertThat(messages).contains(new Message(Message.MessageLevel.WARN,
-            Message.MessageType.MALFORMED_SPRITE_IMAGE_PATH, null, 0, path));
+        assertThat(messages).contains(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.MALFORMED_SPRITE_IMAGE_PATH, null, 0, path));
     }
-    
+
     private void checkImagePathUnsupportedVariable(String variable)
     {
-        assertNotNull(SpriteImageDirective.parse("sprite: sprite; sprite-image: url('../img/${"
-            + variable + "}.png')", messageLog));
-        assertThat(messages).contains(new Message(Message.MessageLevel.WARN,
-            Message.MessageType.UNSUPPORTED_VARIABLE_IN_SPRITE_IMAGE_PATH, null, 0, variable));
+        assertNotNull(SpriteImageDirective.parse(
+            "sprite: sprite; sprite-image: url('../img/${" + variable + "}.png')",
+            messageLog));
+        assertThat(messages).contains(
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.UNSUPPORTED_VARIABLE_IN_SPRITE_IMAGE_PATH, null, 0,
+                variable));
     }
 
     @Test
@@ -142,14 +149,18 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
     public void testUidDate()
     {
         checkUidType("sprite-image-uid: date", SpriteUidType.DATE);
-        assertThat(messages).isEmpty();
+        assertThat(messages).contains(
+            new Message(MessageLevel.DEPRECATION,
+                MessageType.DEPRECATED_SPRITE_IMAGE_UID, null, 0, "date"));
     }
 
     @Test
     public void testUidMd5()
     {
         checkUidType("sprite-image-uid: md5", SpriteUidType.MD5);
-        assertThat(messages).isEmpty();
+        assertThat(messages).contains(
+            new Message(MessageLevel.DEPRECATION,
+                MessageType.DEPRECATED_SPRITE_IMAGE_UID, null, 0, "md5"));
     }
 
     @Test
