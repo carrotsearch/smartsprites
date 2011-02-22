@@ -3,6 +3,7 @@ package org.carrot2.labs.smartsprites;
 import java.awt.Color;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
@@ -217,6 +218,24 @@ public class SpriteImageDirective
      */
     public final SpriteLayoutProperties spriteLayoutProperties;
 
+    /**
+     * Pattern for a simple syntactic check of the image path.
+     */
+    private final static Pattern IMAGE_PATH_PATTERN = Pattern
+        .compile("([^${}]*|\\$\\{[^}]*\\})*");
+
+    /**
+     * Pattern for extracting variables from image path.
+     */
+    private final static Pattern IMAGE_PATH_VARIABLE_PATTERN = Pattern
+        .compile("\\$\\{([a-z]*)\\}");
+
+    /**
+     * Variable names allowed in image path.
+     */
+    private final static Set<String> ALLOWED_VARIABLES = ImmutableSet.of("sprite",
+        SpriteUidType.DATE.toString(), SpriteUidType.MD5.toString());
+
     public SpriteImageDirective(String id, String imageUrl, SpriteImageLayout layout,
         SpriteImageFormat format, Ie6Mode ie6Mode, Color matteColor, SpriteUidType uidType)
     {
@@ -277,8 +296,30 @@ public class SpriteImageDirective
             SpriteUidType.class, SpriteUidType.NONE, messageCollector,
             MessageType.UNSUPPORTED_UID_TYPE);
 
+        // Image path. If the path does not match a regular expression, issue a warning.
         final String imagePath = CssSyntaxUtils.unpackUrl(rules
             .get(PROPERTY_SPRITE_IMAGE_URL).value);
+        if (IMAGE_PATH_PATTERN.matcher(imagePath).matches())
+        {
+            // Check variable names
+            final Matcher variableMatcher = IMAGE_PATH_VARIABLE_PATTERN
+                .matcher(imagePath);
+            while (variableMatcher.find())
+            {
+                if (variableMatcher.groupCount() == 1
+                    && !ALLOWED_VARIABLES.contains(variableMatcher.group(1)))
+                {
+                    messageCollector.warning(
+                        MessageType.UNSUPPORTED_VARIABLE_IN_SPRITE_IMAGE_PATH,
+                        variableMatcher.group(1));
+                }
+            }
+        }
+        else
+        {
+            // Just issue a warning
+            messageCollector.warning(MessageType.MALFORMED_SPRITE_IMAGE_PATH, imagePath);
+        }
 
         // Layout is optional
         final SpriteImageLayout layout = valueOf(
@@ -297,7 +338,10 @@ public class SpriteImageDirective
         }
         else
         {
-            final String formatValue = imagePath.substring(lastDotIndex + 1);
+            final int questionMarkIndex = imagePath.indexOf('?', lastDotIndex);
+            final String formatValue = questionMarkIndex >= 0 ? imagePath.substring(
+                lastDotIndex + 1, questionMarkIndex) : imagePath
+                .substring(lastDotIndex + 1);
             try
             {
                 format = SpriteImageFormat.getValue(formatValue);

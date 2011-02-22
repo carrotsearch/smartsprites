@@ -95,6 +95,10 @@ public class Message implements Serializable
         MALFORMED_COLOR("Malformed color: %s"),
 
         MALFORMED_URL("Malformed URL: %s"),
+        
+        MALFORMED_SPRITE_IMAGE_PATH("Malformed sprite-image path: %s"),
+        
+        UNSUPPORTED_VARIABLE_IN_SPRITE_IMAGE_PATH("Unsupported variable in sprite-image path: %s"),
 
         MORE_THAN_ONE_RULE_NEXT_TO_SPRITE_REFERENCE_DIRECTIVE(
             "Found more than one CSS rule next to sprite reference comment: %s"),

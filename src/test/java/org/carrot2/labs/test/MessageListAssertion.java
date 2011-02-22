@@ -152,5 +152,4 @@ public class MessageListAssertion
         Assertions.assertThat(actual).isEmpty();
         return this;
     }
-
 }

@@ -573,6 +573,33 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     }
 
     @Test
+    public void variableSubstitutionInSpriteImagePath() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("variable-substitution-in-sprite-image-path");
+        final String sprite1 = "img/sprite-4f597e065cfe89bf84fdb6594bd3b59a.png";
+        final String sprite2 = "img/1cbb5bd4c5577f487e1ca434009967c/sprite2.png";
+
+        try
+        {
+            buildSprites(testDir);
+
+            assertThat(processedCss()).hasSameContentAs(expectedCss());
+            assertThat(new File(testDir, sprite1)).exists();
+            assertThat(new File(testDir, sprite2)).exists();
+            org.fest.assertions.Assertions.assertThat(sprite(testDir, sprite1)).hasSize(
+                new Dimension(17 + 15, 17));
+            org.fest.assertions.Assertions.assertThat(sprite(testDir, sprite2)).hasSize(
+                new Dimension(48, 47));
+            assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+        }
+        finally
+        {
+            FileUtils
+                .deleteDirectory(new File(testDir, "img/1cbb5bd4c5577f487e1ca434009967c"));
+        }
+    }
+
+    @Test
     public void testIndividualCssFileDoesNotExist() throws IOException
     {
         final String path = testDir("does-not-exist").getPath();

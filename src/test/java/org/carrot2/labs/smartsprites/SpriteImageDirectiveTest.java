@@ -56,6 +56,65 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
     }
 
     @Test
+    public void variablesCorrectSyntax()
+    {
+        checkImagePathVariableCorrect("../${date}/${sprite}-${md5}.png");
+    }
+
+    @Test
+    public void variablesAndQueryStringCorrectSyntax()
+    {
+        checkImagePathVariableCorrect("../${sprite}-${md5}.png?${date}");
+    }
+    
+    @Test
+    public void variablesUnbalancedBrackets()
+    {
+        checkImagePathVariableIncorrect("../$sprite}-${md5}.png?${date}");
+    }
+    
+    @Test
+    public void variablesMissingDollar()
+    {
+        checkImagePathVariableIncorrect("../{sprite}-${md5}.png?${date}");
+    }
+    
+    @Test
+    public void variablesUnsupportedVariable()
+    {
+        checkImagePathUnsupportedVariable("abc");
+    }
+    
+    @Test
+    public void variablesEmptyVariable()
+    {
+        checkImagePathUnsupportedVariable("");
+    }
+    
+    private void checkImagePathVariableCorrect(String path)
+    {
+        assertNotNull(SpriteImageDirective.parse("sprite: sprite; sprite-image: url('"
+            + path + "')", messageLog));
+        assertThat(messages).isEmpty();
+    }
+
+    private void checkImagePathVariableIncorrect(String path)
+    {
+        assertNotNull(SpriteImageDirective.parse("sprite: sprite; sprite-image: url('"
+            + path + "')", messageLog));
+        assertThat(messages).contains(new Message(Message.MessageLevel.WARN,
+            Message.MessageType.MALFORMED_SPRITE_IMAGE_PATH, null, 0, path));
+    }
+    
+    private void checkImagePathUnsupportedVariable(String variable)
+    {
+        assertNotNull(SpriteImageDirective.parse("sprite: sprite; sprite-image: url('../img/${"
+            + variable + "}.png')", messageLog));
+        assertThat(messages).contains(new Message(Message.MessageLevel.WARN,
+            Message.MessageType.UNSUPPORTED_VARIABLE_IN_SPRITE_IMAGE_PATH, null, 0, variable));
+    }
+
+    @Test
     public void testMatteColor()
     {
         final SpriteImageDirective directive = SpriteImageDirective

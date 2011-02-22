@@ -10,6 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteUidType;
 import org.carrot2.util.CloseableUtils;
@@ -39,8 +40,20 @@ public class SpriteImage
      */
     public boolean hasReducedForIe6 = false;
 
+    /**
+     * The {@link SpriteImageDirective#imagePath} with variables resolved.
+     */
     public String resolvedPath;
+
+    /**
+     * The {@link SpriteImageDirective#imagePath} with variables resolved and the
+     * IE6-specific suffix, <code>null</code> if {@link #hasReducedForIe6} is
+     * <code>false</code>.
+     */
     public String resolvedPathIe6;
+
+    private static final Pattern SPRITE_VARIABLE = Pattern.compile("${sprite}",
+        Pattern.LITERAL);
 
     public SpriteImage(BufferedImage sprite, SpriteImageOccurrence spriteImageOccurrence,
         Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReplacements)
@@ -80,6 +93,10 @@ public class SpriteImage
 
         // Resolve timestamp
         imagePath = SpriteUidType.DATE.pattern.matcher(imagePath).replaceAll(timestamp);
+
+        // Resolve sprite name
+        imagePath = SPRITE_VARIABLE.matcher(imagePath).replaceAll(
+            spriteImageOccurrence.spriteImageDirective.spriteId);
 
         if (reducedForIe6)
         {
