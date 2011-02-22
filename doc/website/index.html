@@ -300,6 +300,49 @@
                 created.  SmartSprites will infer the format of the image
                 based on the extension used.  Currently supported are:
                 gif, png and jpg.
+                
+                  <p>
+                    The path can contain a number of variable references
+                    of the form <tt>${variable}</tt>. The following variables
+                    are supported and will be replaced with the corresponding 
+                    content:
+                   
+                    <ul>
+                      <li>
+                        <tt>sprite</tt>: Sprite ID
+                      </li>
+                      
+                      <li>
+                        <tt>md5</tt>: MD5 hash of the sprite image file created
+                        by SmartSprites. The hash will change only if the sprite 
+                         image content or file format changes.
+                      </li>
+                     
+                      <li>
+                        <tt>date</tt>: timestamp taken at the time of sprite 
+                       image generation. The timestamp will be different every 
+                       time SmartSprites processing is run, even if the sprite 
+                       images do not change
+                      </li>
+                    </ul>
+                  </p>
+                  
+                  <p>
+                    The sprite image path can contain a <tt>?</tt> character
+                    to enable query-string-based cache busting. The portion
+                    of the path from the <tt>?</tt> character until the end
+                    of the path will be ignored when determining the actual
+                    name of the sprite image to be written to disk.
+                  </p>
+                  
+                  <p>
+                    Please note that you can put the variables anywhere in the
+                    sprite image path, e.g.
+                  </p>
+                  
+                  <code>sprite-image: url('../img/logo-<strong>${md5}</strong>.png')
+sprite-image: url('../<strong>${date}</strong>/<strong>${sprite}</strong>.png')
+sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
                 </li>
 
                 <li><strong>Sprite image layout</strong>, syntax:
@@ -327,34 +370,6 @@
                   when necessary (<tt>auto</tt>) or should not be generated at all
                   (<tt>none</tt>). See the <a href="#png-ie6">IE6-friendly PNG</a> option for
                   more details.
-                </li>
-
-                <li>
-                  <a name="sprite-image-uid"><strong>Sprite UID generation</strong></a>, 
-                  syntax: <tt>sprite-image-uid: none | md5 | date</tt>, optional, default value: <tt>none</tt>.
-                  Specifies the type of UID (identifier) to append to sprite image URL references 
-                  in the generated CSS, useful when sprite images are served with
-                  <a href="http://developer.yahoo.com/performance/rules.html#expires">far future Expires headers</a>.
-                  The following UID types are supported:
-                  <ul>
-                    <li>
-                      <tt>none</tt>: no UID suffix will be appended (default)
-                    </li>
-                    
-                    <li>
-                      <tt>md5</tt>: UID will be a MD5 hash of the sprite image. This type 
-                      of UID will change only if the content of the sprite image changes.
-                    </li>
-                    
-                    <li>
-                      <tt>date</tt>: UID will be a timestamp taken at the time of sprite 
-                      image generation. This type of UID will be different every time SmartSprites processing
-                      is run, even if the sprite images do not change.
-                    </li>
-                  </ul>
-                  
-                  UIDs will appended at the end of sprite image URL after a '?' character, e.g:
-                  <code>background-image: url('../img/logo.png?d41d8cd98f00b204e9800998ecf8427e')</code>
                 </li>
               </ul>
             </li>
