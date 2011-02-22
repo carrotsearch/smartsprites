@@ -54,9 +54,9 @@
   </mailingLists>
 
   <scm>
-    <url>https://carrot2.svn.sourceforge.net/svnroot/carrot2/labs/smartsprites</url>
-    <connection>scm:svn:https://carrot2.svn.sourceforge.net/svnroot/carrot2/labs/smartsprites</connection>
-    <developerConnection>scm:svn:https://carrot2.svn.sourceforge.net/svnroot/carrot2/labs/smartsprites</developerConnection>
+    <url>git@github.com:carrotsearch/smartsprites.git</url>
+    <connection>scm:git:git@github.com:carrotsearch/smartsprites.git</connection>
+    <developerConnection>scm:git:git@github.com:carrotsearch/smartsprites.git</developerConnection>
   </scm>
 
   <developers>
@@ -64,6 +64,12 @@
       <id>stanislaw.osinski</id>
       <name>Stanisław Osiński</name>
       <email>stanislaw.osinski@carrotsearch.com</email>
+    </developer>
+    
+    <developer>
+      <id>dawid.weiss</id>
+      <name>Dawid Weiss</name>
+      <email>dawid.weiss@carrotsearch.com</email>
     </developer>
   </developers>
 
