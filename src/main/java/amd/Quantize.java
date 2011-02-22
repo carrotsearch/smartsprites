@@ -1,6 +1,6 @@
 package amd;
 /**
- * @(#)Quantize.java    0.90 9/19/00 Adam Doppelt
+ * (#)Quantize.java    0.90 9/19/00 Adam Doppelt
  * 
  * An efficient color quantization algorithm, adapted from the C++
  * implementation quantize.c in <a

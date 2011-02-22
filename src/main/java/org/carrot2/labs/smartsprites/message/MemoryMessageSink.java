@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 /**
- * Collects messages in a {@list Link}, see {@link #messages}.
+ * Collects messages in a {@link List}, see {@link #messages}.
  */
 public class MemoryMessageSink implements MessageSink
 {

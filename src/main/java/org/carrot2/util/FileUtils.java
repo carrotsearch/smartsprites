@@ -15,8 +15,9 @@ import com.google.common.collect.Lists;
 public class FileUtils
 {
     /**
-     * Creates a new {@link File} from the provided path and executes
-     * {@link #getCanonicalOrAbsoluteFile(File)}.
+     * Creates a new {@link File} from the provided path and attempts to execute
+     * {@link File#getCanonicalFile()}. In case of a failure, returns the result 
+     * of {@link File#getAbsoluteFile()}.
      */
     public static File getCanonicalOrAbsoluteFile(String path)
     {

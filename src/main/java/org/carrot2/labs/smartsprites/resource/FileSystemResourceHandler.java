@@ -31,7 +31,7 @@ public class FileSystemResourceHandler implements ResourceHandler
     /**
      * Creates a new {@link FileSystemResourceHandler}.
      * 
-     * @param documentRootDir the document root directory path, can be <code>null</code>
+     * @param documentRootDirPath the document root directory path, can be <code>null</code>
      * @param charset the charset to assume in the {@link #getResourceAsReader(String)}
      *            method
      * @param messageLog the message log
