@@ -9,6 +9,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
+import java.util.TreeSet;
+import java.util.Comparator;
+import java.util.zip.CRC32;
+import java.awt.Rectangle;
 
 import javax.imageio.ImageIO;
 
@@ -268,6 +272,163 @@ public class SpriteImageBuilder
         }
     }
 
+    static class AreaComparator implements Comparator<BufferedImageEqualsWrapper>
+    {
+        public final int compare(final BufferedImageEqualsWrapper a, final BufferedImageEqualsWrapper b)
+        {
+            final int areaA = a.image.getWidth() * a.image.getHeight();
+            final int areaB = b.image.getWidth() * b.image.getHeight();
+            if(areaA < areaB)
+                return 1;
+            else if(areaA > areaB)
+                return -1;
+            else
+            {
+                final int hashA = a.hashCode();
+                final int hashB = b.hashCode();
+                if(hashA > hashB)
+                    return 1;
+                else if(hashA < hashB)
+                    return -1;
+                else
+                    return 0;
+            }
+        }
+    }
+
+    static class AreaComparatorSmall implements Comparator<Rectangle>
+    {
+        public final int compare(final Rectangle a, final Rectangle b)
+        {
+            final int areaA = a.width * a.height;
+            final int areaB = b.width * b.height;
+            if(areaA > areaB)
+                return 1;
+            else if(areaA < areaB)
+                return -1;
+            else
+            {
+                if(a.x > b.x)
+                    return 1;
+                else if(a.x < b.x)
+                    return -1;
+                else if(a.y > b.y)
+                    return 1;
+                else if(a.y < b.y)
+                    return -1;
+                else if(a.width > b.width)
+                    return 1;
+                else if(a.width < b.width)
+                    return -1;
+                else if(a.height > b.height)
+                    return 1;
+                else if(a.height < b.height)
+                    return -1;
+                else
+                    return 0;
+            }
+        }
+    }
+
+    static Map<BufferedImageEqualsWrapper, Integer[]> placeImagesLinear(final TreeSet<BufferedImageEqualsWrapper> spriteSet, boolean vertical)
+    {
+        final Map<BufferedImageEqualsWrapper, Integer[]> map = Maps.newLinkedHashMap();
+
+        int coord = 0;
+        for (final BufferedImageEqualsWrapper imageWrapper : spriteSet)
+        {
+            final Integer[] imageOffset = new Integer[2];
+            imageOffset[0] = vertical ? 0 : coord;
+            imageOffset[1] = vertical ? coord : 0;
+            map.put(imageWrapper, imageOffset);
+            coord += vertical ? imageWrapper.image.getHeight() : imageWrapper.image.getWidth();
+        }
+
+        return map;
+    }
+
+    static Map<BufferedImageEqualsWrapper, Integer[]> placeImages(final TreeSet<BufferedImageEqualsWrapper> spriteSet, final SpriteImageLayout layout)
+    {
+        if(!layout.equals(SpriteImageLayout.FIT))
+            return placeImagesLinear(spriteSet, layout.equals(SpriteImageLayout.VERTICAL));
+
+        final Map<BufferedImageEqualsWrapper, Integer[]> map = Maps.newLinkedHashMap();
+
+        Rectangle currentExtent = new Rectangle(0, 0, 0, 0);
+        TreeSet<Rectangle> freeAreas = new TreeSet(new AreaComparatorSmall());
+
+        for (final BufferedImageEqualsWrapper imageWrapper : spriteSet)
+        {
+            final int width = imageWrapper.image.getWidth();
+            final int height = imageWrapper.image.getHeight();
+
+            boolean placed = false;
+            for(final Rectangle area : freeAreas)
+            {
+                if(width <= area.width && height <= area.height)
+                {
+                    freeAreas.remove(area);
+
+                    if(width < area.width && height < area.height)
+                    {
+                        freeAreas.add(new Rectangle(area.x + width, area.y, area.width - width, area.height));
+                        freeAreas.add(new Rectangle(area.x, area.y + height, width, area.height - height));
+                    }
+                    else if(width < area.width)
+                    {
+                        freeAreas.add(new Rectangle(area.x + width, area.y, area.width - width, area.height));
+                    }
+                    else if(height < area.height)
+                    {
+                        freeAreas.add(new Rectangle(area.x, area.y + height, area.width, area.height - height));
+                    }
+
+                    final Integer[] imageOffset = new Integer[2];
+                    imageOffset[0] = area.x;
+                    imageOffset[1] = area.y;
+                    map.put(imageWrapper, imageOffset);
+                    placed = true;
+                    break;
+                }
+            }
+
+            if(!placed)
+            {
+                if(currentExtent.width <= currentExtent.height)
+                {
+                    if(height < currentExtent.height)
+                        freeAreas.add(new Rectangle(currentExtent.width, height, width, currentExtent.height - height));
+                    else if(height > currentExtent.height)
+                        freeAreas.add(new Rectangle(0, currentExtent.height, currentExtent.width, height - currentExtent.height));
+
+                    final Integer[] imageOffset = new Integer[2];
+                    imageOffset[0] = currentExtent.width;
+                    imageOffset[1] = 0;
+                    map.put(imageWrapper, imageOffset);
+
+                    currentExtent.width += width;
+                    currentExtent.height = (height > currentExtent.height) ? height : currentExtent.height;
+                } else
+                {
+                    if(width < currentExtent.width)
+                        freeAreas.add(new Rectangle(width, currentExtent.height, currentExtent.width - width, height));
+                    else if(width > currentExtent.width)
+                        freeAreas.add(new Rectangle(currentExtent.width, 0, width - currentExtent.width, currentExtent.height));
+
+                    final Integer[] imageOffset = new Integer[2];
+                    imageOffset[0] = 0;
+                    imageOffset[1] = currentExtent.height;
+                    map.put(imageWrapper, imageOffset);
+
+                    currentExtent.height += height;
+                    currentExtent.width = (width > currentExtent.width) ? width : currentExtent.width;
+                }
+            }
+        }
+
+        return map;
+    }
+
     /**
      * Calculates total dimensions and lays out a single sprite image.
      */
@@ -301,37 +462,48 @@ public class SpriteImageBuilder
         }
 
         // Compute the other sprite dimension.
-        int currentOffset = 0;
-        final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReplacements = Maps
-            .newLinkedHashMap();
-        final Map<BufferedImageEqualsWrapper, Integer> renderedImageToOffset = Maps
-            .newLinkedHashMap();
+        int maxX = 0;
+        int maxY = 0;
+        
+        final TreeSet<BufferedImageEqualsWrapper> spriteSet = new TreeSet(new AreaComparator());
+        final Map<SpriteReferenceOccurrence, BufferedImageEqualsWrapper> renderedSprites = Maps.newLinkedHashMap();
         for (final Map.Entry<SpriteReferenceOccurrence, BufferedImage> entry : images
             .entrySet())
         {
             final SpriteReferenceOccurrence spriteReferenceOccurrence = entry.getKey();
             final BufferedImage image = entry.getValue();
-
             final BufferedImage rendered = spriteReferenceOccurrence.render(image,
                 layout, dimension);
             final BufferedImageEqualsWrapper imageWrapper = new BufferedImageEqualsWrapper(
                 rendered);
-            Integer imageOffset = renderedImageToOffset.get(imageWrapper);
-            if (imageOffset == null)
-            {
-                // Draw a new image
-                imageOffset = currentOffset;
-                renderedImageToOffset.put(imageWrapper, imageOffset);
-                currentOffset += vertical ? rendered.getHeight() : rendered.getWidth();
-            }
+            renderedSprites.put(spriteReferenceOccurrence, imageWrapper);
+            spriteSet.add(imageWrapper);
+        }
 
+        final Map<BufferedImageEqualsWrapper, Integer[]> renderedImageToOffset = placeImages(spriteSet, layout);
+        
+        final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReplacements = Maps
+            .newLinkedHashMap();
+        for (final Map.Entry<SpriteReferenceOccurrence, BufferedImageEqualsWrapper> entry : renderedSprites
+            .entrySet())
+        {
+            final SpriteReferenceOccurrence spriteReferenceOccurrence = entry.getKey();
+            final BufferedImageEqualsWrapper imageWrapper = entry.getValue();
+
+            final Integer[] imageOffset = renderedImageToOffset.get(imageWrapper);
+            
+            int curFarX = imageOffset[0] + imageWrapper.image.getWidth();
+            int curFarY = imageOffset[1] + imageWrapper.image.getHeight();
+            maxX = (curFarX > maxX) ? curFarX : maxX;
+            maxY = (curFarY > maxY) ? curFarY : maxY;
+            
             spriteReplacements.put(spriteReferenceOccurrence,
-                spriteReferenceOccurrence.buildReplacement(layout, imageOffset));
+                spriteReferenceOccurrence.buildReplacement(layout, imageOffset[0], imageOffset[1]));
         }
 
         // Render the sprite image and build sprite reference replacements
-        final int spriteWidth = vertical ? dimension : currentOffset;
-        final int spriteHeight = vertical ? currentOffset : dimension;
+        final int spriteWidth = maxX;
+        final int spriteHeight = maxY;
         if (spriteWidth == 0 || spriteHeight == 0)
         {
             return null;
@@ -340,12 +512,11 @@ public class SpriteImageBuilder
         final BufferedImage sprite = new BufferedImage(spriteWidth, spriteHeight,
             BufferedImage.TYPE_4BYTE_ABGR);
 
-        for (final Map.Entry<BufferedImageEqualsWrapper, Integer> entry : renderedImageToOffset
+        for (final Map.Entry<BufferedImageEqualsWrapper, Integer[]> entry : renderedImageToOffset
             .entrySet())
         {
 
-            BufferedImageUtils.drawImage(entry.getKey().image, sprite, vertical ? 0
-                : entry.getValue(), vertical ? entry.getValue() : 0);
+            BufferedImageUtils.drawImage(entry.getKey().image, sprite, entry.getValue()[0], entry.getValue()[1]);
         }
 
         return new SpriteImage(sprite, spriteImageOccurrence, spriteReplacements);
@@ -475,21 +646,17 @@ public class SpriteImageBuilder
                 return 0;
             }
 
-            int hash = image.getWidth() ^ (image.getHeight() << 16);
+            CRC32 hash = new CRC32();
 
-            // Computes the hashCode based on an 4 x 4 to 7 x 7 grid of image's pixels
-            final int xIncrement = image.getWidth() > 7 ? image.getWidth() >> 2 : 1;
-            final int yIncrement = image.getHeight() > 7 ? image.getHeight() >> 2 : 1;
-
-            for (int y = 0; y < image.getHeight(); y += yIncrement)
+            for (int y = 0; y < image.getHeight(); y++)
             {
-                for (int x = 0; x < image.getWidth(); x += xIncrement)
+                for (int x = 0; x < image.getWidth(); x++)
                 {
-                    hash ^= ignoreFullTransparency(image.getRGB(x, y));
+                    hash.update(ignoreFullTransparency(image.getRGB(x, y)));
                 }
             }
 
-            return hash;
+            return (int)hash.getValue();
         }
 
         /**

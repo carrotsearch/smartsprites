@@ -83,7 +83,14 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
         int dimension)
     {
         final BufferedImage rendered;
-        if (SpriteImageLayout.VERTICAL.equals(layout))
+        if (SpriteImageLayout.FIT.equals(layout))
+        {
+            rendered = new BufferedImage(getRequiredWidth(image, layout), getRequiredHeight(image, layout),
+                BufferedImage.TYPE_4BYTE_ABGR);
+            BufferedImageUtils.drawImage(image, rendered,
+                spriteReferenceDirective.spriteLayoutProperties.marginLeft,
+                spriteReferenceDirective.spriteLayoutProperties.marginTop);
+        } else if (SpriteImageLayout.VERTICAL.equals(layout))
         {
             rendered = new BufferedImage(dimension, getRequiredHeight(image, layout),
                 BufferedImage.TYPE_4BYTE_ABGR);
@@ -153,13 +160,19 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
      * individual image was rendered.
      */
     public SpriteReferenceReplacement buildReplacement(SpriteImageLayout layout,
-        int offset)
+        int offsetX, int offsetY)
     {
-        if (SpriteImageLayout.VERTICAL.equals(layout))
+        if (SpriteImageLayout.FIT.equals(layout))
         {
             return new SpriteReferenceReplacement(
                 this,
-                offset,
+                offsetY,
+                "-"  + offsetX + "px");
+        } else if (SpriteImageLayout.VERTICAL.equals(layout))
+        {
+            return new SpriteReferenceReplacement(
+                this,
+                offsetY,
                 SpriteAlignment.RIGHT
                     .equals(spriteReferenceDirective.spriteLayoutProperties.alignment) ? "right"
                     : "left");
@@ -170,7 +183,7 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
                 this,
                 SpriteAlignment.BOTTOM
                     .equals(spriteReferenceDirective.spriteLayoutProperties.alignment) ? "bottom"
-                    : "top", offset);
+                    : "top", offsetX);
         }
     }
 }
