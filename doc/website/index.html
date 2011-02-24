@@ -11,25 +11,25 @@
 </head>
 <body>
 <div class="main">
-	<div class="gfx">
+  <div class="gfx">
     <a id="other-language" href="http://www.traduction.cc/traduction/Documentation-SmartSprites-8.html">French version</a>
     <h1><span id="smart">Smart</span>Sprites<span id="alpha"> (Alpha!)</span></h1>
     <h2><span id="css-sprite-gen">CSS Sprite Generator</span> <span id="done-right">Done Right</span></h2>
   </div>
 
-	<ul class="menu">
-		<li><a href="#about">About</a></li>
-		<li><a href="#usage">Usage</a></li>
-		<li><a href="download.html?v0.2.7">Download</a></li>
-		<li><a href="#source">Source code</a></li>
-		<li><a href="#tutorials">Tutorials</a></li>
-		<li><a href="#faq">FAQ</a></li>
-		<li><a href="#contact">Support</a></li>
-		<li id="last"></li>
-	</ul>
+  <ul class="menu">
+    <li><a href="#about">About</a></li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="download.html?v0.2.8">Download</a></li>
+    <li><a href="#source">Source code</a></li>
+    <li><a href="#tutorials">Tutorials</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contact">Support</a></li>
+    <li id="last"></li>
+  </ul>
 
-	<div class="content">
-		<div class="item">
+  <div class="content">
+    <div class="item">
       <div id="donate">
         <h1>Please Donate</h1>
         <p>
@@ -66,7 +66,7 @@
         </form>
       </div>
       <a name="about"></a>
-			<h1>What is SmartSprites?</h1>
+      <h1>What is SmartSprites?</h1>
       <p>
         SmartSprites will let you <strong>easily introduce and
         maintain <a href="http://www.alistapart.com/articles/sprites">CSS
@@ -168,11 +168,11 @@
           commercial project.
         </li>
       </ul>
-		</div>
+    </div>
 
-		<div class="item">
+    <div class="item">
       <a name="usage"></a>
-			<h1>Using SmartSprites</h1>
+      <h1>Using SmartSprites</h1>
       <ol>
         <li>
           <strong>Start with preparing your design (HTML, CSS, images) the
@@ -306,26 +306,26 @@
                     of the form <tt>${variable}</tt>. The following variables
                     are supported and will be replaced with the corresponding 
                     content:
-                   
-                    <ul>
-                      <li>
-                        <tt>sprite</tt>: Sprite ID
-                      </li>
-                      
-                      <li>
-                        <tt>md5</tt>: MD5 hash of the sprite image file created
-                        by SmartSprites. The hash will change only if the sprite 
-                         image content or file format changes.
-                      </li>
-                     
-                      <li>
-                        <tt>date</tt>: timestamp taken at the time of sprite 
-                       image generation. The timestamp will be different every 
-                       time SmartSprites processing is run, even if the sprite 
-                       images do not change
-                      </li>
-                    </ul>
                   </p>
+                   
+                  <ul>
+                    <li>
+                      <tt>sprite</tt>: Sprite ID
+                    </li>
+                    
+                    <li>
+                      <tt>md5</tt>: MD5 hash of the sprite image file created
+                      by SmartSprites. The hash will change only if the sprite 
+                       image content or file format changes.
+                    </li>
+                   
+                    <li>
+                      <tt>date</tt>: timestamp taken at the time of sprite 
+                     image generation. The timestamp will be different every 
+                     time SmartSprites processing is run, even if the sprite 
+                     images do not change
+                    </li>
+                  </ul>
                   
                   <p>
                     The sprite image path can contain a <tt>?</tt> character
@@ -468,7 +468,7 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
             </li>
 
             <li>
-              <a href="download.html?v0.2.7">Download SmartSprites</a>
+              <a href="download.html?v0.2.8">Download SmartSprites</a>
               and unpack the archive.
             </li>
           </ol>
@@ -760,11 +760,11 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
           relative paths against the directory in which the <tt>build.xml</tt> script is located.
         </li>
       </ol>
-		</div>
+    </div>
 
-		<div class="item">
+    <div class="item">
       <a name="faq"></a>
-			<h1>Frequently Asked Questions</h1>
+      <h1>Frequently Asked Questions</h1>
 
       <ol>
         <li>
@@ -860,12 +860,23 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
       </ol>
     </div>
 
-		<div class="item">
+    <div class="item">
       <a name="php"></a>
-			<h1>Version history</h1>
+      <h1>Version history</h1>
 
       <p>
-        <strong>v0.2.7</strong>, released: January 2011, <a href="http://issues.carrot2.org/secure/ConfigureReport.jspa?atl_token=0c2dc83482a10b22abaaa7c2a2a36121a47103b6&versionId=10183&sortingOrder=least&completedFilter=all&subtaskInclusion=onlySelected&selectedProjectId=10040&reportKey=com.atlassian.jira.plugin.system.reports%3Atime-tracking&Next=Next">took about 3 hours of work</a>
+        <strong>v0.2.8</strong>, released: February 2011, <a href="http://issues.carrot2.org/secure/ConfigureReport.jspa?atl_token=ca0ce89d766cc00206bcd02ecc2e61da6c0b320f&amp;versionId=10300&amp;sortingOrder=least&amp;completedFilter=all&amp;subtaskInclusion=onlySelected&amp;selectedProjectId=10040&amp;reportKey=com.atlassian.jira.plugin.system.reports%3Atime-tracking&amp;Next=Next">took about 10 hours of work</a>
+      </p>
+      <ul class="versions">
+        <li>Possibility to use MD5 hash or time stamp anywhere in sprite image name and path
+        (<a href="http://issues.carrot2.org/browse/SMARTSPRITES-41">SMARTSPRITES-41</a>, 3 votes)</li>
+        <li>Releasing SmartSprites binaries into Maven central repository, switching to Maven-based build process 
+        (<a href="http://issues.carrot2.org/browse/SMARTSPRITES-79">SMARTSPRITES-79</a>)</li>
+        <li>Bugfix: <a href="http://issues.carrot2.org/browse/SMARTSPRITES-78">SMARTSPRITES-78</a></li>
+      </ul>
+
+      <p>
+        <strong>v0.2.7</strong>, released: January 2011, <a href="http://issues.carrot2.org/secure/ConfigureReport.jspa?atl_token=0c2dc83482a10b22abaaa7c2a2a36121a47103b6&amp;versionId=10183&amp;sortingOrder=least&amp;completedFilter=all&amp;subtaskInclusion=onlySelected&amp;selectedProjectId=10040&amp;reportKey=com.atlassian.jira.plugin.system.reports%3Atime-tracking&amp;Next=Next">took about 3 hours of work</a>
       </p>
       <ul class="versions">
         <li>Bugfix: <a href="http://issues.carrot2.org/browse/SMARTSPRITES-74">SMARTSPRITES-74</a></li>
@@ -953,9 +964,9 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
       </ul>
     </div>
 
-		<div class="item">
+    <div class="item">
       <a name="source"></a>
-			<h1>Source code</h1>
+      <h1>Source code</h1>
 
       <p>
         The source code is available on GitHub:
@@ -975,9 +986,44 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
       </div>
     </div>
 
-		<div class="item">
+    <div class="item">
+      <a name="maven"></a>
+      <h1>Maven dependency</h1>
+
+      <p>
+        To use SmartSprites in your Java software, add the following dependency to your pom.xml:
+      </p>
+      
+      <code>&lt;dependency&gt;
+    &lt;groupId&gt;com.carrotsearch&lt;/groupId&gt;
+    &lt;artifactId&gt;smartsprites&lt;/artifactId&gt;
+    &lt;version&gt;0.2.8&lt;/version&gt;
+&lt;/dependency&gt;</code>
+
+      <p>
+        Snapshot releases are available from Sonatype's public Maven repositories:
+      </p>
+
+    
+      <code>&lt;repositories&gt;
+   &lt;repository&gt;
+       &lt;id&gt;sonatype-nexus-public&lt;/id&gt;
+       &lt;name&gt;SonaType public snapshots and releases repository&lt;/name&gt;
+       &lt;url&gt;https://oss.sonatype.org/content/groups/public&lt;/url&gt;
+       &lt;releases&gt; 
+           &lt;!-- set to true if you wish to fetch releases from this repo too. --&gt;
+           &lt;enabled&gt;false&lt;/enabled&gt;
+       &lt;/releases&gt; 
+       &lt;snapshots&gt;
+           &lt;enabled&gt;true&lt;/enabled&gt;
+       &lt;/snapshots&gt;
+   &lt;/repository&gt;
+&lt;/repositories&gt;</code>
+    </div>
+
+    <div class="item">
       <a name="php"></a>
-			<h1>PHP version</h1>
+      <h1>PHP version</h1>
 
       <p>
         For a PHP port of SmartSprites, please <a href="http://www.tanila.de/smartsprite/index.php">check here</a>. 
@@ -986,8 +1032,8 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
       </p>
     </div>
 
-		<div class="item">
-			<h1>Contributors</h1>
+    <div class="item">
+      <h1>Contributors</h1>
 
       <ul>
         <li>
@@ -996,8 +1042,8 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
       </ul>
     </div>
 
-		<div class="item">
-			<h1>SmartSprites-powered sites</h1>
+    <div class="item">
+      <h1>SmartSprites-powered sites</h1>
 
       <ul>
         <li>
@@ -1019,9 +1065,9 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
       </p>
     </div>
 
-		<div class="item">
+    <div class="item">
       <a name="tutorials"></a>
-			<h1>Tutorials</h1>
+      <h1>Tutorials</h1>
 
       <ul>
         <li>
@@ -1050,17 +1096,17 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
       </ul>
     </div>
 
-		<div class="item">
+    <div class="item">
       <a name="contact"></a>
-			<h1>Support</h1>
+      <h1>Support</h1>
 
       <p>
         If you have specific questions, problems or feature ideas for SmartSprites, please
         visit the <a href="http://groups.google.com/group/smartsprites-css-sprite-generator">SmartSprites CSS Sprite Generator Users and Developers group</a>.
       </p>
     </div>
-	</div>
-	<div class="footer">&copy; 2008-2011 <a href="http://stanislaw.osinski.name">Stanislaw Osinski</a>. Design by <a href="http://arcsin.se">Arcsin</a></div>
+  </div>
+  <div class="footer">&copy; 2008-2011 <a href="http://stanislaw.osinski.name">Stanislaw Osinski</a>. Design by <a href="http://arcsin.se">Arcsin</a></div>
 </div>
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
