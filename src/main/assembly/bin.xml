@@ -14,7 +14,7 @@
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>*.LICENSE</include>
-        <include>readme.txt</include>
+        <include>README.rdoc</include>
         <include>test/</include>
       </includes>
     </fileSet>
