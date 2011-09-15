@@ -284,14 +284,21 @@ public class SpriteImageBuilder
                 return -1;
             else
             {
-                final int hashA = a.hashCode();
-                final int hashB = b.hashCode();
-                if(hashA > hashB)
-                    return 1;
-                else if(hashA < hashB)
-                    return -1;
-                else
+                if(a.equals(b))
+				{
                     return 0;
+				}
+				else
+				{
+					final int hashA = a.image.hashCode();
+					final int hashB = b.image.hashCode();
+					if(hashA > hashB)
+						return 1;
+					else if(hashA < hashB)
+						return -1;
+					else
+						return 0;
+				}
             }
         }
     }
