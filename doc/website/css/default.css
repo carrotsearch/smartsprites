@@ -148,12 +148,17 @@ code strong,
   color: #606060;
 }
 
-#other-language {
+.other-language {
 	color: #888;
   padding: 8px 0 0 26px;
   background-position: 4px 10px;
   background-repeat: no-repeat;
+}
+.other-language.fr {
   background-image: url(../img/fr.png); /** sprite-ref: vert; sprite-margin-top: 10px; sprite-margin-left: 4px; */
+}
+.other-language.es {
+  background-image: url(../img/es.png); /** sprite-ref: vert; sprite-margin-top: 10px; sprite-margin-left: 4px; */
 }
 
 /* Menu */

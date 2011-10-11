@@ -149,13 +149,19 @@ code strong,
   color: #606060;
 }
 
-#other-language {
+.other-language {
 	color: #888;
   padding: 8px 0 0 26px;
   background-position: 4px 10px;
   background-repeat: no-repeat;
+}
+.other-language.fr {
   background-image: url('../img/vert.png');
   background-position: left -246px;
+}
+.other-language.es {
+  background-image: url('../img/vert.png');
+  background-position: left -267px;
 }
 
 /* Menu */
@@ -171,7 +177,7 @@ ul.menu li {
   margin: 0;
   background-color: #000;
   background-image: url('../img/vert.png');
-  background-position: left -267px;
+  background-position: left -288px;
   background-repeat: repeat-x;
 	border-right: 1px solid #222;
 	border-top: 1px solid #1A1A1A;
@@ -275,28 +281,28 @@ div.build-info {
 
 #donate-10 {
   background-image: url('../img/vert.png');
-  background-position: left -307px;
+  background-position: left -328px;
 }
 
 #donate-25 {
   background-image: url('../img/vert.png');
-  background-position: left -345px;
+  background-position: left -366px;
 }
 
 #donate-50 {
   background-image: url('../img/vert.png');
-  background-position: left -383px;
+  background-position: left -404px;
 }
 
 #donate-other {
   background-image: url('../img/vert.png');
-  background-position: left -421px;
+  background-position: left -442px;
 }
 
 .item {
   background-color: #030303;
   background-image: url('../img/vert.png');
-  background-position: left -459px;
+  background-position: left -480px;
 	background-repeat: repeat-x;
 	padding: 8px 10px;
 }
