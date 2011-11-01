@@ -24,6 +24,11 @@ syntax reference, please see:
 http://csssprites.org
 
 
+== Bug tracker
+
+http://issues.carrot2.org/browse/SMARTSPRITES
+
+
 == Source code
 
 https://github.com/carrotsearch/smartsprites
