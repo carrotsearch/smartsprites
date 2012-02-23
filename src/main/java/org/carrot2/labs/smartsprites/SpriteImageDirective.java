@@ -48,7 +48,12 @@ public class SpriteImageDirective
         /**
          * Horizontal layout, images next to each other.
          */
-        HORIZONTAL;
+        HORIZONTAL,
+        
+        /**
+         * Tightest fit.
+         */
+        FIT;
 
         private String value;
 
