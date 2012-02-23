@@ -17,8 +17,8 @@
 
   <name>SmartSprites</name>
   <description>
-    CSS Sprites Generator Done Right. SmartSprites maintains CSS sprites in your designs, 
-    fully automatically. No tedious copying and pasting to your CSS when adding or changing 
+    CSS Sprites Generator Done Right. SmartSprites maintains CSS sprites in your designs,
+    fully automatically. No tedious copying and pasting to your CSS when adding or changing
     sprited images.
   </description>
   <url>http://csssprites.org</url>
@@ -64,7 +64,7 @@
       <name>Stanisław Osiński</name>
       <email>stanislaw.osinski@carrotsearch.com</email>
     </developer>
-    
+
     <developer>
       <id>dawid.weiss</id>
       <name>Dawid Weiss</name>
@@ -83,35 +83,35 @@
   <!-- Dependencies. -->
   <dependencies>
     <dependency>
-      <groupId>com.google.collections</groupId>
-      <artifactId>google-collections</artifactId>
-      <version>1.0</version>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>11.0.2</version>
     </dependency>
-    
+
     <dependency>
       <groupId>args4j</groupId>
       <artifactId>args4j</artifactId>
       <version>2.0.9</version>
     </dependency>
-    
+
     <dependency>
       <groupId>commons-math</groupId>
       <artifactId>commons-math</artifactId>
       <version>1.1</version>
     </dependency>
-    
+
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>1.4</version>
     </dependency>
-    
+
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
       <version>2.3</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>
@@ -119,7 +119,7 @@
       <optional>true</optional>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -127,7 +127,7 @@
       <scope>test</scope>
       <optional>true</optional>
     </dependency>
-    
+
     <dependency>
       <groupId>org.easytesting</groupId>
       <artifactId>fest-assert</artifactId>
@@ -189,7 +189,7 @@
         </configuration>
       </plugin>
     </plugins>
-    
+
     <!-- Exclude these resources when packaging. -->
     <resources>
       <resource>
@@ -199,7 +199,7 @@
       </resource>
     </resources>
   </build>
-  
+
 
 
   <!-- Reports -->
@@ -361,7 +361,7 @@
       </build>
     </profile>
 
-    <!-- Sonatype manual release mode. Prepare bundle ZIPs, sign everything once 
+    <!-- Sonatype manual release mode. Prepare bundle ZIPs, sign everything once
       completed and prepare the release bundle JAR. -->
     <profile>
       <id>sonatype</id>
