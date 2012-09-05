@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.math.util.MathUtils;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
@@ -20,7 +21,6 @@ import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 import org.carrot2.util.BufferedImageUtils;
-import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 
 import com.google.common.collect.LinkedListMultimap;
@@ -146,7 +146,7 @@ public class SpriteImageBuilder
             }
             finally
             {
-                CloseableUtils.closeIgnoringException(is);
+                IOUtils.closeQuietly(is);
             }
 
             messageLog.setCssFile(null);
@@ -242,7 +242,7 @@ public class SpriteImageBuilder
         }
         finally
         {
-            CloseableUtils.closeIgnoringException(spriteImageOuputStream);
+            IOUtils.closeQuietly(spriteImageOuputStream);
         }
     }
 

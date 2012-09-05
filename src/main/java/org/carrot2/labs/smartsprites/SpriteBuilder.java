@@ -14,13 +14,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.carrot2.labs.smartsprites.message.LevelCounterMessageSink;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.resource.FileSystemResourceHandler;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
-import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 import org.carrot2.util.PathUtils;
 
@@ -364,7 +364,7 @@ public class SpriteBuilder
         }
         finally
         {
-            CloseableUtils.closeIgnoringException(originalCssReader);
+            IOUtils.closeQuietly(originalCssReader);
             processedCssWriter.close();
         }
     }
