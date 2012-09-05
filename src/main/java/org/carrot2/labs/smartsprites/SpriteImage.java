@@ -12,8 +12,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteUidType;
-import org.carrot2.util.CloseableUtils;
+
 
 /**
  * A merged sprite image consisting of a number of individual images.
@@ -187,8 +188,8 @@ public class SpriteImage
             }
             finally
             {
-                CloseableUtils.closeIgnoringException(is);
-                CloseableUtils.closeIgnoringException(digestInputStream);
+                IOUtils.closeQuietly(is);
+                IOUtils.closeQuietly(digestInputStream);
                 digest.reset();
             }
         }

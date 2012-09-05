@@ -6,12 +6,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.carrot2.labs.smartsprites.css.CssProperty;
 import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
-import org.carrot2.util.CloseableUtils;
 
 import com.google.common.collect.*;
 
@@ -86,7 +86,7 @@ public class SpriteDirectiveOccurrenceCollector
         }
         finally
         {
-            CloseableUtils.closeIgnoringException(reader);
+            IOUtils.closeQuietly(reader);
         }
 
         return occurrences;
@@ -143,7 +143,7 @@ public class SpriteDirectiveOccurrenceCollector
         }
         finally
         {
-            CloseableUtils.closeIgnoringException(reader);
+            IOUtils.closeQuietly(reader);
         }
 
         return directives;
