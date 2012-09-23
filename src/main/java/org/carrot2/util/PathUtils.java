@@ -3,7 +3,7 @@ package org.carrot2.util;
 import java.io.File;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class defines utilities methods helping to determine path-related
