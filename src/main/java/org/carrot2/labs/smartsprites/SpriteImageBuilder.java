@@ -12,7 +12,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.math.util.MathUtils;
+import org.apache.commons.math3.util.ArithmeticUtils;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
@@ -369,12 +369,12 @@ public class SpriteImageBuilder
             {
                 if (SpriteImageLayout.VERTICAL.equals(layout))
                 {
-                    leastCommonMultiple = MathUtils.lcm(leastCommonMultiple,
+                    leastCommonMultiple = ArithmeticUtils.lcm(leastCommonMultiple,
                         spriteReferenceOccurrence.getRequiredWidth(image, layout));
                 }
                 else
                 {
-                    leastCommonMultiple = MathUtils.lcm(leastCommonMultiple,
+                    leastCommonMultiple = ArithmeticUtils.lcm(leastCommonMultiple,
                         spriteReferenceOccurrence.getRequiredHeight(image, layout));
                 }
             }

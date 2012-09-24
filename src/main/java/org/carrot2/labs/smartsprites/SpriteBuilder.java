@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.carrot2.labs.smartsprites.message.LevelCounterMessageSink;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -81,7 +81,6 @@ public class SpriteBuilder
      * Performs processing for this builder's parameters. This method resolves all paths
      * against the local file system.
      */
-    @SuppressWarnings("unchecked")
     public void buildSprites() throws FileNotFoundException, IOException
     {
         if (!parameters.validate(messageLog))
