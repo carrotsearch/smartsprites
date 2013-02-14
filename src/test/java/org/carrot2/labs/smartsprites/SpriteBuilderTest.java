@@ -258,7 +258,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     public void testNonDefaultOutputDir() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("non-default-output-dir");
-        final File documentRootDir = testDir("non-default-output-dir/absolute-path");
+        final File documentRootDir = testDir("non-default-output-dir");
         final File outputDir = testDir("non-default-output-dir/output-dir");
         org.carrot2.util.FileUtils.mkdirsThrowingExceptions(outputDir);
         buildSprites(filesystemSmartSpritesParameters(testDir, outputDir,
@@ -605,7 +605,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final String path = testDir("does-not-exist").getPath();
         buildSprites(Lists.newArrayList(path));
         assertThat(messages).contains(
-            new Message(MessageLevel.WARN, MessageType.CSS_FILE_DOES_NOT_EXIST, path));
+            new Message(MessageLevel.WARN, MessageType.CSS_FILE_DOES_NOT_EXIST, null, 0, path));
     }
 
     @Test
@@ -614,7 +614,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final String path = testDir(".").getPath();
         buildSprites(Lists.newArrayList(path));
         assertThat(messages).contains(
-            new Message(MessageLevel.WARN, MessageType.CSS_PATH_IS_NOT_A_FILE, path));
+            new Message(MessageLevel.WARN, MessageType.CSS_PATH_IS_NOT_A_FILE, null, 0, path));
     }
 
     @Test
@@ -673,7 +673,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
                 new Dimension(17, 17));
             assertThat(messages).contains(
                 new Message(MessageLevel.WARN,
-                    MessageType.IGNORING_CSS_FILE_OUTSIDE_OF_ROOT_DIR, otherCssPath));
+                    MessageType.IGNORING_CSS_FILE_OUTSIDE_OF_ROOT_DIR, null, 0, otherCssPath));
         }
         finally
         {

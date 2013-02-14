@@ -37,7 +37,7 @@ public class Message implements Serializable
          * Notice messages related to deprecated features.
          */
         DEPRECATION(2),
-        
+
         /**
          * Warning messages, ignoring can lead to the converted designs looking broken.
          */
@@ -100,9 +100,9 @@ public class Message implements Serializable
         MALFORMED_COLOR("Malformed color: %s"),
 
         MALFORMED_URL("Malformed URL: %s"),
-        
+
         MALFORMED_SPRITE_IMAGE_PATH("Malformed sprite-image path: %s"),
-        
+
         UNSUPPORTED_VARIABLE_IN_SPRITE_IMAGE_PATH("Unsupported variable in sprite-image path: %s"),
 
         MORE_THAN_ONE_RULE_NEXT_TO_SPRITE_REFERENCE_DIRECTIVE(
@@ -219,7 +219,7 @@ public class Message implements Serializable
             "Found an absolute image path '%s' and no document.root.dir.path was defined. Taking relative to the CSS file."),
 
         DEPRECATED_SPRITE_IMAGE_UID("The sprite-image-uid property is deprecated and will be removed in version 0.4.0. Please insert the ${%s} variable into the sprite-image property instead."),
-            
+
         GENERIC("%s");
 
         /**
@@ -270,10 +270,10 @@ public class Message implements Serializable
     /**
      * Creates a new message without CSS file path and line number.
      */
-    public Message(MessageLevel level, MessageType type, Object... arguments)
-    {
-        this(level, type, null, 0, arguments);
-    }
+    // public Message(MessageLevel level, MessageType type, Object... arguments)
+    // {
+    //     this(level, type, null, 0, arguments);
+    // }
 
     /**
      * Creates a new message, see field descriptions for details.
