@@ -52,15 +52,34 @@ public class SpriteImage
      */
     public String resolvedPathIe6;
 
+    /**
+     * The width of the final sprite.
+     */
+    public int spriteWidth;
+
+    /**
+     * The height of the final sprite.
+     */
+    public int spriteHeight;
+
+    /**
+     * The scale to apply to the final sprite's background-size.
+     */
+    public float scaleRatio;
+
     private static final Pattern SPRITE_VARIABLE = Pattern.compile("${sprite}",
         Pattern.LITERAL);
 
     public SpriteImage(BufferedImage sprite, SpriteImageOccurrence spriteImageOccurrence,
-        Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReplacements)
+        Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReplacements,
+        int width, int height, float scale)
     {
         this.sprite = sprite;
         this.spriteReferenceReplacements = spriteReplacements;
         this.spriteImageOccurrence = spriteImageOccurrence;
+        this.spriteWidth = width;
+        this.spriteHeight = height;
+        this.scaleRatio = scale;
 
         for (SpriteReferenceReplacement replacement : spriteReplacements.values())
         {
