@@ -368,6 +368,22 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(0, directive.spriteLayoutProperties.marginBottom);
     }
 
+    @Test
+    public void testSpriteScalingProperty()
+    {
+        final SpriteImageDirective directive = SpriteImageDirective
+            .parse(
+                "sprite: sprite; sprite-image: url('../sprite.png'); sprite-layout: horizontal; "
+                    + "sprite-scale: 2;",
+                messageLog);
+
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+        assertNotNull(directive);
+        assertEquals(directive.spriteId, "sprite");
+        assertEquals(directive.imagePath, "../sprite.png");
+        assertEquals(directive.scaleRatio, 2f);
+    }
+
     private void checkUidType(String uidDeclaration, SpriteUidType expectedUidType)
     {
         final SpriteImageDirective directive = SpriteImageDirective.parse(

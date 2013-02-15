@@ -286,6 +286,63 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     }
 
     @Test
+    public void testScaledSpriteImage() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("scaled-sprite");
+        final File documentRootDir = testDir("scaled-sprite");
+        buildSprites(filesystemSmartSpritesParameters(testDir, null,
+            documentRootDir, MessageLevel.INFO,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
+
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
+
+        final File absoluteSpriteFile = new File(documentRootDir, "img/absolute.png");
+        assertThat(absoluteSpriteFile).exists();
+        org.fest.assertions.Assertions.assertThat(ImageIO.read(absoluteSpriteFile))
+            .hasSize(new Dimension(17, 17));
+
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+
+        org.carrot2.util.FileUtils.deleteThrowingExceptions(absoluteSpriteFile);
+    }
+
+    @Test
+    public void testFractionalScaledSpriteImage() throws FileNotFoundException, IOException
+    {
+        final File testDir = testDir("scaled-sprite-fractional");
+        final File documentRootDir = testDir("scaled-sprite-fractional");
+        buildSprites(filesystemSmartSpritesParameters(testDir, null,
+            documentRootDir, MessageLevel.INFO,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_SUFFIX,
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH,
+            SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6,
+            SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING));
+
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
+
+        final File absoluteSpriteFile = new File(documentRootDir, "img/absolute.png");
+        assertThat(absoluteSpriteFile).exists();
+        org.fest.assertions.Assertions.assertThat(ImageIO.read(absoluteSpriteFile))
+            .hasSize(new Dimension(17, 17));
+
+//        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+
+        assertThat(messages).isEquivalentTo(
+            Message.MessageLevel.WARN,
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.IMAGE_FRACTIONAL_SCALE_VALUE, null, 8, "../img/web.gif",
+                8.5f, 8.5f),
+            new Message(Message.MessageLevel.WARN,
+                Message.MessageType.FRACTIONAL_SCALE_VALUE, null, 8, "absolute",
+                8.5f, 8.5f));
+
+        org.carrot2.util.FileUtils.deleteThrowingExceptions(absoluteSpriteFile);
+    }
+
+    @Test
     public void testCssOutputDir() throws FileNotFoundException, IOException
     {
         final File testDir = testDir("css-output-dir");
