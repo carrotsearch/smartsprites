@@ -282,7 +282,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
 
         FileUtils.deleteDirectory(outputDir);
-        FileUtils.deleteDirectory(absoluteSpriteFile.getParentFile());
+        org.carrot2.util.FileUtils.deleteThrowingExceptions(absoluteSpriteFile);
     }
 
     @Test
