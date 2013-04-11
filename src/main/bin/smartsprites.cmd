@@ -21,4 +21,4 @@ goto setupArgs
 rem
 rem Launch SmartSprites
 rem
-java %OPTS% -Djava.ext.dirs=%~dp0lib org.carrot2.labs.smartsprites.SmartSprites %CMD_LINE_ARGS%
+java %OPTS% -Djava.ext.dirs="%~dp0/lib" org.carrot2.labs.smartsprites.SmartSprites %CMD_LINE_ARGS%
