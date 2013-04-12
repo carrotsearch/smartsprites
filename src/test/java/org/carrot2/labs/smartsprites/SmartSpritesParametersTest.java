@@ -48,32 +48,34 @@ public class SmartSpritesParametersTest extends TestWithMemoryMessageSink
     @Test
     public void testValidateNoRootDirNoCssFiles()
     {
-        checkInvalid(parameters(null, null), new Message(MessageLevel.ERROR,
-            MessageType.EITHER_ROOT_DIR_OR_CSS_FILES_IS_REQIRED));
+        checkInvalid(parameters(null, null),
+            Message.error(MessageType.EITHER_ROOT_DIR_OR_CSS_FILES_IS_REQIRED));
     }
 
     @Test
     public void testValidateRootDirDoesNotExist()
     {
         final String dir = "nonexisting-dir";
-        checkInvalid(parameters(dir, null), new Message(MessageLevel.ERROR,
+        checkInvalid(parameters(dir, null), Message.error(
             MessageType.ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY, dir));
     }
 
     @Test
     public void testValidateOutputDirNoRootDir()
     {
-        checkInvalid(parameters(null, Lists.newArrayList("css/file.css"),
-            existingOutputDirPath), new Message(MessageLevel.ERROR,
-            MessageType.ROOT_DIR_IS_REQIRED_FOR_OUTPUT_DIR));
+        checkInvalid(
+            parameters(null, Lists.newArrayList("css/file.css"), existingOutputDirPath),
+            Message.error(
+                MessageType.ROOT_DIR_IS_REQIRED_FOR_OUTPUT_DIR));
     }
 
     @Test
     public void testValidateOutputDirIsNotADirectory()
     {
-        checkInvalid(parameters(existingRootDirPath, Lists.newArrayList("css/file.css"),
-            existingFilePath), new Message(MessageLevel.ERROR,
-            MessageType.OUTPUT_DIR_IS_NOT_DIRECTORY, existingFilePath));
+        checkInvalid(
+            parameters(existingRootDirPath, Lists.newArrayList("css/file.css"),
+                existingFilePath), Message.error(
+                MessageType.OUTPUT_DIR_IS_NOT_DIRECTORY, existingFilePath));
     }
 
     @Test
@@ -81,7 +83,7 @@ public class SmartSpritesParametersTest extends TestWithMemoryMessageSink
     {
         final String nonexistingDir = "nonexisting-dir";
         checkInvalid(parameters(existingRootDirPath, (String) null, nonexistingDir),
-            new Message(MessageLevel.ERROR,
+            Message.error(
                 MessageType.DOCUMENT_ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY,
                 nonexistingDir));
     }
@@ -90,7 +92,7 @@ public class SmartSpritesParametersTest extends TestWithMemoryMessageSink
     public void testValidateDocumentRootDirIsNotADirectory()
     {
         checkInvalid(parameters(existingRootDirPath, (String) null, existingFilePath),
-            new Message(MessageLevel.ERROR,
+            Message.error(
                 MessageType.DOCUMENT_ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY,
                 existingFilePath));
     }
@@ -99,7 +101,7 @@ public class SmartSpritesParametersTest extends TestWithMemoryMessageSink
     public void testValidateNoOutputDirAndEmptyCssFileSuffix()
     {
         checkInvalid(new SmartSpritesParameters(null, Lists.newArrayList("css/file.css"),
-            null, null, null, "", null, false, null), new Message(MessageLevel.ERROR,
+            null, null, null, "", null, false, null), Message.error(
             MessageType.CSS_FILE_SUFFIX_IS_REQUIRED_IF_NO_OUTPUT_DIR));
     }
 
@@ -108,8 +110,7 @@ public class SmartSpritesParametersTest extends TestWithMemoryMessageSink
     {
         checkInvalid(
             parameters(existingRootDirPath, Lists.newArrayList("css/file.css"), null),
-            new Message(
-                MessageLevel.ERROR,
+            Message.error(
                 MessageType.ROOT_DIR_AND_CSS_FILES_CANNOT_BE_BOTH_SPECIFIED_UNLESS_WITH_OUTPUT_DIR));
     }
 

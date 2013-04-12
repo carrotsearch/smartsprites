@@ -605,7 +605,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final String path = testDir("does-not-exist").getPath();
         buildSprites(Lists.newArrayList(path));
         assertThat(messages).contains(
-            new Message(MessageLevel.WARN, MessageType.CSS_FILE_DOES_NOT_EXIST, path));
+            Message.warn(MessageType.CSS_FILE_DOES_NOT_EXIST, path));
     }
 
     @Test
@@ -614,7 +614,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final String path = testDir(".").getPath();
         buildSprites(Lists.newArrayList(path));
         assertThat(messages).contains(
-            new Message(MessageLevel.WARN, MessageType.CSS_PATH_IS_NOT_A_FILE, path));
+            Message.warn(MessageType.CSS_PATH_IS_NOT_A_FILE, path));
     }
 
     @Test
@@ -672,7 +672,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
                 new Dimension(17, 17));
             assertThat(messages).contains(
-                new Message(MessageLevel.WARN,
+                Message.warn(
                     MessageType.IGNORING_CSS_FILE_OUTSIDE_OF_ROOT_DIR, otherCssPath));
         }
         finally
