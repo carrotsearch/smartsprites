@@ -1,6 +1,8 @@
 package org.carrot2.labs.smartsprites;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -8,12 +10,15 @@ import java.util.regex.Pattern;
 
 import org.carrot2.labs.smartsprites.css.CssProperty;
 import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
-import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
+import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
-import org.carrot2.util.CloseableUtils;
 
-import com.google.common.collect.*;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.io.Closeables;
 
 /**
  * Methods for collecting SmartSprites directives from CSS files.
@@ -86,7 +91,7 @@ public class SpriteDirectiveOccurrenceCollector
         }
         finally
         {
-            CloseableUtils.closeIgnoringException(reader);
+            Closeables.closeQuietly(reader);
         }
 
         return occurrences;
@@ -143,7 +148,7 @@ public class SpriteDirectiveOccurrenceCollector
         }
         finally
         {
-            CloseableUtils.closeIgnoringException(reader);
+            Closeables.closeQuietly(reader);
         }
 
         return directives;

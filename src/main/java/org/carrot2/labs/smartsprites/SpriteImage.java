@@ -13,7 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteUidType;
-import org.carrot2.util.CloseableUtils;
+
+import com.google.common.io.Closeables;
 
 /**
  * A merged sprite image consisting of a number of individual images.
@@ -206,8 +207,8 @@ public class SpriteImage
             }
             finally
             {
-                CloseableUtils.closeIgnoringException(is);
-                CloseableUtils.closeIgnoringException(digestInputStream);
+                Closeables.closeQuietly(is);
+                Closeables.closeQuietly(digestInputStream);
                 digest.reset();
             }
         }

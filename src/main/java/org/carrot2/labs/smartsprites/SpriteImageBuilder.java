@@ -20,12 +20,12 @@ import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 import org.carrot2.util.BufferedImageUtils;
-import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.google.common.io.Closeables;
 
 /**
  * Lays out and builds sprite images based on the collected SmartSprites directives.
@@ -146,7 +146,7 @@ public class SpriteImageBuilder
             }
             finally
             {
-                CloseableUtils.closeIgnoringException(is);
+                Closeables.closeQuietly(is);
             }
 
             messageLog.setCssFile(null);
@@ -242,7 +242,7 @@ public class SpriteImageBuilder
         }
         finally
         {
-            CloseableUtils.closeIgnoringException(spriteImageOuputStream);
+            Closeables.closeQuietly(spriteImageOuputStream);
         }
     }
 

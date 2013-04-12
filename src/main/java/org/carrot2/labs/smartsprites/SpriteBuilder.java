@@ -20,7 +20,6 @@ import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.resource.FileSystemResourceHandler;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
-import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 import org.carrot2.util.PathUtils;
 
@@ -28,6 +27,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import com.google.common.io.Closeables;
 
 /**
  * Performs all stages of sprite building. This class is not thread-safe.
@@ -373,7 +373,7 @@ public class SpriteBuilder
         }
         finally
         {
-            CloseableUtils.closeIgnoringException(originalCssReader);
+            Closeables.closeQuietly(originalCssReader);
             processedCssWriter.close();
         }
     }
