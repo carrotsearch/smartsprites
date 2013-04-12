@@ -220,6 +220,10 @@ public class Message implements Serializable
         DEPRECATED_SPRITE_IMAGE_UID(
             "The sprite-image-uid property is deprecated and will be removed in version 0.4.0. Please insert the ${%s} variable into the sprite-image property instead."),
 
+        FRACTIONAL_SCALE_VALUE("The sprite-scale value applied to '%s' results in a scaled sprite with fractional dimensions (%fpx %fpx)."),
+
+        IMAGE_FRACTIONAL_SCALE_VALUE("The sprite-scale value applied to '%s' results in a scaled image with fractional dimensions (%fpx %fpx)."),
+
         GENERIC("%s");
 
         /**

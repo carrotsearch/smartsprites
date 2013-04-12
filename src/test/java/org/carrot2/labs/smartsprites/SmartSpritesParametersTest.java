@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.util.List;
 
 import org.carrot2.labs.smartsprites.message.Message;
-import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.FileUtils;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
