@@ -27,15 +27,15 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
 {
     private static final SpriteImageDirective VERTICAL_SPRITE_IMAGE_DIRECTIVE = new SpriteImageDirective(
         "vsprite", "sprite.png", SpriteImageLayout.VERTICAL, SpriteImageFormat.PNG,
-        Ie6Mode.AUTO, Color.WHITE, SpriteUidType.NONE);
+        Ie6Mode.AUTO, Color.WHITE, SpriteUidType.NONE, 1);
 
     private static final SpriteImageDirective HORIZONTAL_SPRITE_IMAGE_DIRECTIVE = new SpriteImageDirective(
         "hsprite", "hsprite.png", SpriteImageLayout.HORIZONTAL, SpriteImageFormat.PNG,
-        Ie6Mode.AUTO, Color.WHITE, SpriteUidType.NONE);
+        Ie6Mode.AUTO, Color.WHITE, SpriteUidType.NONE, 1);
 
     private static final SpriteImageDirective VERTICAL_SPRITE_IMAGE_DIRECTIVE_WITH_LAYOUT = new SpriteImageDirective(
         "vsprite", "sprite.png", SpriteImageLayout.VERTICAL, SpriteImageFormat.PNG,
-        Ie6Mode.AUTO, Color.WHITE, SpriteUidType.NONE, new SpriteLayoutProperties(
+        Ie6Mode.AUTO, Color.WHITE, SpriteUidType.NONE, 1, new SpriteLayoutProperties(
             SpriteAlignment.REPEAT, 1, 2, 3, 4));
 
     private static final Map<String, SpriteImageDirective> SPRITE_IMAGE_DIRECTIVES = ImmutableMap
@@ -288,7 +288,7 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
 
         assertThat(messages).isEmpty();
     }
-    
+
     @Test
     public void testNegativeMarginValues()
     {
@@ -296,7 +296,7 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
         .parse(
             "sprite-ref: vlsprite; sprite-alignment: right; sprite-margin-left: -10px; sprite-margin-right: 20; sprite-margin-top: 30px; sprite-margin-bottom: -40;",
             SPRITE_IMAGE_DIRECTIVES, messageLog);
-        
+
         assertNotNull(directive);
         assertEquals("vlsprite", directive.spriteRef);
         assertEquals(SpriteAlignment.RIGHT, directive.spriteLayoutProperties.alignment);
@@ -304,7 +304,7 @@ public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(20, directive.spriteLayoutProperties.marginRight);
         assertEquals(30, directive.spriteLayoutProperties.marginTop);
         assertEquals(0, directive.spriteLayoutProperties.marginBottom);
-        
+
         assertThat(messages).contains(
             new Message(Message.MessageLevel.WARN,
                 Message.MessageType.IGNORING_NEGATIVE_MARGIN_VALUE, null, 0,

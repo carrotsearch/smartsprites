@@ -164,7 +164,7 @@ public class SpriteBuilder
 
     /**
      * Performs processing from the list of file paths for this builder's parameters.
-     * 
+     *
      * @param filePaths paths of CSS files to process. Non-absolute paths will be taken
      *            relative to the current working directory. Both platform-specific and
      *            '/' as the file separator are supported.
@@ -326,7 +326,7 @@ public class SpriteBuilder
                             spriteReferenceReplacement.spriteImage.resolvedPath,
                             originalCssFile, spriteReferenceReplacement) + "')"
                         + (important ? " !important" : "") + ";\n");
-                    
+
                     if (spriteReferenceReplacement.spriteImage.hasReducedForIe6)
                     {
                         processedCssWriter.write("  -background-image: url('"
@@ -340,6 +340,16 @@ public class SpriteBuilder
                         + spriteReferenceReplacement.horizontalPositionString + " "
                         + spriteReferenceReplacement.verticalPositionString
                         + (important ? " !important" : "") + ";\n");
+
+                    // If the sprite scale is not 1, write out a background-size directive
+                    final float scale = spriteReferenceReplacement.spriteImage.scaleRatio;
+                    if (scale != 1.0f)
+                    {
+                        processedCssWriter.write("  background-size: "
+                            + Math.round(spriteReferenceReplacement.spriteImage.spriteWidth / scale) + "px "
+                            + Math.round(spriteReferenceReplacement.spriteImage.spriteHeight / scale) + "px;\n");
+                    }
+
                     continue;
                 }
 
