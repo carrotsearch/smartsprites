@@ -136,7 +136,12 @@
         </li>
 
         <li>
-          <strong class="new">(NEW!)</strong><strong>Special support for
+          <strong class="new">(NEW!)</strong><strong>Support for hi-DPI displays</strong>
+          using the <a href="#sprite-scale">sprite-scale</a> property.
+        </li>
+
+        <li>
+          <strong>Special support for
           Internet Explorer 6</strong>: SmartSprites can generate IE6-friendly
           PNG8 sprites preserving transparency wherever possible. Optionally, a matte color
           can be set for each sprite separately.
@@ -357,6 +362,32 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
                 individual images should be laid out in the sprite image
                 vertically (on top of each other) or horizontally (next to
                 each other).
+                </li>
+
+                <li id="sprite-scale">
+                  <p>
+                    <strong>Sprite scale</strong>, syntax: <tt>sprite-scale: 
+                    number</tt>, optional, default value: <tt>1</tt>. 
+                    If the provided <tt>scale</tt> value is not 1, for each sprite
+                    reference SmartSprites will output the <tt>background-size</tt>
+                    CSS property with a value equal to the actual sprite dimensions
+                    divided by the provided scale; offsets output in the <tt>background-position</tt>
+                    property will also be divided by the scale.
+                  </p>
+
+                  <p>
+                    SmartSprites will accepth both integer and float values of 
+                    <tt>sprite-scale</tt>. Warnings will be issued if the computed
+                    background size dimensions are not integer numbers.
+                  </p>
+
+                  <p>
+                    You can use the <tt>sprite-scale</tt> property to create
+                    sprite images for high-DPI displays, such as Retina. In case
+                    of Retina, you'll need to prepare the individual images in a x2 
+                    resolution and set the <tt>sprite-scale</tt> of the Retina-specific
+                    sprite image to <tt>2</tt>.
+                  </p>
                 </li>
 
                 <li><a name="sprite-matte-color"><strong>Matte
