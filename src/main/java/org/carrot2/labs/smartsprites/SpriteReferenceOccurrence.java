@@ -104,6 +104,13 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
                         - image.getWidth(),
                     spriteReferenceDirective.spriteLayoutProperties.marginTop);
             }
+            else if (SpriteAlignment.CENTER
+                .equals(spriteReferenceDirective.spriteLayoutProperties.alignment))
+            {
+                BufferedImageUtils.drawImage(image, rendered,
+                    (rendered.getWidth() - image.getWidth()) / 2,
+                    spriteReferenceDirective.spriteLayoutProperties.marginTop);
+            }
             else
             {
                 // Repeat, ignoring margin-left and margin-right
@@ -134,6 +141,13 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
                         - spriteReferenceDirective.spriteLayoutProperties.marginBottom
                         - image.getHeight());
             }
+            else if (SpriteAlignment.CENTER
+                .equals(spriteReferenceDirective.spriteLayoutProperties.alignment))
+            {
+                BufferedImageUtils.drawImage(image, rendered,
+                    spriteReferenceDirective.spriteLayoutProperties.marginLeft, 
+                    (rendered.getHeight() - image.getHeight()) / 2);
+            }
             else
             {
                 // Repeat, ignoring margin-top and margin-bottom
@@ -157,20 +171,47 @@ public class SpriteReferenceOccurrence extends SpriteDirectiveOccurrence
     {
         if (SpriteImageLayout.VERTICAL.equals(layout))
         {
+            String horizontalPosition;
+            if (SpriteAlignment.RIGHT.equals(spriteReferenceDirective.spriteLayoutProperties.alignment)) 
+            {
+                horizontalPosition = "right";
+            }
+            else if (SpriteAlignment.CENTER
+                .equals(spriteReferenceDirective.spriteLayoutProperties.alignment)) 
+            {
+                horizontalPosition = "center";
+            }
+            else
+            {
+                horizontalPosition = "left";
+            }
+            
             return new SpriteReferenceReplacement(
                 this,
                 offset,
-                SpriteAlignment.RIGHT
-                    .equals(spriteReferenceDirective.spriteLayoutProperties.alignment) ? "right"
-                    : "left");
+                horizontalPosition);
         }
         else
         {
+            String verticalPosition;
+            if (SpriteAlignment.BOTTOM
+                .equals(spriteReferenceDirective.spriteLayoutProperties.alignment)) 
+            {
+                verticalPosition = "bottom";
+            }
+            else if (SpriteAlignment.CENTER
+                .equals(spriteReferenceDirective.spriteLayoutProperties.alignment))
+            {
+                verticalPosition = "center";
+            }
+            else
+            {
+                verticalPosition = "top";
+            }
             return new SpriteReferenceReplacement(
                 this,
-                SpriteAlignment.BOTTOM
-                    .equals(spriteReferenceDirective.spriteLayoutProperties.alignment) ? "bottom"
-                    : "top", offset);
+                verticalPosition,
+                offset);
         }
     }
 }

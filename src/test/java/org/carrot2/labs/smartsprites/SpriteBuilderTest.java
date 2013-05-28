@@ -758,6 +758,26 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
+    @Test
+    public void testSpriteCentering() throws FileNotFoundException, IOException {
+        final File testDir = testDir("sprite-centering");
+        buildSprites(testDir);
+
+        assertThat(processedCss()).hasSameContentAs(expectedCss());
+        final String horizontalSpritePath = "img/sprite-horizontal.png";
+        assertThat(new File(testDir, horizontalSpritePath)).exists();
+        org.fest.assertions.Assertions.assertThat(
+                sprite(testDir, horizontalSpritePath)).hasSize(
+                new Dimension(48, 47));
+
+        final String verticalSpritePath = "img/sprite-vertical.png";
+        org.fest.assertions.Assertions.assertThat(
+                sprite(testDir, verticalSpritePath)).hasSize(
+                new Dimension(48, 47));
+
+        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
+    }
+
     /**
      * Test case for bug SMARTSPRITES-69.
      */
