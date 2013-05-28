@@ -1,0 +1,13 @@
+/**
+ * A simple horizontal sprites test.
+ */
+
+/** sprite: horizontal; sprite-image: url('../img/sprite-horizontal.png'); sprite-layout: horizontal */
+div.logo {
+  background-image: url(../img/logo.png); /** sprite-ref: horizontal; sprite-alignment: center */
+}
+
+/** sprite: vertical; sprite-image: url('../img/sprite-vertical.png'); sprite-layout: vertical */
+div.logo {
+  background-image: url(../img/logo.png); /** sprite-ref: vertical; sprite-alignment: center */
+}
