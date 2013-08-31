@@ -288,6 +288,8 @@ public class SpriteBuilder
         int originalCssLineNumber = -1;
         int lastReferenceReplacementLine = -1;
 
+        boolean keepingSpriteTrack = parameters.isKeepingSpriteTrack();
+        
         // Generate UID for sprite file
         try
         {
@@ -325,7 +327,7 @@ public class SpriteBuilder
                         + getRelativeToReplacementLocation(
                             spriteReferenceReplacement.spriteImage.resolvedPath,
                             originalCssFile, spriteReferenceReplacement) + "')"
-                        + (important ? " !important" : "") + ";\n");
+                            + (important ? " !important" : "") + ";"+ (keepingSpriteTrack ? " /** sprite:sprite */" :"")+"\n");
 
                     if (spriteReferenceReplacement.spriteImage.hasReducedForIe6)
                     {
@@ -333,7 +335,7 @@ public class SpriteBuilder
                             + getRelativeToReplacementLocation(
                                 spriteReferenceReplacement.spriteImage.resolvedPathIe6,
                                 originalCssFile, spriteReferenceReplacement) + "')"
-                            + (important ? " !important" : "") + ";\n");
+                                + (important ? " !important" : "") + ";"+ (keepingSpriteTrack ? " /** sprite:sprite */" :"")+"\n");
                     }
 
                     processedCssWriter.write("  background-position: "

@@ -31,6 +31,7 @@ public class SmartSpritesTask extends Task
     private String cssFileEncoding = SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING;
     private PngDepth spritePngDepth = SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH;
     private boolean spritePngIe6 = SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6;
+    private boolean keepingSpriteTrack = SmartSpritesParameters.DEFAULT_KEEPING_SPRITE_TRACK;
 
     private List<String> cssFiles = Lists.newArrayList();
 
@@ -90,6 +91,11 @@ public class SmartSpritesTask extends Task
     public void setSpritePngIe6(boolean spritePngIe6)
     {
         this.spritePngIe6 = spritePngIe6;
+    }
+
+    public void setKeepingSpriteTrack(boolean keepingSpriteTrack)
+    {
+        this.keepingSpriteTrack = keepingSpriteTrack;
     }
 
     @Override
