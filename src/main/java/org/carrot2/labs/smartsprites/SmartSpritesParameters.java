@@ -102,6 +102,12 @@ public final class SmartSpritesParameters
     @Option(name = "--sprite-png-ie6")
     private boolean spritePngIe6;
 
+    /**
+     * If <code>true</code>, SmartSprites will generate the sprite directive indicating that the image is a sprite image.
+     */
+    @Option(name = "--keepingSpriteTrack")
+    private boolean keepingSpriteTrack;
+
     /** The default suffix to be added to the generated CSS files. */
     public static final String DEFAULT_CSS_FILE_SUFFIX = "-sprite";
 
@@ -117,6 +123,9 @@ public final class SmartSpritesParameters
     /** The default logging level. */
     public static final MessageLevel DEFAULT_LOGGING_LEVEL = MessageLevel.INFO;
 
+    /** By default, we don't generate sprite directive in output css */
+    public static final boolean DEFAULT_KEEPING_SPRITE_TRACK = false;
+    
     public enum PngDepth
     {
         AUTO, INDEXED, DIRECT;
@@ -137,7 +146,7 @@ public final class SmartSpritesParameters
     public SmartSpritesParameters(String rootDir)
     {
         this(rootDir, null, null, null, MessageLevel.INFO, DEFAULT_CSS_FILE_SUFFIX,
-            DEFAULT_SPRITE_PNG_DEPTH, DEFAULT_SPRITE_PNG_IE6, DEFAULT_CSS_FILE_ENCODING);
+            DEFAULT_SPRITE_PNG_DEPTH, DEFAULT_SPRITE_PNG_IE6, DEFAULT_CSS_FILE_ENCODING, DEFAULT_KEEPING_SPRITE_TRACK);
     }
 
     /**
@@ -148,6 +157,19 @@ public final class SmartSpritesParameters
         String cssFileSuffix, PngDepth spritePngDepth, boolean spritePngIe6,
         String cssEncoding)
     {
+        this(rootDir, cssFiles, outputDir, documentRootDir, logLevel,
+                cssFileSuffix, spritePngDepth, spritePngIe6,
+                cssEncoding, DEFAULT_KEEPING_SPRITE_TRACK);
+    }
+    
+    /**
+     * Creates the parameters.
+     */
+    public SmartSpritesParameters(String rootDir, List<String> cssFiles,
+        String outputDir, String documentRootDir, MessageLevel logLevel,
+        String cssFileSuffix, PngDepth spritePngDepth, boolean spritePngIe6,
+        String cssEncoding, boolean keepingSpriteTrack)
+    {
         this.rootDir = rootDir;
         this.cssFiles = cssFiles;
         this.outputDir = outputDir;
@@ -157,6 +179,7 @@ public final class SmartSpritesParameters
         this.cssFileSuffix = getCssFileSuffix(cssFileSuffix);
         this.spritePngDepth = spritePngDepth;
         this.spritePngIe6 = spritePngIe6;
+        this.keepingSpriteTrack = keepingSpriteTrack;
     }
 
     /**
@@ -323,7 +346,11 @@ public final class SmartSpritesParameters
         return spritePngIe6;
     }
 
-    public String getCssFileEncoding()
+    public boolean isKeepingSpriteTrack() {
+		return keepingSpriteTrack;
+	}
+
+	public String getCssFileEncoding()
     {
         return cssFileEncoding;
     }
