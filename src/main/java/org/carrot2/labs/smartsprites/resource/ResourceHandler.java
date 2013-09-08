@@ -22,7 +22,7 @@ public interface ResourceHandler
      * @return the resource stream or <code>null</code> if the resource could not be
      *         opened.
      */
-    public InputStream getResourceAsInputStream(String path) throws IOException;
+    InputStream getResourceAsInputStream(String path) throws IOException;
 
     /**
      * Returns the reader for the provided path. Implementations are responsible for
@@ -31,7 +31,7 @@ public interface ResourceHandler
      * @param path the resource path
      * @return the reader or <code>null</code> if the resource could not be opened.
      */
-    public Reader getResourceAsReader(String path) throws IOException;
+    Reader getResourceAsReader(String path) throws IOException;
 
     /**
      * Returns the resource output stream for the provided path. If the resource already
@@ -41,7 +41,7 @@ public interface ResourceHandler
      * @return the resource stream or <code>null</code> if the resource could not be
      *         opened.
      */
-    public OutputStream getResourceAsOutputStream(String path) throws IOException;
+    OutputStream getResourceAsOutputStream(String path) throws IOException;
 
     /**
      * Returns the writer for the provided path. If the resource already exists, its
@@ -51,7 +51,7 @@ public interface ResourceHandler
      * @param path the resource path
      * @return the writer or <code>null</code> if the resource could not be opened.
      */
-    public Writer getResourceAsWriter(String path) throws IOException;
+    Writer getResourceAsWriter(String path) throws IOException;
 
     /**
      * Builds a resource path relative to a CSS file resource path.
@@ -65,5 +65,5 @@ public interface ResourceHandler
      *            cssFilePath.
      * @return the combined resource path
      */
-    public String getResourcePath(String cssFilePath, String cssRelativePath);
+    String getResourcePath(String cssFilePath, String cssRelativePath);
 }

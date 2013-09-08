@@ -188,7 +188,7 @@ public class SpriteImage
         try
         {
             final byte [] buffer = new byte [4069];
-            final MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            final MessageDigest digest = MessageDigest.getInstance("MD5");
             InputStream is = null, digestInputStream = null;
             try
             {

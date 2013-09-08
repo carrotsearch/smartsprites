@@ -8,5 +8,5 @@ public interface MessageSink
     /**
      * Adds a {@link Message} for further processing/ retrieval.
      */
-    public void add(Message message);
+    void add(Message message);
 }
