@@ -1,6 +1,11 @@
 @echo off
 
 rem
+rem Get directory to us
+rem
+set ROOT=%~dp0
+
+rem
 rem Add extra JVM options here
 rem
 set OPTS=-Xms64m -Xmx256m
@@ -21,4 +26,5 @@ goto setupArgs
 rem
 rem Launch SmartSprites
 rem
-java %OPTS% -Djava.ext.dirs=%~dp0lib org.carrot2.labs.smartsprites.SmartSprites %CMD_LINE_ARGS%
+java %OPTS% -Djava.ext.dirs="%ROOT%lib" org.carrot2.labs.smartsprites.SmartSprites %CMD_LINE_ARGS%
+

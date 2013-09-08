@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
@@ -102,6 +101,13 @@ public final class SmartSpritesParameters
     @Option(name = "--sprite-png-ie6")
     private boolean spritePngIe6;
 
+    /**
+     * If <code>true</code>, SmartSprites will generate the sprite directive indicating
+     * that the image is a sprite image.
+     */
+    @Option(name = "--mark-sprite-images")
+    private boolean markSpriteImages;
+
     /** The default suffix to be added to the generated CSS files. */
     public static final String DEFAULT_CSS_FILE_SUFFIX = "-sprite";
 
@@ -116,6 +122,9 @@ public final class SmartSpritesParameters
 
     /** The default logging level. */
     public static final MessageLevel DEFAULT_LOGGING_LEVEL = MessageLevel.INFO;
+
+    /** By default, we don't generate sprite directive in output css */
+    public static final boolean DEFAULT_MARK_SPRITE_IMAGES = false;
 
     public enum PngDepth
     {
@@ -137,7 +146,8 @@ public final class SmartSpritesParameters
     public SmartSpritesParameters(String rootDir)
     {
         this(rootDir, null, null, null, MessageLevel.INFO, DEFAULT_CSS_FILE_SUFFIX,
-            DEFAULT_SPRITE_PNG_DEPTH, DEFAULT_SPRITE_PNG_IE6, DEFAULT_CSS_FILE_ENCODING);
+            DEFAULT_SPRITE_PNG_DEPTH, DEFAULT_SPRITE_PNG_IE6, DEFAULT_CSS_FILE_ENCODING,
+            DEFAULT_MARK_SPRITE_IMAGES);
     }
 
     /**
@@ -148,6 +158,18 @@ public final class SmartSpritesParameters
         String cssFileSuffix, PngDepth spritePngDepth, boolean spritePngIe6,
         String cssEncoding)
     {
+        this(rootDir, cssFiles, outputDir, documentRootDir, logLevel, cssFileSuffix,
+            spritePngDepth, spritePngIe6, cssEncoding, DEFAULT_MARK_SPRITE_IMAGES);
+    }
+
+    /**
+     * Creates the parameters.
+     */
+    public SmartSpritesParameters(String rootDir, List<String> cssFiles,
+        String outputDir, String documentRootDir, MessageLevel logLevel,
+        String cssFileSuffix, PngDepth spritePngDepth, boolean spritePngIe6,
+        String cssEncoding, boolean markSpriteImages)
+    {
         this.rootDir = rootDir;
         this.cssFiles = cssFiles;
         this.outputDir = outputDir;
@@ -157,6 +179,7 @@ public final class SmartSpritesParameters
         this.cssFileSuffix = getCssFileSuffix(cssFileSuffix);
         this.spritePngDepth = spritePngDepth;
         this.spritePngIe6 = spritePngIe6;
+        this.markSpriteImages = markSpriteImages;
     }
 
     /**
@@ -179,8 +202,7 @@ public final class SmartSpritesParameters
         // If there is no output dir, we can't have both root dir or css files
         if (!hasOutputDir() && hasRootDir() && hasCssFiles())
         {
-            log
-                .error(MessageType.ROOT_DIR_AND_CSS_FILES_CANNOT_BE_BOTH_SPECIFIED_UNLESS_WITH_OUTPUT_DIR);
+            log.error(MessageType.ROOT_DIR_AND_CSS_FILES_CANNOT_BE_BOTH_SPECIFIED_UNLESS_WITH_OUTPUT_DIR);
             return false;
         }
 
@@ -321,6 +343,11 @@ public final class SmartSpritesParameters
     public boolean isSpritePngIe6()
     {
         return spritePngIe6;
+    }
+
+    public boolean isMarkSpriteImages()
+    {
+        return markSpriteImages;
     }
 
     public String getCssFileEncoding()

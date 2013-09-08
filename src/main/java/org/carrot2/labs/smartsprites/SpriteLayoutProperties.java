@@ -58,7 +58,12 @@ public class SpriteLayoutProperties
         /**
          * Repeated across the full width/ height of the sprite image.
          */
-        REPEAT;
+        REPEAT,
+        
+        /**
+         * To the center of a vertical or horizontal sprite
+         */
+        CENTER;
 
         private String value;
 

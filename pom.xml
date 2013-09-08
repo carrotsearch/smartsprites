@@ -12,7 +12,7 @@
   <!-- Project info. -->
   <groupId>com.carrotsearch</groupId>
   <artifactId>smartsprites</artifactId>
-  <version>0.2.9-SNAPSHOT</version>
+  <version>0.2.11-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>SmartSprites</name>
@@ -85,7 +85,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>13.0.1</version>
+      <version>14.0.1</version>
     </dependency>
 
     <dependency>
@@ -282,7 +282,7 @@
           <plugin>
             <groupId>com.atlassian.maven.plugins</groupId>
             <artifactId>maven-clover2-plugin</artifactId>
-            <version>3.0.2</version>
+            <version>3.1.11</version>
             <configuration>
               <generateXml>true</generateXml>
               <generateHtml>true</generateHtml>

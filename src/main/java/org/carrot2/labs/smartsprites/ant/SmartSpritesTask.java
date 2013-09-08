@@ -31,6 +31,7 @@ public class SmartSpritesTask extends Task
     private String cssFileEncoding = SmartSpritesParameters.DEFAULT_CSS_FILE_ENCODING;
     private PngDepth spritePngDepth = SmartSpritesParameters.DEFAULT_SPRITE_PNG_DEPTH;
     private boolean spritePngIe6 = SmartSpritesParameters.DEFAULT_SPRITE_PNG_IE6;
+    private boolean markSpriteImages = SmartSpritesParameters.DEFAULT_MARK_SPRITE_IMAGES;
 
     private List<String> cssFiles = Lists.newArrayList();
 
@@ -92,12 +93,17 @@ public class SmartSpritesTask extends Task
         this.spritePngIe6 = spritePngIe6;
     }
 
+    public void setMarkSpriteImages(boolean markSpriteImages)
+    {
+        this.markSpriteImages = markSpriteImages;
+    }
+
     @Override
     public void execute() throws BuildException
     {
         final SmartSpritesParameters parameters = new SmartSpritesParameters(rootDir,
             cssFiles, outputDir, documentRootDir, logLevel, cssFileSuffix,
-            spritePngDepth, spritePngIe6, cssFileEncoding);
+            spritePngDepth, spritePngIe6, cssFileEncoding, markSpriteImages);
 
         final FailureDetectorMessageSink failureDetectorMessageSink = new FailureDetectorMessageSink();
         MessageLog log = new MessageLog(new AntLogMessageSink(),

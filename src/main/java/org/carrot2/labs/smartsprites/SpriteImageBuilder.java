@@ -20,12 +20,12 @@ import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 import org.carrot2.util.BufferedImageUtils;
-import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.google.common.io.Closeables;
 
 /**
  * Lays out and builds sprite images based on the collected SmartSprites directives.
@@ -146,7 +146,7 @@ public class SpriteImageBuilder
             }
             finally
             {
-                CloseableUtils.closeIgnoringException(is);
+                Closeables.closeQuietly(is);
             }
 
             messageLog.setCssFile(null);
@@ -154,7 +154,7 @@ public class SpriteImageBuilder
 
         // Build the sprite image bitmap
         final SpriteImage spriteImage = SpriteImageBuilder.buildSpriteImage(
-            spriteImageOccurrence, images);
+            spriteImageOccurrence, images, messageLog);
         if (spriteImage == null)
         {
             return Collections
@@ -242,7 +242,7 @@ public class SpriteImageBuilder
         }
         finally
         {
-            CloseableUtils.closeIgnoringException(spriteImageOuputStream);
+            Closeables.closeQuietly(spriteImageOuputStream);
         }
     }
 
@@ -272,10 +272,11 @@ public class SpriteImageBuilder
      * Calculates total dimensions and lays out a single sprite image.
      */
     static SpriteImage buildSpriteImage(SpriteImageOccurrence spriteImageOccurrence,
-        Map<SpriteReferenceOccurrence, BufferedImage> images)
+        Map<SpriteReferenceOccurrence, BufferedImage> images, MessageLog messageLog)
     {
         // First find the least common multiple of the images with 'repeat' alignment
         final SpriteImageLayout layout = spriteImageOccurrence.spriteImageDirective.layout;
+        final float spriteScale = spriteImageOccurrence.spriteImageDirective.scaleRatio;
         final int leastCommonMultiple = SpriteImageBuilder.calculateLeastCommonMultiple(
             images, layout);
 
@@ -325,8 +326,18 @@ public class SpriteImageBuilder
                 currentOffset += vertical ? rendered.getHeight() : rendered.getWidth();
             }
 
+            final float scaledImageWidth = spriteReferenceOccurrence.getRequiredWidth(image, layout) / spriteScale;
+            final float scaledImageHeight = spriteReferenceOccurrence.getRequiredHeight(image, layout) / spriteScale;
+            if (Math.round(scaledImageWidth) != scaledImageWidth ||
+                Math.round(scaledImageHeight) != scaledImageHeight)
+            {
+                messageLog.warning(MessageType.IMAGE_FRACTIONAL_SCALE_VALUE,
+                    spriteReferenceOccurrence.imagePath, scaledImageWidth, scaledImageHeight);
+            }
+
+            final int adjustedImageOffset = Math.round(imageOffset / spriteScale);
             spriteReplacements.put(spriteReferenceOccurrence,
-                spriteReferenceOccurrence.buildReplacement(layout, imageOffset));
+                spriteReferenceOccurrence.buildReplacement(layout, adjustedImageOffset));
         }
 
         // Render the sprite image and build sprite reference replacements
@@ -335,6 +346,15 @@ public class SpriteImageBuilder
         if (spriteWidth == 0 || spriteHeight == 0)
         {
             return null;
+        }
+
+        final float scaledWidth = spriteWidth / spriteScale;
+        final float scaledHeight = spriteHeight / spriteScale;
+        if (Math.round(scaledWidth) != scaledWidth ||
+            Math.round(scaledHeight) != scaledHeight)
+        {
+            messageLog.warning(MessageType.FRACTIONAL_SCALE_VALUE,
+                spriteImageOccurrence.spriteImageDirective.spriteId, scaledWidth, scaledHeight);
         }
 
         final BufferedImage sprite = new BufferedImage(spriteWidth, spriteHeight,
@@ -348,7 +368,7 @@ public class SpriteImageBuilder
                 : entry.getValue(), vertical ? entry.getValue() : 0);
         }
 
-        return new SpriteImage(sprite, spriteImageOccurrence, spriteReplacements);
+        return new SpriteImage(sprite, spriteImageOccurrence, spriteReplacements, spriteWidth, spriteHeight, spriteScale);
     }
 
     /**

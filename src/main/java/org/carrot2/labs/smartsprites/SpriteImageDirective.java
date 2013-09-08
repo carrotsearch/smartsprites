@@ -28,12 +28,13 @@ public class SpriteImageDirective
     public static final String PROPERTY_SPRITE_IMAGE_UID_SUFFIX = "sprite-image-uid";
     public static final String PROPERTY_SPRITE_MATTE_COLOR = "sprite-matte-color";
     public static final String PROPERTY_SPRITE_IE6_MODE = "sprite-ie6-mode";
+    public static final String PROPERTY_SPRITE_SCALE = "sprite-scale";
 
     /** A set of allowed properties */
     private static final Set<String> ALLOWED_PROPERTIES = ImmutableSet.of(
         PROPERTY_SPRITE_ID, PROPERTY_SPRITE_IMAGE_LAYOUT, PROPERTY_SPRITE_IMAGE_URL,
         PROPERTY_SPRITE_MATTE_COLOR, PROPERTY_SPRITE_IE6_MODE,
-        PROPERTY_SPRITE_IMAGE_UID_SUFFIX);
+        PROPERTY_SPRITE_SCALE, PROPERTY_SPRITE_IMAGE_UID_SUFFIX);
 
     /**
      * Defines the layout of this sprite.
@@ -213,6 +214,11 @@ public class SpriteImageDirective
     public final Color matteColor;
 
     /**
+     * Scaling ratio to apply to background; default is 1.
+     */
+    public final float scaleRatio;
+
+    /**
      * Sprite layout properties defined at the sprite image directive level. The defaults
      * provided here can be overridden at the sprite reference directive level.
      */
@@ -237,15 +243,15 @@ public class SpriteImageDirective
         SpriteUidType.DATE.toString(), SpriteUidType.MD5.toString());
 
     public SpriteImageDirective(String id, String imageUrl, SpriteImageLayout layout,
-        SpriteImageFormat format, Ie6Mode ie6Mode, Color matteColor, SpriteUidType uidType)
+        SpriteImageFormat format, Ie6Mode ie6Mode, Color matteColor, SpriteUidType uidType, float scale)
     {
-        this(id, imageUrl, layout, format, ie6Mode, matteColor, uidType,
+        this(id, imageUrl, layout, format, ie6Mode, matteColor, uidType, scale,
             new SpriteLayoutProperties(layout));
     }
 
     public SpriteImageDirective(String id, String imageUrl, SpriteImageLayout layout,
         SpriteImageFormat format, Ie6Mode ie6Mode, Color matteColor,
-        SpriteUidType uidType, SpriteLayoutProperties spriteLayoutProperties)
+        SpriteUidType uidType, float scale, SpriteLayoutProperties spriteLayoutProperties)
     {
         this.spriteId = id;
         this.imagePath = imageUrl;
@@ -254,6 +260,7 @@ public class SpriteImageDirective
         this.ie6Mode = ie6Mode;
         this.matteColor = matteColor;
         this.uidType = uidType;
+        this.scaleRatio = scale;
         this.spriteLayoutProperties = spriteLayoutProperties;
     }
 
@@ -382,8 +389,18 @@ public class SpriteImageDirective
             matteColor = null;
         }
 
+        final float scale;
+        if (CssSyntaxUtils.hasNonBlankValue(rules, PROPERTY_SPRITE_SCALE))
+        {
+            scale = Float.parseFloat(rules.get(PROPERTY_SPRITE_SCALE).value);
+        }
+        else
+        {
+            scale = 1.0f;
+        }
+
         return new SpriteImageDirective(id, imagePath, layout, format, ie6Mode,
-            matteColor, uidGenerator, SpriteLayoutProperties.parse(directiveString,
+            matteColor, uidGenerator, scale, SpriteLayoutProperties.parse(directiveString,
                 layout, messageCollector));
     }
 

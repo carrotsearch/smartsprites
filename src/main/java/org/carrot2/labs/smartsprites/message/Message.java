@@ -37,7 +37,7 @@ public class Message implements Serializable
          * Notice messages related to deprecated features.
          */
         DEPRECATION(2),
-        
+
         /**
          * Warning messages, ignoring can lead to the converted designs looking broken.
          */
@@ -80,7 +80,8 @@ public class Message implements Serializable
 
         CANNOT_NOT_LOAD_IMAGE("Cannot load image: %s due to: %s"),
 
-        CANNOT_PARSE_MARGIN_VALUE("Cannot parse margin value: %s. Only 'px' units are supported."),
+        CANNOT_PARSE_MARGIN_VALUE(
+            "Cannot parse margin value: %s. Only 'px' units are supported."),
 
         CANNOT_WRITE_SPRITE_IMAGE("Cannot write sprite image: %s due to %s"),
 
@@ -90,8 +91,7 @@ public class Message implements Serializable
 
         WRITING_CSS("Writing CSS to %s"),
 
-        WRITING_SPRITE_IMAGE(
-            "Writing sprite image of size %s x %s for sprite '%s' to %s"),
+        WRITING_SPRITE_IMAGE("Writing sprite image of size %s x %s for sprite '%s' to %s"),
 
         IGNORING_SPRITE_IMAGE_REDEFINITION("Ignoring sprite image redefinition"),
 
@@ -100,10 +100,11 @@ public class Message implements Serializable
         MALFORMED_COLOR("Malformed color: %s"),
 
         MALFORMED_URL("Malformed URL: %s"),
-        
+
         MALFORMED_SPRITE_IMAGE_PATH("Malformed sprite-image path: %s"),
-        
-        UNSUPPORTED_VARIABLE_IN_SPRITE_IMAGE_PATH("Unsupported variable in sprite-image path: %s"),
+
+        UNSUPPORTED_VARIABLE_IN_SPRITE_IMAGE_PATH(
+            "Unsupported variable in sprite-image path: %s"),
 
         MORE_THAN_ONE_RULE_NEXT_TO_SPRITE_REFERENCE_DIRECTIVE(
             "Found more than one CSS rule next to sprite reference comment: %s"),
@@ -146,8 +147,7 @@ public class Message implements Serializable
 
         READING_SPRITE_IMAGE_DIRECTIVES("Reading sprite image directives from %s"),
 
-        READING_SPRITE_REFERENCE_DIRECTIVES(
-            "Reading sprite reference directives from %s"),
+        READING_SPRITE_REFERENCE_DIRECTIVES("Reading sprite reference directives from %s"),
 
         READING_CSS("Reading CSS from %s"),
 
@@ -167,8 +167,7 @@ public class Message implements Serializable
         UNSUPPORTED_ALIGNMENT("Unsupported alignment: %s. Supported alignments are: "
             + SpriteAlignment.valuesAsString() + "."),
 
-        UNSUPPORTED_INDIVIDUAL_IMAGE_FORMAT(
-            "Unsupported format of image loaded from: %s"),
+        UNSUPPORTED_INDIVIDUAL_IMAGE_FORMAT("Unsupported format of image loaded from: %s"),
 
         UNSUPPORTED_SPRITE_IMAGE_FORMAT(
             "Format of image: %s is not supported. Supported formats are: "
@@ -218,8 +217,13 @@ public class Message implements Serializable
         ABSOLUTE_PATH_AND_NO_DOCUMENT_ROOT(
             "Found an absolute image path '%s' and no document.root.dir.path was defined. Taking relative to the CSS file."),
 
-        DEPRECATED_SPRITE_IMAGE_UID("The sprite-image-uid property is deprecated and will be removed in version 0.4.0. Please insert the ${%s} variable into the sprite-image property instead."),
-            
+        DEPRECATED_SPRITE_IMAGE_UID(
+            "The sprite-image-uid property is deprecated and will be removed in version 0.4.0. Please insert the ${%s} variable into the sprite-image property instead."),
+
+        FRACTIONAL_SCALE_VALUE("The sprite-scale value applied to '%s' results in a scaled sprite with fractional dimensions (%fpx %fpx)."),
+
+        IMAGE_FRACTIONAL_SCALE_VALUE("The sprite-scale value applied to '%s' results in a scaled image with fractional dimensions (%fpx %fpx)."),
+
         GENERIC("%s");
 
         /**
@@ -268,14 +272,6 @@ public class Message implements Serializable
     public final Object [] arguments;
 
     /**
-     * Creates a new message without CSS file path and line number.
-     */
-    public Message(MessageLevel level, MessageType type, Object... arguments)
-    {
-        this(level, type, null, 0, arguments);
-    }
-
-    /**
      * Creates a new message, see field descriptions for details.
      */
     public Message(MessageLevel level, MessageType type, String cssPath, int line,
@@ -287,6 +283,16 @@ public class Message implements Serializable
         this.line = line;
         this.arguments = new Object [arguments.length];
         System.arraycopy(arguments, 0, this.arguments, 0, arguments.length);
+    }
+
+    public static Message warn(MessageType type, Object... arguments)
+    {
+        return new Message(MessageLevel.WARN, type, null, 0, arguments);
+    }
+    
+    public static Message error(MessageType type, Object... arguments)
+    {
+        return new Message(MessageLevel.ERROR, type, null, 0, arguments);
     }
 
     @Override

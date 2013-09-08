@@ -1,0 +1,11 @@
+/**
+ * A test of writing a scaled image sprite for highdpi displays.
+ */
+
+div.web {
+  width: 17px;
+  height: 17px;
+  background-image: url('/img/absolute.png');
+  background-position: -0px top;
+  background-size: 9px 9px;
+}

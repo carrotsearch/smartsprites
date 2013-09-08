@@ -20,7 +20,6 @@ import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.resource.FileSystemResourceHandler;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
-import org.carrot2.util.CloseableUtils;
 import org.carrot2.util.FileUtils;
 import org.carrot2.util.PathUtils;
 
@@ -28,6 +27,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import com.google.common.io.Closeables;
 
 /**
  * Performs all stages of sprite building. This class is not thread-safe.
@@ -164,7 +164,7 @@ public class SpriteBuilder
 
     /**
      * Performs processing from the list of file paths for this builder's parameters.
-     * 
+     *
      * @param filePaths paths of CSS files to process. Non-absolute paths will be taken
      *            relative to the current working directory. Both platform-specific and
      *            '/' as the file separator are supported.
@@ -288,6 +288,8 @@ public class SpriteBuilder
         int originalCssLineNumber = -1;
         int lastReferenceReplacementLine = -1;
 
+        boolean markSpriteImages = parameters.isMarkSpriteImages();
+        
         // Generate UID for sprite file
         try
         {
@@ -325,21 +327,31 @@ public class SpriteBuilder
                         + getRelativeToReplacementLocation(
                             spriteReferenceReplacement.spriteImage.resolvedPath,
                             originalCssFile, spriteReferenceReplacement) + "')"
-                        + (important ? " !important" : "") + ";\n");
-                    
+                            + (important ? " !important" : "") + ";"+ (markSpriteImages ? " /** sprite:sprite */" :"") + "\n");
+
                     if (spriteReferenceReplacement.spriteImage.hasReducedForIe6)
                     {
                         processedCssWriter.write("  -background-image: url('"
                             + getRelativeToReplacementLocation(
                                 spriteReferenceReplacement.spriteImage.resolvedPathIe6,
                                 originalCssFile, spriteReferenceReplacement) + "')"
-                            + (important ? " !important" : "") + ";\n");
+                                + (important ? " !important" : "") + ";"+ (markSpriteImages ? " /** sprite:sprite */" :"") + "\n");
                     }
 
                     processedCssWriter.write("  background-position: "
                         + spriteReferenceReplacement.horizontalPositionString + " "
                         + spriteReferenceReplacement.verticalPositionString
                         + (important ? " !important" : "") + ";\n");
+
+                    // If the sprite scale is not 1, write out a background-size directive
+                    final float scale = spriteReferenceReplacement.spriteImage.scaleRatio;
+                    if (scale != 1.0f)
+                    {
+                        processedCssWriter.write("  background-size: "
+                            + Math.round(spriteReferenceReplacement.spriteImage.spriteWidth / scale) + "px "
+                            + Math.round(spriteReferenceReplacement.spriteImage.spriteHeight / scale) + "px;\n");
+                    }
+
                     continue;
                 }
 
@@ -363,7 +375,7 @@ public class SpriteBuilder
         }
         finally
         {
-            CloseableUtils.closeIgnoringException(originalCssReader);
+            Closeables.closeQuietly(originalCssReader);
             processedCssWriter.close();
         }
     }

@@ -21,7 +21,7 @@
   <ul class="menu">
     <li><a href="#about">About</a></li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="download.html?v0.2.8">Download</a></li>
+    <li><a href="download.html?v0.2.10">Download</a></li>
     <li><a href="#source">Source code</a></li>
     <li><a href="#tutorials">Tutorials</a></li>
     <li><a href="#faq">FAQ</a></li>
@@ -136,7 +136,12 @@
         </li>
 
         <li>
-          <strong class="new">(NEW!)</strong><strong>Special support for
+          <strong class="new">(NEW!)</strong><strong>Support for hi-DPI displays</strong>
+          using the <a href="#sprite-scale">sprite-scale</a> property.
+        </li>
+
+        <li>
+          <strong>Special support for
           Internet Explorer 6</strong>: SmartSprites can generate IE6-friendly
           PNG8 sprites preserving transparency wherever possible. Optionally, a matte color
           can be set for each sprite separately.
@@ -359,6 +364,32 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
                 each other).
                 </li>
 
+                <li id="sprite-scale">
+                  <p>
+                    <strong>Sprite scale</strong>, syntax: <tt>sprite-scale: 
+                    number</tt>, optional, default value: <tt>1</tt>. 
+                    If the provided <tt>scale</tt> value is not 1, for each sprite
+                    reference SmartSprites will output the <tt>background-size</tt>
+                    CSS property with a value equal to the actual sprite dimensions
+                    divided by the provided scale; offsets output in the <tt>background-position</tt>
+                    property will also be divided by the scale.
+                  </p>
+
+                  <p>
+                    SmartSprites will accepth both integer and float values of 
+                    <tt>sprite-scale</tt>. Warnings will be issued if the computed
+                    background size dimensions are not integer numbers.
+                  </p>
+
+                  <p>
+                    You can use the <tt>sprite-scale</tt> property to create
+                    sprite images for high-DPI displays, such as Retina. In case
+                    of Retina, you'll need to prepare the individual images in a x2 
+                    resolution and set the <tt>sprite-scale</tt> of the Retina-specific
+                    sprite image to <tt>2</tt>.
+                  </p>
+                </li>
+
                 <li><a name="sprite-matte-color"><strong>Matte
                 color</strong></a>, syntax: <tt>sprite-matte-color:
                 #ff8822</tt>, optional, default value: <tt>#ffffff</tt>.
@@ -401,7 +432,7 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
                 <li>
                   <p>
                     <strong>Sprite Alignment</strong>, syntax:
-                    <tt>sprite-alignment: left | right | top | bottom |
+                    <tt>sprite-alignment: left | right | top | bottom | center |
                     repeat</tt>, optional, default value: <tt>left</tt> for
                     sprites with vertical layout, <tt>top</tt> for sprites
                     with horizontal layout. Defines the edge of the sprite
@@ -474,7 +505,7 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
             </li>
 
             <li>
-              <a href="download.html?v0.2.8">Download SmartSprites</a>
+              <a href="download.html?v0.2.10">Download SmartSprites</a>
               and unpack the archive.
             </li>
           </ol>
@@ -898,6 +929,26 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
       <h1>Version history</h1>
 
       <p>
+        <strong>v0.2.10</strong>, released: June 2013
+      </p>
+      <ul class="versions">
+        <li>Sprite-alignment should support center option (<a href="http://issues.carrot2.org/browse/SMARTSPRITES-36">SMARTSPRITES-36</a>, 
+        3 votes, patch contributed by <a href="https://github.com/Artur-">Artur</a>)</li>
+      </ul>
+
+      <p>
+        <strong>v0.2.9</strong>, released: April 2013
+      </p>
+      <ul class="versions">
+        <li>CSS background-size support for Retina/HiDPI displays
+        (<a href="http://issues.carrot2.org/browse/SMARTSPRITES-87">SMARTSPRITES-87</a>, 1 vote)</li>
+        <li>Google Collections upgraded to Guava
+        (<a href="http://issues.carrot2.org/browse/SMARTSPRITES-76">SMARTSPRITES-76</a>)</li>
+        <li>Bugfix: <a href="http://issues.carrot2.org/browse/SMARTSPRITES-82">SMARTSPRITES-82</a></li>
+        <li>Bugfix: <a href="http://issues.carrot2.org/browse/SMARTSPRITES-83">SMARTSPRITES-83</a></li>
+      </ul>
+
+      <p>
         <strong>v0.2.8</strong>, released: February 2011, <a href="http://issues.carrot2.org/secure/ConfigureReport.jspa?atl_token=ca0ce89d766cc00206bcd02ecc2e61da6c0b320f&amp;versionId=10300&amp;sortingOrder=least&amp;completedFilter=all&amp;subtaskInclusion=onlySelected&amp;selectedProjectId=10040&amp;reportKey=com.atlassian.jira.plugin.system.reports%3Atime-tracking&amp;Next=Next">took about 10 hours of work</a>
       </p>
       <ul class="versions">
@@ -1030,7 +1081,7 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
       <code>&lt;dependency&gt;
     &lt;groupId&gt;com.carrotsearch&lt;/groupId&gt;
     &lt;artifactId&gt;smartsprites&lt;/artifactId&gt;
-    &lt;version&gt;0.2.8&lt;/version&gt;
+    &lt;version&gt;0.2.9&lt;/version&gt;
 &lt;/dependency&gt;</code>
 
       <p>
@@ -1089,10 +1140,13 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
           <a href="http://www.bikesoup.co.uk/">Bikesoup</a>: The UK's Premier New &amp; Used Bicycle Marketplace
         </li>
         <li>
-          <a href="http://www.gutscheinamazonas.de">Amazon Gutschein</a>: helps to manage Amazon vouchers
+          <a href="http://www.gutscheinamazonas.de">Gutscheinelite.de</a>: German Site for Coupon Codes and Vouchers
         </li>
         <li>
           <a href="http://www.evioo.com/">evioo.com</a>
+        </li>
+        <li>
+          <a href="http://coffeeplan.com/">coffeeplan.com</a>
         </li>
       </ul>
 
@@ -1145,7 +1199,7 @@ sprite-image: url('../sprite.png?<strong>${md5}</strong>')</code>
       </p>
     </div>
   </div>
-  <div class="footer">&copy; 2008-2011 <a href="http://stanislaw.osinski.name">Stanislaw Osinski</a>. Design by <a href="http://arcsin.se">Arcsin</a></div>
+  <div class="footer">&copy; 2008-2013 <a href="http://stanislaw.osinski.name">Stanislaw Osinski</a>. Design by <a href="http://arcsin.se">Arcsin</a></div>
 </div>
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
