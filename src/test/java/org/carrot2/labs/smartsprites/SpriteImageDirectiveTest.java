@@ -381,7 +381,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertNotNull(directive);
         assertEquals(directive.spriteId, "sprite");
         assertEquals(directive.imagePath, "../sprite.png");
-        assertEquals(directive.scaleRatio, 2f);
+        assertEquals(directive.scaleRatio, 2f, .5);
     }
 
     private void checkUidType(String uidDeclaration, SpriteUidType expectedUidType)
