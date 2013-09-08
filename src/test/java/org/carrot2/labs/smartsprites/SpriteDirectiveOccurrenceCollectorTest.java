@@ -1,7 +1,7 @@
 package org.carrot2.labs.smartsprites;
 
-import static junit.framework.Assert.assertEquals;
 import static org.carrot2.labs.test.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
 import org.carrot2.labs.smartsprites.message.Message;
