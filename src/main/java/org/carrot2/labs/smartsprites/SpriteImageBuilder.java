@@ -13,7 +13,6 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
-import org.carrot2.labs.smartsprites.layout.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
@@ -273,15 +272,6 @@ public class SpriteImageBuilder
         Map<SpriteReferenceOccurrence, BufferedImage> images, MessageLog messageLog)
     {
         return spriteImageOccurrence.spriteImageDirective.layout.buildSpriteImage(spriteImageOccurrence, images, messageLog);
-    }
-
-    /**
-     * Calculates the width/ height of "repeated" sprites.
-     */
-    static int calculateLeastCommonMultiple(
-        Map<SpriteReferenceOccurrence, BufferedImage> images, SpriteImageLayout layout)
-    {
-        return layout.calculateRepeatAlignmentDimension(images);
     }
 
     /**
