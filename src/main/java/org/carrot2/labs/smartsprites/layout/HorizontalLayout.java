@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.carrot2.labs.smartsprites.SpriteImage;
+import org.carrot2.labs.smartsprites.SpriteImageOccurrence;
 import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective;
 import org.carrot2.labs.smartsprites.SpriteReferenceOccurrence;
@@ -12,6 +14,8 @@ import org.carrot2.labs.smartsprites.SpriteReferenceReplacement;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.util.BufferedImageUtils;
+
+import com.google.common.collect.Maps;
 
 public class HorizontalLayout extends AbstractLayout {
 
@@ -127,5 +131,99 @@ public class HorizontalLayout extends AbstractLayout {
             }
         }
         return dimensions;
+    }
+
+    public SpriteImage buildSpriteImage(SpriteImageOccurrence spriteImageOccurrence, Map<SpriteReferenceOccurrence, BufferedImage> images, MessageLog messageLog)
+    {
+        // First find the least common multiple of the images with 'repeat' alignment
+        final SpriteImageLayout layout = spriteImageOccurrence.spriteImageDirective.layout;
+        final float spriteScale = spriteImageOccurrence.spriteImageDirective.scaleRatio;
+        final int leastCommonMultiple = this.calculateRepeatAlignmentDimension(images);
+
+        // Compute sprite dimension (width for vertical, height for horizontal sprites)
+        int dimension = leastCommonMultiple;
+        for (final Map.Entry<SpriteReferenceOccurrence, BufferedImage> entry : images
+            .entrySet())
+        {
+            final BufferedImage image = entry.getValue();
+            final SpriteReferenceOccurrence spriteReferenceOcurrence = entry.getKey();
+
+            // Compute dimensions
+            dimension = Math.max(dimension, spriteReferenceOcurrence.getRequiredHeight(image, layout));
+        }
+
+        // Correct for least common multiple
+        if (dimension % leastCommonMultiple != 0)
+        {
+            dimension += leastCommonMultiple - (dimension % leastCommonMultiple);
+        }
+
+        // Compute the other sprite dimension.
+        int currentOffset = 0;
+        final Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> spriteReplacements = Maps
+            .newLinkedHashMap();
+        final Map<BufferedImageEqualsWrapper, Integer> renderedImageToOffset = Maps
+            .newLinkedHashMap();
+        for (final Map.Entry<SpriteReferenceOccurrence, BufferedImage> entry : images
+            .entrySet())
+        {
+            final SpriteReferenceOccurrence spriteReferenceOccurrence = entry.getKey();
+            final BufferedImage image = entry.getValue();
+
+            final BufferedImage rendered = spriteReferenceOccurrence.render(image,
+                layout, dimension);
+            final BufferedImageEqualsWrapper imageWrapper = new BufferedImageEqualsWrapper(
+                rendered);
+            Integer imageOffset = renderedImageToOffset.get(imageWrapper);
+            if (imageOffset == null)
+            {
+                // Draw a new image
+                imageOffset = currentOffset;
+                renderedImageToOffset.put(imageWrapper, imageOffset);
+                currentOffset += rendered.getWidth();
+            }
+
+            final float scaledImageWidth = spriteReferenceOccurrence.getRequiredWidth(image, layout) / spriteScale;
+            final float scaledImageHeight = spriteReferenceOccurrence.getRequiredHeight(image, layout) / spriteScale;
+            if (Math.round(scaledImageWidth) != scaledImageWidth ||
+                Math.round(scaledImageHeight) != scaledImageHeight)
+            {
+                messageLog.warning(MessageType.IMAGE_FRACTIONAL_SCALE_VALUE,
+                    spriteReferenceOccurrence.imagePath, scaledImageWidth, scaledImageHeight);
+            }
+
+            final int adjustedImageOffset = Math.round(imageOffset / spriteScale);
+            spriteReplacements.put(spriteReferenceOccurrence,
+                spriteReferenceOccurrence.buildReplacement(layout, adjustedImageOffset));
+        }
+
+        // Render the sprite image and build sprite reference replacements
+        final int spriteWidth = currentOffset;
+        final int spriteHeight = dimension;
+        if (spriteWidth == 0 || spriteHeight == 0)
+        {
+            return null;
+        }
+
+        final float scaledWidth = spriteWidth / spriteScale;
+        final float scaledHeight = spriteHeight / spriteScale;
+        if (Math.round(scaledWidth) != scaledWidth ||
+            Math.round(scaledHeight) != scaledHeight)
+        {
+            messageLog.warning(MessageType.FRACTIONAL_SCALE_VALUE,
+                spriteImageOccurrence.spriteImageDirective.spriteId, scaledWidth, scaledHeight);
+        }
+
+        final BufferedImage sprite = new BufferedImage(spriteWidth, spriteHeight,
+            BufferedImage.TYPE_4BYTE_ABGR);
+
+        for (final Map.Entry<BufferedImageEqualsWrapper, Integer> entry : renderedImageToOffset
+            .entrySet())
+        {
+
+            BufferedImageUtils.drawImage(entry.getKey().image, sprite, entry.getValue(), 0);
+        }
+
+        return new SpriteImage(sprite, spriteImageOccurrence, spriteReplacements, spriteWidth, spriteHeight, spriteScale);
     }
 }
