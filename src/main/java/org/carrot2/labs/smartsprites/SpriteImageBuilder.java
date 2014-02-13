@@ -12,9 +12,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.math3.util.ArithmeticUtils;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
-import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
 import org.carrot2.labs.smartsprites.layout.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.layout.VerticalLayout;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
@@ -378,29 +376,7 @@ public class SpriteImageBuilder
     static int calculateLeastCommonMultiple(
         Map<SpriteReferenceOccurrence, BufferedImage> images, SpriteImageLayout layout)
     {
-        int leastCommonMultiple = 1;
-        for (final Map.Entry<SpriteReferenceOccurrence, BufferedImage> entry : images
-            .entrySet())
-        {
-            final BufferedImage image = entry.getValue();
-            final SpriteReferenceOccurrence spriteReferenceOccurrence = entry.getKey();
-            if (image != null
-                && SpriteAlignment.REPEAT
-                    .equals(spriteReferenceOccurrence.spriteReferenceDirective.spriteLayoutProperties.alignment))
-            {
-                if (VerticalLayout.class.isAssignableFrom(layout.getClass()))
-                {
-                    leastCommonMultiple = ArithmeticUtils.lcm(leastCommonMultiple,
-                        spriteReferenceOccurrence.getRequiredWidth(image, layout));
-                }
-                else
-                {
-                    leastCommonMultiple = ArithmeticUtils.lcm(leastCommonMultiple,
-                        spriteReferenceOccurrence.getRequiredHeight(image, layout));
-                }
-            }
-        }
-        return leastCommonMultiple;
+        return layout.calculateRepeatAlignmentDimension(images);
     }
 
     /**

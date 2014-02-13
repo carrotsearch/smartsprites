@@ -1,6 +1,7 @@
 package org.carrot2.labs.smartsprites.layout;
 
 import java.awt.image.BufferedImage;
+import java.util.Map;
 
 import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective;
@@ -15,4 +16,5 @@ public interface SpriteImageLayout {
     public BufferedImage render(BufferedImage image, SpriteReferenceOccurrence spriteReferenceOccurrence, SpriteReferenceDirective spriteReferenceDirective, int dimension);
     public int getRequiredHeight(BufferedImage image, SpriteReferenceDirective spriteReferenceDirective);
     public int getRequiredWidth(BufferedImage image, SpriteReferenceDirective spriteReferenceDirective);
+    public int calculateRepeatAlignmentDimension(Map<SpriteReferenceOccurrence, BufferedImage> images);
 }

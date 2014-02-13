@@ -1,6 +1,9 @@
 package org.carrot2.labs.smartsprites.layout;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective;
@@ -10,7 +13,7 @@ import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.util.BufferedImageUtils;
 
-public class HorizontalLayout implements SpriteImageLayout {
+public class HorizontalLayout extends AbstractLayout {
 
     public SpriteAlignment correctAlignment(SpriteAlignment alignment, MessageLog messageCollector)
     {
@@ -107,5 +110,22 @@ public class HorizontalLayout implements SpriteImageLayout {
         return image.getWidth()
                 + spriteReferenceDirective.spriteLayoutProperties.marginLeft
                 + spriteReferenceDirective.spriteLayoutProperties.marginRight;
+    }
+
+    protected List<Integer> getDimensions(Map<SpriteReferenceOccurrence, BufferedImage> images) {
+        List<Integer> dimensions = new ArrayList<Integer>();
+        for (final Map.Entry<SpriteReferenceOccurrence, BufferedImage> entry : images
+                .entrySet())
+        {
+            final BufferedImage image = entry.getValue();
+            final SpriteReferenceOccurrence spriteReferenceOccurrence = entry.getKey();
+            if (image != null
+                    && SpriteAlignment.REPEAT
+                    .equals(spriteReferenceOccurrence.spriteReferenceDirective.spriteLayoutProperties.alignment))
+            {
+                dimensions.add(this.getRequiredHeight(image, spriteReferenceOccurrence.spriteReferenceDirective));
+            }
+        }
+        return dimensions;
     }
 }
