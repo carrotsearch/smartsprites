@@ -120,7 +120,7 @@ public class SpriteLayoutProperties
      */
     SpriteLayoutProperties(SpriteImageLayout layout)
     {
-        this(getDefaultAlignment(layout), 0, 0, 0, 0);
+        this(layout.getDefaultAlignment(), 0, 0, 0, 0);
     }
 
     /**
@@ -157,14 +157,13 @@ public class SpriteLayoutProperties
             final String alignmentValue = rules.get(PROPERTY_SPRITE_ALIGNMENT).value;
             try
             {
-                alignment = correctAlignment(spriteImageLayout,
-                    SpriteAlignment.getValue(alignmentValue), messageCollector);
+                alignment = spriteImageLayout.correctAlignment(SpriteAlignment.getValue(alignmentValue), messageCollector);
             }
             catch (final IllegalArgumentException e)
             {
                 messageCollector.warning(MessageType.UNSUPPORTED_ALIGNMENT,
                     alignmentValue);
-                alignment = getDefaultAlignment(spriteImageLayout);
+                alignment = spriteImageLayout.getDefaultAlignment();
             }
         }
         else
@@ -184,24 +183,6 @@ public class SpriteLayoutProperties
 
         return new SpriteLayoutProperties(alignment, marginLeft, marginRight, marginTop,
             marginBottom);
-    }
-
-    /**
-     * Corrects sprite alignment if necessary based on the layout of the enclosing sprite
-     * image.
-     */
-    private static SpriteAlignment correctAlignment(SpriteImageLayout spriteImageLayout,
-        SpriteAlignment alignment, MessageLog messageCollector)
-    {
-        return spriteImageLayout.correctAlignment(alignment, messageCollector);
-    }
-
-    /**
-     * Returns default alignment for given sprite image directive.
-     */
-    private static SpriteAlignment getDefaultAlignment(SpriteImageLayout spriteImageLayout)
-    {
-        return spriteImageLayout.getDefaultAlignment();
     }
 
     /**
