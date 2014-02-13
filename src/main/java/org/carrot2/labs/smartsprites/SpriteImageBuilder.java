@@ -14,8 +14,9 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.math3.util.ArithmeticUtils;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
-import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
+import org.carrot2.labs.smartsprites.layout.SpriteImageLayout;
+import org.carrot2.labs.smartsprites.layout.VerticalLayout;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
@@ -281,7 +282,7 @@ public class SpriteImageBuilder
             images, layout);
 
         // Compute sprite dimension (width for vertical, height for horizontal sprites)
-        final boolean vertical = layout.equals(SpriteImageLayout.VERTICAL);
+        final boolean vertical = VerticalLayout.class.isAssignableFrom(layout.getClass());
         int dimension = leastCommonMultiple;
         for (final Map.Entry<SpriteReferenceOccurrence, BufferedImage> entry : images
             .entrySet())
@@ -387,7 +388,7 @@ public class SpriteImageBuilder
                 && SpriteAlignment.REPEAT
                     .equals(spriteReferenceOccurrence.spriteReferenceDirective.spriteLayoutProperties.alignment))
             {
-                if (SpriteImageLayout.VERTICAL.equals(layout))
+                if (VerticalLayout.class.isAssignableFrom(layout.getClass()))
                 {
                     leastCommonMultiple = ArithmeticUtils.lcm(leastCommonMultiple,
                         spriteReferenceOccurrence.getRequiredWidth(image, layout));

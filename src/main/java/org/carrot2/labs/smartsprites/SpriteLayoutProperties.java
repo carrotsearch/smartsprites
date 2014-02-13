@@ -3,9 +3,9 @@ package org.carrot2.labs.smartsprites;
 import java.util.Map;
 import java.util.Set;
 
-import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.css.CssProperty;
 import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
+import org.carrot2.labs.smartsprites.layout.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 
@@ -193,28 +193,7 @@ public class SpriteLayoutProperties
     private static SpriteAlignment correctAlignment(SpriteImageLayout spriteImageLayout,
         SpriteAlignment alignment, MessageLog messageCollector)
     {
-        if (spriteImageLayout.equals(SpriteImageLayout.HORIZONTAL))
-        {
-            if (alignment.equals(SpriteAlignment.LEFT)
-                || alignment.equals(SpriteAlignment.RIGHT))
-            {
-                messageCollector.warning(
-                    MessageType.ONLY_TOP_OR_BOTTOM_ALIGNMENT_ALLOWED, alignment.value);
-                return SpriteAlignment.TOP;
-            }
-        }
-        else
-        {
-            if (alignment.equals(SpriteAlignment.TOP)
-                || alignment.equals(SpriteAlignment.BOTTOM))
-            {
-                messageCollector.warning(
-                    MessageType.ONLY_LEFT_OR_RIGHT_ALIGNMENT_ALLOWED, alignment.value);
-                return SpriteAlignment.LEFT;
-            }
-        }
-
-        return alignment;
+        return spriteImageLayout.correctAlignment(alignment, messageCollector);
     }
 
     /**
@@ -222,14 +201,7 @@ public class SpriteLayoutProperties
      */
     private static SpriteAlignment getDefaultAlignment(SpriteImageLayout spriteImageLayout)
     {
-        if (spriteImageLayout.equals(SpriteImageLayout.HORIZONTAL))
-        {
-            return SpriteAlignment.TOP;
-        }
-        else
-        {
-            return SpriteAlignment.LEFT;
-        }
+        return spriteImageLayout.getDefaultAlignment();
     }
 
     /**

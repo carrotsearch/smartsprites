@@ -10,6 +10,8 @@ import java.awt.Color;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.Ie6Mode;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteUidType;
 import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
+import org.carrot2.labs.smartsprites.layout.HorizontalLayout;
+import org.carrot2.labs.smartsprites.layout.VerticalLayout;
 import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
@@ -39,7 +41,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.spriteId, "sprite");
         assertEquals(directive.imagePath, "../sprite.png");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
-        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.HORIZONTAL);
+        assertEquals(directive.layout.getClass(), HorizontalLayout.class);
         assertEquals(Ie6Mode.NONE, directive.ie6Mode);
         assertThat(messages).isEmpty();
     }
@@ -54,7 +56,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.spriteId, "sprite");
         assertEquals(directive.imagePath, "../sprite.png");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
-        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
+        assertEquals(directive.layout.getClass(), VerticalLayout.class);
         assertThat(messages).isEmpty();
     }
 
@@ -133,7 +135,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.spriteId, "sprite");
         assertEquals(directive.imagePath, "../sprite.png");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
-        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
+        assertEquals(directive.layout.getClass(), VerticalLayout.class);
         assertEquals(directive.matteColor, new Color(0x00f08231));
         assertThat(messages).isEmpty();
     }
@@ -208,7 +210,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.spriteId, "sprite");
         assertEquals(directive.imagePath, "../sprite.");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
-        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
+        assertEquals(directive.layout.getClass(), VerticalLayout.class);
 
         assertThat(messages)
             .isEquivalentTo(
@@ -227,7 +229,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.spriteId, "sprite");
         assertEquals(directive.imagePath, "../sprite.jpgx");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
-        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
+        assertEquals(directive.layout.getClass(), VerticalLayout.class);
 
         assertThat(messages).isEquivalentTo(
             new Message(Message.MessageLevel.WARN,
@@ -244,7 +246,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.spriteId, "sprite");
         assertEquals(directive.imagePath, "../sprite.png");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
-        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
+        assertEquals(directive.layout.getClass(), VerticalLayout.class);
 
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
@@ -260,7 +262,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.spriteId, "sprite");
         assertEquals(directive.imagePath, "../sprite.jpg");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.JPG);
-        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.VERTICAL);
+        assertEquals(directive.layout.getClass(), VerticalLayout.class);
 
         assertThat(messages).isEquivalentTo(
             new Message(Message.MessageLevel.WARN,
@@ -330,7 +332,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.spriteId, "sprite");
         assertEquals(directive.imagePath, "../sprite.png");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
-        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.HORIZONTAL);
+        assertEquals(directive.layout.getClass(), HorizontalLayout.class);
 
         assertEquals(directive.spriteLayoutProperties.alignment, SpriteAlignment.BOTTOM);
         assertEquals(directive.spriteLayoutProperties.marginLeft, 10);
@@ -359,7 +361,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertEquals(directive.spriteId, "sprite");
         assertEquals(directive.imagePath, "../sprite.png");
         assertEquals(directive.format, SpriteImageDirective.SpriteImageFormat.PNG);
-        assertEquals(directive.layout, SpriteImageDirective.SpriteImageLayout.HORIZONTAL);
+        assertEquals(directive.layout.getClass(), HorizontalLayout.class);
 
         assertEquals(directive.spriteLayoutProperties.alignment, SpriteAlignment.BOTTOM);
         assertEquals(0, directive.spriteLayoutProperties.marginLeft);
