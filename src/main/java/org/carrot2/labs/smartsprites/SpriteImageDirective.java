@@ -394,11 +394,12 @@ public class SpriteImageDirective
     private static SpriteImageLayout valueOf(String stringValue, SpriteImageLayout defaultLayout, 
         MessageLog messageCollector, MessageType messageType)
     {
+        SpriteImageLayout returnLayout = defaultLayout;
         if (StringUtils.isNotBlank(stringValue))
         {
             try
             {
-                return (SpriteImageLayout) Class.forName(new StringBuilder(
+                returnLayout = (SpriteImageLayout) Class.forName(new StringBuilder(
                     "org.carrot2.labs.smartsprites.layout.")
                     .append(Character.toUpperCase(stringValue.charAt(0)))
                     .append(stringValue.substring(1))
@@ -409,12 +410,8 @@ public class SpriteImageDirective
             catch (Exception e)
             {
                 messageCollector.warning(messageType, stringValue);
-                return defaultLayout;
             }
         }
-        else
-        {
-            return defaultLayout;
-        }
+        return returnLayout;
     }
 }
