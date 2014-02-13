@@ -14,7 +14,6 @@ import javax.imageio.ImageIO;
 
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
 import org.carrot2.labs.smartsprites.layout.SpriteImageLayout;
-import org.carrot2.labs.smartsprites.layout.VerticalLayout;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;

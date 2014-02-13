@@ -9,7 +9,6 @@ import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteUidType;
 import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective;
-import org.carrot2.labs.smartsprites.layout.SpriteImageLayout;
 
 /**
  * Represents a processing message, can be an information message or a warning.

@@ -2,10 +2,7 @@ package org.carrot2.labs.smartsprites;
 
 import java.awt.image.BufferedImage;
 
-import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
-import org.carrot2.labs.smartsprites.layout.HorizontalLayout;
 import org.carrot2.labs.smartsprites.layout.SpriteImageLayout;
-import org.carrot2.labs.smartsprites.layout.VerticalLayout;
 
 /**
  * Represents an occurrence of a {@link SpriteReferenceDirective} in a specific CSS file.
