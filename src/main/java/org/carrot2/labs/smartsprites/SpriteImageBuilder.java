@@ -65,10 +65,11 @@ public class SpriteImageBuilder
 
     /**
      * Builds all sprite images based on the collected directives.
+     * @throws IOException 
      */
     Multimap<String, SpriteReferenceReplacement> buildSpriteImages(
         Map<String, SpriteImageOccurrence> spriteImageOccurrencesBySpriteId,
-        Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId)
+        Multimap<String, SpriteReferenceOccurrence> spriteReferenceOccurrencesBySpriteId) throws IOException
     {
         timestamp = Long.toString(new Date().getTime());
 
@@ -95,10 +96,11 @@ public class SpriteImageBuilder
 
     /**
      * Builds sprite image for a single sprite image directive.
+     * @throws IOException 
      */
     Map<SpriteReferenceOccurrence, SpriteReferenceReplacement> buildSpriteReplacements(
         SpriteImageOccurrence spriteImageOccurrence,
-        Collection<SpriteReferenceOccurrence> spriteReferenceOccurrences)
+        Collection<SpriteReferenceOccurrence> spriteReferenceOccurrences) throws IOException
     {
         // Load images into memory. TODO: impose some limit here?
         final Map<SpriteReferenceOccurrence, BufferedImage> images = Maps
@@ -146,7 +148,7 @@ public class SpriteImageBuilder
             }
             finally
             {
-                Closeables.closeQuietly(is);
+                Closeables.close(is, true);
             }
 
             messageLog.setCssFile(null);
@@ -176,9 +178,10 @@ public class SpriteImageBuilder
 
     /**
      * Writes sprite image to the disk.
+     * @throws IOException 
      */
     private void writeSprite(SpriteImage spriteImage, final BufferedImage mergedImage,
-        boolean ie6Reduced)
+        boolean ie6Reduced) throws IOException
     {
         final SpriteImageOccurrence spriteImageOccurrence = spriteImage.spriteImageOccurrence;
         final SpriteImageDirective spriteImageDirective = spriteImageOccurrence.spriteImageDirective;
@@ -242,7 +245,7 @@ public class SpriteImageBuilder
         }
         finally
         {
-            Closeables.closeQuietly(spriteImageOuputStream);
+            Closeables.close(spriteImageOuputStream, true);
         }
     }
 

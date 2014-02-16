@@ -88,7 +88,7 @@ public class SpriteImage
         }
     }
 
-    String resolveImagePath(byte [] image, String timestamp, boolean reducedForIe6)
+    String resolveImagePath(byte [] image, String timestamp, boolean reducedForIe6) throws IOException
     {
         String imagePath = spriteImageOccurrence.spriteImageDirective.imagePath;
 
@@ -182,8 +182,9 @@ public class SpriteImage
 
     /**
      * Computes
+     * @throws IOException 
      */
-    private static String computeMd5(byte [] image)
+    private static String computeMd5(byte [] image) throws IOException
     {
         try
         {
@@ -207,8 +208,8 @@ public class SpriteImage
             }
             finally
             {
-                Closeables.closeQuietly(is);
-                Closeables.closeQuietly(digestInputStream);
+                Closeables.close(is, true);
+                Closeables.close(digestInputStream, true);
                 digest.reset();
             }
         }
