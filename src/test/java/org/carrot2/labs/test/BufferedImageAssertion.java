@@ -1,7 +1,8 @@
 package org.carrot2.labs.test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
 import org.carrot2.labs.smartsprites.css.CssProperty;
@@ -148,7 +149,7 @@ public class BufferedImageAssertion
 
     public BufferedImageAssertion isEqualTo(BufferedImage expected)
     {
-        assertThat(actual).isEqualTo(expected);
+        assertThat(compareImage(expected)).isTrue();
         return this;
     }
 
@@ -162,5 +163,24 @@ public class BufferedImageAssertion
     {
         this.description = description;
         return this;
+    }
+    
+    public BufferedImageAssertion hasSize(Dimension dimension) {
+        assertThat(new Dimension(actual.getWidth(), actual.getHeight())).isEqualTo(dimension);
+        return this;
+    }
+
+    private boolean compareImage(BufferedImage expected) {
+        if (actual.getWidth() == expected.getWidth() && actual.getHeight() == expected.getHeight()) {
+            for (int x = 0; x < actual.getWidth(); x++) {
+                for (int y = 0; y < actual.getHeight(); y++) {
+                    if (actual.getRGB(x, y) != expected.getRGB(x, y))
+                        return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
     }
 }

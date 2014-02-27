@@ -1,6 +1,6 @@
 package org.carrot2.util;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -12,50 +12,48 @@ public class FileUtilsTest
     @Test
     public void canonicalizeEmpty()
     {
-        assertThat(FileUtils.canonicalize("", "/")).isEqualTo("");
+        assertEquals("", FileUtils.canonicalize("", "/"));
     }
 
     @Test
     public void canonicalizeOneSegment()
     {
-        assertThat(FileUtils.canonicalize("file", "/")).isEqualTo("file");
+        assertEquals("file", FileUtils.canonicalize("file", "/"));
     }
 
     @Test
     public void canonicalizeTwoSegmentsCanonical()
     {
-        assertThat(FileUtils.canonicalize("path/file", "/")).isEqualTo("path/file");
+        assertEquals("path/file", FileUtils.canonicalize("path/file", "/"));
     }
 
     @Test
     public void canonicalizeTwoSegmentsNonCanonical()
     {
-        assertThat(FileUtils.canonicalize("path/..", "/")).isEqualTo("");
+        assertEquals("", FileUtils.canonicalize("path/..", "/"));
     }
 
     @Test
     public void canonicalizeTwoSegmentsNonCanonicalTrailingSeparator()
     {
-        assertThat(FileUtils.canonicalize("path/../", "/")).isEqualTo("");
+        assertEquals("", FileUtils.canonicalize("path/../", "/"));
     }
 
     @Test
     public void canonicalizeMoreSegmentsNonCanonical()
     {
-        assertThat(FileUtils.canonicalize("/longer/file/path/../actual/file", "/"))
-            .isEqualTo("/longer/file/actual/file");
+        assertEquals("/longer/file/actual/file", FileUtils.canonicalize("/longer/file/path/../actual/file", "/"));
     }
 
     @Test
     public void canonicalizeMoreParents()
     {
-        assertThat(FileUtils.canonicalize("/longer/file/path/../../actual/file", "/"))
-            .isEqualTo("/longer/actual/file");
+        assertEquals("/longer/actual/file", FileUtils.canonicalize("/longer/file/path/../../actual/file", "/"));
     }
 
     @Test
     public void canonicalizeCanonicalStartingWithParent()
     {
-        assertThat(FileUtils.canonicalize("../../img/sprite.png", "/")).isEqualTo("../../img/sprite.png");
+        assertEquals("../../img/sprite.png", FileUtils.canonicalize("../../img/sprite.png", "/"));
     }
 }

@@ -1,7 +1,8 @@
 package org.carrot2.labs.smartsprites;
 
 import static org.carrot2.labs.test.Assertions.assertThat;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 import java.io.IOException;
@@ -131,12 +132,12 @@ public class SmartSpritesParametersTest extends TestWithMemoryMessageSink
 
     private void checkValid(final SmartSpritesParameters parameters)
     {
-        assertThat(parameters.validate(messageLog)).isTrue();
+        assertTrue(parameters.validate(messageLog));
     }
 
     private void checkInvalid(SmartSpritesParameters parameters, Message... messages)
     {
-        assertThat(parameters.validate(messageLog)).isFalse();
+        assertFalse(parameters.validate(messageLog));
         assertThat(this.messages).contains(messages);
     }
 

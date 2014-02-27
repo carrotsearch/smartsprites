@@ -1,6 +1,6 @@
 package org.carrot2.labs.smartsprites;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -12,61 +12,54 @@ public class SpriteImageTest
     @Test
     public void ie6SuffixNoSuffix()
     {
-        assertThat(SpriteImage.addIe6Suffix("path", false)).isEqualTo("path");
+        assertEquals("path", SpriteImage.addIe6Suffix("path", false));
     }
 
     @Test
     public void ie6SuffixPlainFileNameWithDot()
     {
-        assertThat(SpriteImage.addIe6Suffix("image.png", true))
-            .isEqualTo("image-ie6.png");
+        assertEquals("image-ie6.png", SpriteImage.addIe6Suffix("image.png", true));
     }
 
     @Test
     public void ie6SuffixPlainFileNameWithoutDoc()
     {
-        assertThat(SpriteImage.addIe6Suffix("image", true)).isEqualTo("image-ie6");
+        assertEquals("image-ie6", SpriteImage.addIe6Suffix("image", true));
     }
 
     @Test
     public void ie6SuffixPathWithoutDot()
     {
-        assertThat(SpriteImage.addIe6Suffix("assets/img/image.png", true)).isEqualTo(
-            "assets/img/image-ie6.png");
+        assertEquals("assets/img/image-ie6.png", SpriteImage.addIe6Suffix("assets/img/image.png", true));
     }
 
     @Test
     public void ie6SuffixPathWithDot()
     {
-        assertThat(SpriteImage.addIe6Suffix("../assets.img/image.png", true)).isEqualTo(
-            "../assets.img/image-ie6.png");
+        assertEquals("../assets.img/image-ie6.png", SpriteImage.addIe6Suffix("../assets.img/image.png", true));
     }
 
     @Test
     public void ie6SuffixPlainFileNameWithDotAndQuery()
     {
-        assertThat(SpriteImage.addIe6Suffix("image.png?query", true)).isEqualTo(
-            "image-ie6.png?query");
+        assertEquals("image-ie6.png?query", SpriteImage.addIe6Suffix("image.png?query", true));
     }
 
     @Test
     public void ie6SuffixPlainFileNameWithQuery()
     {
-        assertThat(SpriteImage.addIe6Suffix("image?query", true)).isEqualTo(
-            "image-ie6?query");
+        assertEquals("image-ie6?query", SpriteImage.addIe6Suffix("image?query", true));
     }
 
     @Test
     public void ie6SuffixPathWithDotAndQuery()
     {
-        assertThat(SpriteImage.addIe6Suffix("assets.img/image.png?query", true)).isEqualTo(
-            "assets.img/image-ie6.png?query");
+        assertEquals("assets.img/image-ie6.png?query", SpriteImage.addIe6Suffix("assets.img/image.png?query", true));
     }
     
     @Test
     public void ie6SuffixPathWithQuery()
     {
-        assertThat(SpriteImage.addIe6Suffix("assets.img/image?query", true)).isEqualTo(
-        "assets.img/image-ie6?query");
+        assertEquals("assets.img/image-ie6?query", SpriteImage.addIe6Suffix("assets.img/image?query", true));
     }
 }

@@ -1,6 +1,7 @@
 package org.carrot2.labs.test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 import org.carrot2.labs.smartsprites.css.CssProperty;
 
@@ -28,7 +29,7 @@ public class CssPropertyAssertion
      */
     public CssPropertyAssertion isEquivalentTo(CssProperty expected)
     {
-        assertThat(actual).isNotNull();
+        assertNotNull(actual);
         assertThat(actual.rule).as(description + ".rule").isEqualTo(actual.rule);
         assertThat(actual.value).as(description + ".value").isEqualTo(actual.value);
 
