@@ -13,7 +13,7 @@
     <!-- Project info. -->
     <groupId>com.carrotsearch</groupId>
     <artifactId>smartsprites</artifactId>
-    <version>0.2.13-SNAPSHOT</version>
+    <version>0.2.14-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>SmartSprites</name>
