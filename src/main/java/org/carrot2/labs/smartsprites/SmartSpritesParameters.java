@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.FileUtils;
+import org.carrot2.util.StringUtils;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 

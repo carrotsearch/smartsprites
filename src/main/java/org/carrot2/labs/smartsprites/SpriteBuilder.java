@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.carrot2.labs.smartsprites.message.LevelCounterMessageSink;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -22,7 +21,9 @@ import org.carrot2.labs.smartsprites.resource.FileSystemResourceHandler;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 import org.carrot2.util.FileUtils;
 import org.carrot2.util.PathUtils;
+import org.carrot2.util.StringUtils;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -398,8 +399,8 @@ public class SpriteBuilder
             File.separatorChar, '/');
         final String imagePathRelativeToReplacement = FileUtils
             .canonicalize(
-                (StringUtils.isEmpty(declarationReplacementRelativePath)
-                    || StringUtils.indexOfDifference(originalCssFile, declaringCssPath) <= 0 ? ""
+                (Strings.isNullOrEmpty(declarationReplacementRelativePath)
+                    || originalCssFile.equals(declaringCssPath) ? ""
                     : declarationReplacementRelativePath + '/')
                     + imagePath, "/");
         return imagePathRelativeToReplacement;

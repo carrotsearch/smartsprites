@@ -3,7 +3,7 @@ package org.carrot2.util;
 import java.io.File;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang3.StringUtils;
+import com.google.common.base.Strings;
 
 /**
  * This class defines utilities methods helping to determine path-related
@@ -43,7 +43,7 @@ public class PathUtils {
      */
     public static final String getRelativeFilePath( final String oldPath, final String newPath )
     {
-        if ( StringUtils.isEmpty( oldPath ) || StringUtils.isEmpty( newPath ) )
+        if (Strings.isNullOrEmpty(oldPath) || Strings.isNullOrEmpty(newPath))
         {
             return "";
         }
