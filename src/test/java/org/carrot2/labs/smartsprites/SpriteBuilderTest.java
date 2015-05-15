@@ -78,7 +78,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-            new Dimension(17 + 15 + 48, 47));
+          new Dimension(17 + 15 + 48, 47));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
@@ -93,7 +93,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-            new Dimension(17 + 15 + 48 + 20, 47));
+          new Dimension(17 + 15 + 48 + 20, 47));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-            new Dimension(17 + 15 + 48 + 3 * (2 + 3), 47 + 5 + 7));
+          new Dimension(17 + 15 + 48 + 3 * (2 + 3), 47 + 5 + 7));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
@@ -153,19 +153,19 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-            new Dimension(18, 17 + 6 + 5));
+          new Dimension(18, 17 + 6 + 5));
 
         // The unsatisfied sprite references are not removed from the output
         // file, hence we have two warnings
         assertThat(messages).contains(
-            new Message(Message.MessageLevel.WARN,
-                Message.MessageType.CANNOT_NOT_LOAD_IMAGE, new File(testDir,
-                    "css/style.css").getPath(), 15,
-                new File(testDir, "img/logo.png").getPath(), "Can't read input file!"),
-            new Message(Message.MessageLevel.WARN,
-                Message.MessageType.CANNOT_NOT_LOAD_IMAGE, new File(testDir,
-                    "css/style-expected.css").getPath(), 15, new File(testDir,
-                    "img/logo.png").getPath(), "Can't read input file!"));
+          new Message(Message.MessageLevel.WARN,
+            Message.MessageType.CANNOT_NOT_LOAD_IMAGE, new File(testDir,
+            "css/style.css").getPath(), 15,
+            new File(testDir, "img/logo.png").getPath(), "Can't read input file!"),
+          new Message(Message.MessageLevel.WARN,
+            Message.MessageType.CANNOT_NOT_LOAD_IMAGE, new File(testDir,
+            "css/style-expected.css").getPath(), 15, new File(testDir,
+            "img/logo.png").getPath(), "Can't read input file!"));
     }
 
     @Test
@@ -195,20 +195,20 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-            new Dimension(48, 16 + 17 + 47));
+          new Dimension(48, 16 + 17 + 47));
 
         final String styleCssPath = new File(testDir, "css/style.css").getPath();
         assertThat(messages).isEquivalentTo(
-            Message.MessageLevel.WARN,
-            new Message(Message.MessageLevel.WARN,
-                Message.MessageType.UNSUPPORTED_PROPERTIES_FOUND, styleCssPath, 4,
-                "sprites-layout"),
-            new Message(Message.MessageLevel.WARN,
-                Message.MessageType.UNSUPPORTED_PROPERTIES_FOUND, styleCssPath, 14,
-                "sprites-margin-top"),
-            new Message(Message.MessageLevel.WARN,
-                Message.MessageType.UNSUPPORTED_PROPERTIES_FOUND, styleCssPath, 18,
-                "sprites-alignment"));
+          Message.MessageLevel.WARN,
+          new Message(Message.MessageLevel.WARN,
+            Message.MessageType.UNSUPPORTED_PROPERTIES_FOUND, styleCssPath, 4,
+            "sprites-layout"),
+          new Message(Message.MessageLevel.WARN,
+            Message.MessageType.UNSUPPORTED_PROPERTIES_FOUND, styleCssPath, 14,
+            "sprites-margin-top"),
+          new Message(Message.MessageLevel.WARN,
+            Message.MessageType.UNSUPPORTED_PROPERTIES_FOUND, styleCssPath, 18,
+            "sprites-alignment"));
     }
 
     @Test
@@ -248,7 +248,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         final File spriteFile = new File(documentRootDir, "img/sprite.png");
         assertThat(spriteFile).exists();
         org.fest.assertions.Assertions.assertThat(ImageIO.read(spriteFile)).hasSize(
-            new Dimension(17, 17));
+          new Dimension(17, 17));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
 
         org.carrot2.util.FileUtils.deleteThrowingExceptions(spriteFile);
@@ -331,13 +331,13 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
 //        assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
 
         assertThat(messages).isEquivalentTo(
-            Message.MessageLevel.WARN,
-            new Message(Message.MessageLevel.WARN,
-                Message.MessageType.IMAGE_FRACTIONAL_SCALE_VALUE, null, 8, "../img/web.gif",
-                8.5f, 8.5f),
-            new Message(Message.MessageLevel.WARN,
-                Message.MessageType.FRACTIONAL_SCALE_VALUE, null, 8, "absolute",
-                8.5f, 8.5f));
+          Message.MessageLevel.WARN,
+          new Message(Message.MessageLevel.WARN,
+            Message.MessageType.IMAGE_FRACTIONAL_SCALE_VALUE, null, 8, "../img/web.gif",
+            8.5f, 8.5f),
+          new Message(Message.MessageLevel.WARN,
+            Message.MessageType.FRACTIONAL_SCALE_VALUE, null, 8, "absolute",
+            8.5f, 8.5f));
 
         org.carrot2.util.FileUtils.deleteThrowingExceptions(absoluteSpriteFile);
     }
@@ -376,7 +376,7 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-            new Dimension(17 + 19, 19));
+          new Dimension(17 + 19, 19));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
@@ -450,16 +450,16 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             .doesNotHaveAlpha();
 
         assertThat(messages).isEquivalentTo(
-            Message.MessageLevel.WARN,
-            new Message(Message.MessageLevel.WARN,
-                Message.MessageType.ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR, null, 25,
-                "full-alpha"),
-            new Message(Message.MessageLevel.WARN,
-                Message.MessageType.USING_WHITE_MATTE_COLOR_AS_DEFAULT, null, 25,
-                "full-alpha"),
-            new Message(Message.MessageLevel.WARN,
-                Message.MessageType.TOO_MANY_COLORS_FOR_INDEXED_COLOR, null, 32,
-                "many-colors", 293, 255));
+          Message.MessageLevel.WARN,
+          new Message(Message.MessageLevel.WARN,
+            Message.MessageType.ALPHA_CHANNEL_LOSS_IN_INDEXED_COLOR, null, 25,
+            "full-alpha"),
+          new Message(Message.MessageLevel.WARN,
+            Message.MessageType.USING_WHITE_MATTE_COLOR_AS_DEFAULT, null, 25,
+            "full-alpha"),
+          new Message(Message.MessageLevel.WARN,
+            Message.MessageType.TOO_MANY_COLORS_FOR_INDEXED_COLOR, null, 32,
+            "many-colors", 293, 255));
     }
 
     @Test
@@ -601,13 +601,15 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     @Test
     public void testSpriteImageUidMd5() throws FileNotFoundException, IOException
     {
+        assumeJdk18OrNewer();
+
         final File testDir = testDir("sprite-image-uid-md5");
         buildSprites(testDir);
 
         assertThat(processedCss()).hasSameContentAs(expectedCss());
         assertThat(new File(testDir, "img/sprite.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-            new Dimension(17 + 15, 17));
+          new Dimension(17 + 15, 17));
         org.fest.assertions.Assertions.assertThat(sprite(testDir, "img/sprite2.png"))
             .hasSize(new Dimension(48, 47));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
@@ -625,15 +627,17 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(new File(testDir, "img/sprite.png")).exists();
         assertThat(new File(testDir, "img/sprite-ie6.png")).exists();
         org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-            new Dimension(20, 20));
+          new Dimension(20, 20));
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
 
     @Test
     public void variableSubstitutionInSpriteImagePath() throws FileNotFoundException, IOException
     {
+        assumeJdk18OrNewer();
+
         final File testDir = testDir("variable-substitution-in-sprite-image-path");
-        final String sprite1 = "img/sprite-4f597e065cfe89bf84fdb6594bd3b59a.png";
+        final String sprite1 = "img/sprite-10eb4d8ef5d4b17c7e1173b2213ec6d1.png";
         final String sprite2 = "img/1cbb5bd4c5577f487e1ca434009967c/sprite2.png";
 
         try
@@ -727,10 +731,10 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             assertThat(otherCss).doesNotExist();
             assertThat(sprite).exists();
             org.fest.assertions.Assertions.assertThat(sprite(testDir)).hasSize(
-                new Dimension(17, 17));
+              new Dimension(17, 17));
             assertThat(messages).contains(
-                Message.warn(
-                    MessageType.IGNORING_CSS_FILE_OUTSIDE_OF_ROOT_DIR, otherCssPath));
+              Message.warn(
+                MessageType.IGNORING_CSS_FILE_OUTSIDE_OF_ROOT_DIR, otherCssPath));
         }
         finally
         {
@@ -768,12 +772,12 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
         assertThat(new File(testDir, horizontalSpritePath)).exists();
         org.fest.assertions.Assertions.assertThat(
                 sprite(testDir, horizontalSpritePath)).hasSize(
-                new Dimension(48, 47));
+          new Dimension(48, 47));
 
         final String verticalSpritePath = "img/sprite-vertical.png";
         org.fest.assertions.Assertions.assertThat(
                 sprite(testDir, verticalSpritePath)).hasSize(
-                new Dimension(48, 47));
+          new Dimension(48, 47));
 
         assertThat(messages).doesNotHaveMessagesOfLevel(MessageLevel.WARN);
     }
@@ -829,33 +833,31 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
     }
 
     @After
-    public void cleanUp() throws IOException
-    {
+    public void cleanUp() throws IOException {
+        if (spriteBuilder == null) {
+            return;
+        }
+
         // Delete sprite CSS
         final String rootDir = spriteBuilder.parameters.getRootDir();
-        if (rootDir == null)
-        {
+        if (rootDir == null) {
             return;
         }
 
         org.carrot2.util.FileUtils.deleteThrowingExceptions(new File(rootDir, "css")
-            .listFiles(new FilenameFilter()
-            {
-                public boolean accept(File dir, String name)
-                {
-                    return name.contains("-sprite");
-                }
-            }));
+          .listFiles(new FilenameFilter() {
+              public boolean accept(File dir, String name) {
+                  return name.contains("-sprite");
+              }
+          }));
 
         // Delete sprites
         org.carrot2.util.FileUtils.deleteThrowingExceptions(new File(rootDir, "img")
-            .listFiles(new FilenameFilter()
-            {
-                public boolean accept(File dir, String name)
-                {
-                    return name.startsWith("sprite");
-                }
-            }));
+          .listFiles(new FilenameFilter() {
+              public boolean accept(File dir, String name) {
+                  return name.startsWith("sprite");
+              }
+          }));
     }
 
     private File testDir(String test)
@@ -945,4 +947,9 @@ public class SpriteBuilderTest extends TestWithMemoryMessageSink
             cssFileSuffix, spritePngDepth, spritePngIe6, cssEncoding);
     }
 
+    private void assumeJdk18OrNewer()
+    {
+        final String version = System.getProperty("java.version");
+        Assume.assumeTrue(!version.startsWith("1.5") && !version.startsWith("1.6") && !version.startsWith("1.7"));
+    }
 }
