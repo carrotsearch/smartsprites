@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.math3.util.ArithmeticUtils;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
@@ -242,7 +243,7 @@ public class SpriteImageBuilder
         }
         finally
         {
-            Closeables.closeQuietly(spriteImageOuputStream);
+            IOUtils.closeQuietly(spriteImageOuputStream);
         }
     }
 
