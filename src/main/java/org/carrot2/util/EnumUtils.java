@@ -1,7 +1,5 @@
 package org.carrot2.util;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Various utility methods for working with Java 5 enum types.
  */

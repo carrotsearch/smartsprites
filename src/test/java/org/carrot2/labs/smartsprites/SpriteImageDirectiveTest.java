@@ -1,9 +1,9 @@
 package org.carrot2.labs.smartsprites;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
 import static org.carrot2.labs.test.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.awt.Color;
 
@@ -381,7 +381,7 @@ public class SpriteImageDirectiveTest extends TestWithMemoryMessageSink
         assertNotNull(directive);
         assertEquals(directive.spriteId, "sprite");
         assertEquals(directive.imagePath, "../sprite.png");
-        assertEquals(directive.scaleRatio, 2f);
+        assertEquals(directive.scaleRatio, 2f, .5);
     }
 
     private void checkUidType(String uidDeclaration, SpriteUidType expectedUidType)

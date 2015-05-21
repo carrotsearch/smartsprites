@@ -1,6 +1,6 @@
 package org.carrot2.util;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -98,8 +98,8 @@ public class ColorQuantizerTest extends BufferedImageTestBase
 
     private void checkDataLoss(String path, boolean expectedCanReduce) throws IOException
     {
-        assertThat(
+        assertEquals(expectedCanReduce,
             ColorQuantizer.getColorReductionInfo(image(path))
-                .canReduceWithoutQualityLoss()).isEqualTo(expectedCanReduce);
+                .canReduceWithoutQualityLoss());
     }
 }

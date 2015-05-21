@@ -4,8 +4,8 @@ import java.util.*;
 
 import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
-import org.fest.assertions.Assertions;
-import org.fest.assertions.Fail;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.Fail;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

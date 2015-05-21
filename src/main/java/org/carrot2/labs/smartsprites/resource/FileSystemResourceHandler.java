@@ -1,15 +1,25 @@
 package org.carrot2.labs.smartsprites.resource;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters;
 import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.FileUtils;
+import org.carrot2.util.StringUtils;
 
 /**
  * This class defines the resource handler which manage resources from the file system.

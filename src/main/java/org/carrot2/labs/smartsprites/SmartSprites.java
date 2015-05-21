@@ -7,6 +7,7 @@ import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.PrintStreamMessageSink;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.ParserProperties;
 
 /**
  * The entry class for SmartSprites.
@@ -19,9 +20,11 @@ public class SmartSprites
     public static void main(String [] args) throws FileNotFoundException, IOException
     {
         final SmartSpritesParameters parameters = new SmartSpritesParameters();
-        
-        final CmdLineParser parser = new CmdLineParser(parameters);
-        parser.setUsageWidth(80);
+
+        final ParserProperties parserProperties = ParserProperties.defaults();
+        parserProperties.withUsageWidth(80);
+
+        final CmdLineParser parser = new CmdLineParser(parameters, parserProperties);
 
         if (args.length == 0)
         {
