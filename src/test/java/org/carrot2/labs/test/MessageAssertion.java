@@ -1,6 +1,7 @@
 package org.carrot2.labs.test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 import org.carrot2.labs.smartsprites.message.Message;
 
@@ -28,7 +29,7 @@ public class MessageAssertion
      */
     public MessageAssertion isEquivalentTo(Message expected)
     {
-        assertThat(actual).isNotNull();
+        assertNotNull(actual);
         assertThat(actual.cssPath).as(description + ".cssPath").isEqualTo(
             expected.cssPath);
         assertThat(actual.line).as(description + ".line").isEqualTo(expected.line);

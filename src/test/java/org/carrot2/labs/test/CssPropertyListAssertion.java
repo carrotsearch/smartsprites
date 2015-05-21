@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.carrot2.labs.smartsprites.css.CssProperty;
 import org.carrot2.labs.smartsprites.message.Message;
-import org.fest.assertions.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.Lists;
 
@@ -30,7 +31,7 @@ public class CssPropertyListAssertion
      */
     public CssPropertyListAssertion isEquivalentTo(List<CssProperty> properties)
     {
-        Assertions.assertThat(actual).hasSize(properties.size());
+        assertThat(actual).hasSize(properties.size());
         for (int i = 0; i < actual.size(); i++)
         {
             org.carrot2.labs.test.Assertions.assertThat(actual.get(i)).as(
@@ -50,7 +51,7 @@ public class CssPropertyListAssertion
 
     public CssPropertyListAssertion isEmpty()
     {
-        Assertions.assertThat(actual).isEmpty();
+        assertTrue(actual.isEmpty());
         return this;
     }
 
