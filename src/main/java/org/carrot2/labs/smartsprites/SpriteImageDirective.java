@@ -6,12 +6,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.carrot2.labs.smartsprites.css.CssProperty;
 import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.util.CollectionUtils;
+import org.carrot2.util.StringUtils;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;

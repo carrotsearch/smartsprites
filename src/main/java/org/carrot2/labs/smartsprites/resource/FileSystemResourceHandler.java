@@ -14,12 +14,12 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters;
 import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.util.FileUtils;
+import org.carrot2.util.StringUtils;
 
 /**
  * This class defines the resource handler which manage resources from the file system.
