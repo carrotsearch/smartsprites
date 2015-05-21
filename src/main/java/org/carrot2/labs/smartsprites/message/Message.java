@@ -289,7 +289,7 @@ public class Message implements Serializable
     {
         return new Message(MessageLevel.WARN, type, null, 0, arguments);
     }
-    
+
     public static Message error(MessageType type, Object... arguments)
     {
         return new Message(MessageLevel.ERROR, type, null, 0, arguments);

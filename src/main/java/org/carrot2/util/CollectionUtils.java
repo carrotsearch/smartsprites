@@ -13,7 +13,7 @@ public class CollectionUtils
      */
     public static String toString(Collection<?> collection)
     {
-        final StringBuffer string = new StringBuffer();
+        final StringBuilder string = new StringBuilder();
         for (final Object object : collection)
         {
             string.append(object.toString());
