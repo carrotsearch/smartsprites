@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.resources.FileResource;
+import org.apache.tools.ant.types.Resource;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters;
 import org.carrot2.labs.smartsprites.SpriteBuilder;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters.PngDepth;
@@ -159,12 +159,11 @@ public class SmartSpritesTask extends Task
         }
     }
 
-    @SuppressWarnings("unchecked")
     public void addConfiguredFileset(FileSet fileset)
     {
-        for (Iterator<FileResource> it = fileset.iterator(); it.hasNext();)
+        for (Iterator<Resource> it = fileset.iterator(); it.hasNext();)
         {
-            cssFiles.add(it.next().getFile().getPath());
+            cssFiles.add(it.next().getName());
         }
     }
 }
