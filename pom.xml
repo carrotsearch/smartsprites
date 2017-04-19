@@ -17,7 +17,7 @@
   <!-- Project info. -->
   <groupId>com.carrotsearch</groupId>
   <artifactId>smartsprites</artifactId>
-  <version>0.2.12</version>
+  <version>0.2.13</version>
   <packaging>jar</packaging>
 
   <name>SmartSprites</name>
