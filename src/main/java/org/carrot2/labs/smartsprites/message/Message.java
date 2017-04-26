@@ -6,7 +6,6 @@ import java.util.Comparator;
 import org.carrot2.labs.smartsprites.SpriteImageDirective;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.Ie6Mode;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
-import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteUidType;
 import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
 import org.carrot2.labs.smartsprites.SpriteReferenceDirective;
@@ -173,8 +172,7 @@ public class Message implements Serializable
             "Format of image: %s is not supported. Supported formats are: "
                 + SpriteImageFormat.valuesAsString() + "."),
 
-        UNSUPPORTED_LAYOUT("Unsupported layout: %s. Supported layouts are: "
-            + SpriteImageLayout.valuesAsString() + "."),
+        UNSUPPORTED_LAYOUT("Unsupported layout: %s."),
 
         UNSUPPORTED_IE6_MODE("Unsupported ie6 mode: %s. Supported ie6 modes are: "
             + Ie6Mode.valuesAsString() + "."),

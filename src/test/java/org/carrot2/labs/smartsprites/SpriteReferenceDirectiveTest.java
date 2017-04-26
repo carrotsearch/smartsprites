@@ -10,9 +10,10 @@ import java.util.Map;
 
 import org.carrot2.labs.smartsprites.SpriteImageDirective.Ie6Mode;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageFormat;
-import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteImageLayout;
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteUidType;
 import org.carrot2.labs.smartsprites.SpriteLayoutProperties.SpriteAlignment;
+import org.carrot2.labs.smartsprites.layout.HorizontalLayout;
+import org.carrot2.labs.smartsprites.layout.VerticalLayout;
 import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -26,15 +27,15 @@ import com.google.common.collect.ImmutableMap;
 public class SpriteReferenceDirectiveTest extends TestWithMemoryMessageSink
 {
     private static final SpriteImageDirective VERTICAL_SPRITE_IMAGE_DIRECTIVE = new SpriteImageDirective(
-        "vsprite", "sprite.png", SpriteImageLayout.VERTICAL, SpriteImageFormat.PNG,
+        "vsprite", "sprite.png", new VerticalLayout(), SpriteImageFormat.PNG,
         Ie6Mode.AUTO, Color.WHITE, SpriteUidType.NONE, 1);
 
     private static final SpriteImageDirective HORIZONTAL_SPRITE_IMAGE_DIRECTIVE = new SpriteImageDirective(
-        "hsprite", "hsprite.png", SpriteImageLayout.HORIZONTAL, SpriteImageFormat.PNG,
+        "hsprite", "hsprite.png", new HorizontalLayout(), SpriteImageFormat.PNG,
         Ie6Mode.AUTO, Color.WHITE, SpriteUidType.NONE, 1);
 
     private static final SpriteImageDirective VERTICAL_SPRITE_IMAGE_DIRECTIVE_WITH_LAYOUT = new SpriteImageDirective(
-        "vsprite", "sprite.png", SpriteImageLayout.VERTICAL, SpriteImageFormat.PNG,
+        "vsprite", "sprite.png", new VerticalLayout(), SpriteImageFormat.PNG,
         Ie6Mode.AUTO, Color.WHITE, SpriteUidType.NONE, 1, new SpriteLayoutProperties(
             SpriteAlignment.REPEAT, 1, 2, 3, 4));
 

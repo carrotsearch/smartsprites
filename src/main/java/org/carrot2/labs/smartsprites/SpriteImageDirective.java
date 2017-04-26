@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 import org.carrot2.labs.smartsprites.css.CssProperty;
 import org.carrot2.labs.smartsprites.css.CssSyntaxUtils;
+import org.carrot2.labs.smartsprites.layout.SpriteImageLayout;
+import org.carrot2.labs.smartsprites.layout.VerticalLayout;
 import org.carrot2.labs.smartsprites.message.Message.MessageType;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.util.CollectionUtils;
@@ -35,41 +37,6 @@ public class SpriteImageDirective
         PROPERTY_SPRITE_ID, PROPERTY_SPRITE_IMAGE_LAYOUT, PROPERTY_SPRITE_IMAGE_URL,
         PROPERTY_SPRITE_MATTE_COLOR, PROPERTY_SPRITE_IE6_MODE,
         PROPERTY_SPRITE_SCALE, PROPERTY_SPRITE_IMAGE_UID_SUFFIX);
-
-    /**
-     * Defines the layout of this sprite.
-     */
-    public static enum SpriteImageLayout
-    {
-        /**
-         * Vertical layout, images stacked on each other.
-         */
-        VERTICAL,
-
-        /**
-         * Horizontal layout, images next to each other.
-         */
-        HORIZONTAL;
-
-        private String value;
-
-        private SpriteImageLayout()
-        {
-            this.value = name().toLowerCase();
-        }
-
-        @Override
-        public String toString()
-        {
-            return value;
-        }
-
-        public static String valuesAsString()
-        {
-            final String list = Lists.newArrayList(values()).toString();
-            return list.substring(1, list.length() - 1);
-        }
-    }
 
     /**
      * Defines the UID Generation Mode of this sprite.
@@ -335,10 +302,9 @@ public class SpriteImageDirective
         }
 
         // Layout is optional
-        final SpriteImageLayout layout = valueOf(
-            CssSyntaxUtils.getValue(rules, PROPERTY_SPRITE_IMAGE_LAYOUT),
-            SpriteImageLayout.class, SpriteImageLayout.VERTICAL, messageCollector,
-            MessageType.UNSUPPORTED_LAYOUT);
+        final SpriteImageLayout layout = valueOf(CssSyntaxUtils.getValue(rules, PROPERTY_SPRITE_IMAGE_LAYOUT), 
+            new VerticalLayout(), messageCollector, MessageType.UNSUPPORTED_LAYOUT
+        );
 
         // Infer format from image path
         SpriteImageFormat format;
@@ -423,5 +389,29 @@ public class SpriteImageDirective
         {
             return defaultValue;
         }
+    }
+
+    private static SpriteImageLayout valueOf(String stringValue, SpriteImageLayout defaultLayout, 
+        MessageLog messageCollector, MessageType messageType)
+    {
+        SpriteImageLayout returnLayout = defaultLayout;
+        if (StringUtils.isNotBlank(stringValue))
+        {
+            try
+            {
+                returnLayout = (SpriteImageLayout) Class.forName(new StringBuilder(
+                    "org.carrot2.labs.smartsprites.layout.")
+                    .append(Character.toUpperCase(stringValue.charAt(0)))
+                    .append(stringValue.substring(1))
+                    .append("Layout")
+                    .toString()
+                ).newInstance();
+            }
+            catch (Exception e)
+            {
+                messageCollector.warning(messageType, stringValue);
+            }
+        }
+        return returnLayout;
     }
 }
