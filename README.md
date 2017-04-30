@@ -1,11 +1,15 @@
-= SmartSprites: CSS Sprite Generator Done Right
+SmartSprites: CSS Sprite Generator Done Right
+=============================================
+
+[![Build Status](https://travis-ci.org/carrotsearch/smartsprites.svg?branch=master)](https://travis-ci.org/carrotsearch/smartsprites)
 
 CSS Sprites Generator Done Right. SmartSprites maintains CSS sprites in your
 designs, fully automatically. No tedious copying and pasting to your CSS when
 adding or changing sprited images.
 
 
-== Quick start
+Quick start
+-----------
 
 1. Download SmartSprites binaries
 
@@ -16,7 +20,8 @@ adding or changing sprited images.
 3. Look in +test/real-world-example+ for the results.
 
 
-== Documentation
+Documentation
+-------------
 
 For more instructions on using SmartSprites and a detailed 
 syntax reference, please see:
@@ -24,17 +29,20 @@ syntax reference, please see:
 http://csssprites.org
 
 
-== Bug tracker
+Bug tracker
+-----------
 
 http://issues.carrot2.org/browse/SMARTSPRITES
 
 
-== Source code
+Source code
+-----------
 
 https://github.com/carrotsearch/smartsprites
 
 
-== Eclipse plugin
+Eclipse plugin
+--------------
 
 To run SmartSprites directly in your Eclipse IDE:
 
