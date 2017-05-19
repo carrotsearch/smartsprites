@@ -65,7 +65,7 @@
   <developers>
     <developer>
       <id>stanislaw.osinski</id>
-      <name>Stanis≥aw OsiÒski</name>
+      <name>Stanis≈Çaw Osi≈Ñski</name>
       <email>stanislaw.osinski@carrotsearch.com</email>
     </developer>
 
@@ -120,7 +120,7 @@
     <dependency>
       <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>
-      <version>1.9.9</version>
+      <version>1.10.1</version>
       <optional>true</optional>
       <scope>provided</scope>
     </dependency>
@@ -209,7 +209,7 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.1</version>
         </plugin>
 
         <plugin>
@@ -265,7 +265,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.7</version>
+        <version>3.8</version>
       </plugin>
     </plugins>
 
@@ -285,7 +285,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.7</version>
+        <version>3.8</version>
         <configuration>
           <aggregate>true</aggregate>
         </configuration>

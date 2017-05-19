@@ -65,18 +65,18 @@ public class BufferedImageUtils
      * Returns the number of distinct colors (excluding transparency) in the
      * <code>image</code>.
      */
-    public static int countDistictColors(BufferedImage image)
+    public static int countDistinctColors(BufferedImage image)
     {
-        return getDistictColors(image).length;
+        return getDistinctColors(image).length;
     }
 
     /**
      * Returns the <code>image</code>'s distinct colors in an RGB format, discarding
      * transparency information.
      */
-    public static int [] getDistictColors(BufferedImage image)
+    public static int [] getDistinctColors(BufferedImage image)
     {
-        return getDistictColors(image, 0);
+        return getDistinctColors(image, 0);
     }
 
     /**
@@ -84,7 +84,7 @@ public class BufferedImageUtils
      * transparency information. Adds <code>padding</code> empty slots at the beginning of
      * the returned array.
      */
-    public static int [] getDistictColors(BufferedImage image, int padding)
+    public static int [] getDistinctColors(BufferedImage image, int padding)
     {
         final int width = image.getWidth();
         final int height = image.getHeight();

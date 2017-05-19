@@ -44,7 +44,7 @@ public class Message implements Serializable
         WARN(4),
 
         /**
-         * Error messages, SmartSpricess cannot perform processing.
+         * Error messages, SmartSprites cannot perform processing.
          */
         ERROR(5),
 
@@ -118,7 +118,7 @@ public class Message implements Serializable
         ROOT_DIR_AND_CSS_FILES_CANNOT_BE_BOTH_SPECIFIED_UNLESS_WITH_OUTPUT_DIR(
             "Root directory and individual CSS files cannot be both specified, unless output dir is also specified"),
 
-        ROOT_DIR_IS_REQIRED_FOR_OUTPUT_DIR(
+        ROOT_DIR_IS_REQUIRED_FOR_OUTPUT_DIR(
             "If output directory is specified, root directory must also be provided"),
 
         ROOT_DIR_DOES_NOT_EXIST_OR_IS_NOT_DIRECTORY(
