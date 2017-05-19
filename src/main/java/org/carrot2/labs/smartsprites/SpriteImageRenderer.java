@@ -114,7 +114,7 @@ public class SpriteImageRenderer
         {
             messageLog.log(logLevel, MessageType.TOO_MANY_COLORS_FOR_INDEXED_COLOR,
                 spriteImageDirective.spriteId,
-                colorReductionInfo.distictColors, ColorQuantizer.MAX_INDEXED_COLORS);
+                colorReductionInfo.distinctColors, ColorQuantizer.MAX_INDEXED_COLORS);
         }
 
         final Color matte;

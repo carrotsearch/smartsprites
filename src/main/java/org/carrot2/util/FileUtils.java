@@ -64,7 +64,7 @@ public class FileUtils
     }
 
     /**
-     * Attempts to delete the provided filesand throws an {@link IOException} in case
+     * Attempts to delete the provided files and throws an {@link IOException} in case
      * {@link File#delete()} returns <code>false</code> for any of them.
      */
     public static void deleteThrowingExceptions(File... files) throws IOException

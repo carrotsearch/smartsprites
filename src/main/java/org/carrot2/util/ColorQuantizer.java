@@ -109,7 +109,7 @@ public class ColorQuantizer
                 "The source image cannot contain translucent areas");
         }
 
-        final int [] colorsWithAlpha = BufferedImageUtils.getDistictColors(source, 1);
+        final int [] colorsWithAlpha = BufferedImageUtils.getDistinctColors(source, 1);
         if (colorsWithAlpha.length - 1 > MAX_INDEXED_COLORS)
         {
             throw new IllegalArgumentException(
@@ -145,25 +145,25 @@ public class ColorQuantizer
     public static ColorReductionInfo getColorReductionInfo(BufferedImage source)
     {
         return new ColorReductionInfo(BufferedImageUtils.hasPartialTransparency(source),
-            BufferedImageUtils.countDistictColors(source));
+            BufferedImageUtils.countDistinctColors(source));
     }
 
     /**
-     * Indicates how many distinct colors an image has, whether it has partial trasparency
+     * Indicates how many distinct colors an image has, whether it has partial transparency
      * (alpha channel).
      */
     public static class ColorReductionInfo
     {
-        /** Number of distint colors in the image */
-        public int distictColors;
+        /** Number of distinct colors in the image */
+        public int distinctColors;
 
         /** True if the image has partially transparent areas (alpha channel) */
         public boolean hasPartialTransparency;
 
-        public ColorReductionInfo(boolean hasPartialTransparency, int distictColors)
+        public ColorReductionInfo(boolean hasPartialTransparency, int distinctColors)
         {
             this.hasPartialTransparency = hasPartialTransparency;
-            this.distictColors = distictColors;
+            this.distinctColors = distinctColors;
         }
 
         /**
@@ -172,7 +172,7 @@ public class ColorQuantizer
          */
         public boolean canReduceWithoutQualityLoss()
         {
-            return !hasPartialTransparency && distictColors <= MAX_INDEXED_COLORS;
+            return !hasPartialTransparency && distinctColors <= MAX_INDEXED_COLORS;
         }
     }
 }

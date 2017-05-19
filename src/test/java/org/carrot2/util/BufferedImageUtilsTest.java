@@ -64,14 +64,14 @@ public class BufferedImageUtilsTest extends BufferedImageTestBase
     {
         assertEquals(1, 
             BufferedImageUtils
-                .countDistictColors(image("full-alpha.png")));
+                .countDistinctColors(image("full-alpha.png")));
     }
 
     @Test
     public void testCountDistinctColorsTransparencyMatted() throws IOException
     {
         assertEquals(4,
-            BufferedImageUtils.countDistictColors(BufferedImageUtils.matte(
+            BufferedImageUtils.countDistinctColors(BufferedImageUtils.matte(
                 image("full-alpha.png"), Color.WHITE)));
     }
 
@@ -79,7 +79,7 @@ public class BufferedImageUtilsTest extends BufferedImageTestBase
     public void testCountDistinctColorsNoTransparency() throws IOException
     {
         assertEquals(4,
-            BufferedImageUtils.countDistictColors(image("no-alpha.png")));
+            BufferedImageUtils.countDistinctColors(image("no-alpha.png")));
     }
 
     @Test
@@ -88,6 +88,6 @@ public class BufferedImageUtilsTest extends BufferedImageTestBase
         // black is the same in all bands
         assertEquals(1021,
             BufferedImageUtils
-                .countDistictColors(image("many-colors.png")));
+                .countDistinctColors(image("many-colors.png")));
     }
 }

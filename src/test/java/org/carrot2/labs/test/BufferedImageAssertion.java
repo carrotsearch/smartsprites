@@ -142,7 +142,7 @@ public class BufferedImageAssertion
      */
     public BufferedImageAssertion hasNumberOfColorsEqualTo(int colors)
     {
-        assertThat(BufferedImageUtils.countDistictColors(actual)).as(
+        assertThat(BufferedImageUtils.countDistinctColors(actual)).as(
             description + ".colors").isEqualTo(colors);
         return this;
     }

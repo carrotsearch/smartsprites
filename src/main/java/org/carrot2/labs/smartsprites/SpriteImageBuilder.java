@@ -187,7 +187,7 @@ public class SpriteImageBuilder
         final SpriteImageDirective spriteImageDirective = spriteImageOccurrence.spriteImageDirective;
 
         // Write the image to a byte array first. We need the data to compute an md5 hash.
-        final ByteArrayOutputStream spriteImageByteArrayOuputStream = new ByteArrayOutputStream();
+        final ByteArrayOutputStream spriteImageByteArrayOutputStream = new ByteArrayOutputStream();
 
         // If writing to a JPEG, we need to make a 3-byte-encoded image
         final BufferedImage imageToWrite;
@@ -205,7 +205,7 @@ public class SpriteImageBuilder
         try
         {
             ImageIO.write(imageToWrite, spriteImageDirective.format.toString(),
-                spriteImageByteArrayOuputStream);
+                spriteImageByteArrayOutputStream);
         }
         catch (IOException e)
         {
@@ -215,7 +215,7 @@ public class SpriteImageBuilder
         }
 
         // Build file name
-        byte [] spriteImageBytes = spriteImageByteArrayOuputStream.toByteArray();
+        byte [] spriteImageBytes = spriteImageByteArrayOutputStream.toByteArray();
         String resolvedImagePath = spriteImage.resolveImagePath(spriteImageBytes,
             timestamp, ie6Reduced);
         if (resolvedImagePath.indexOf('?') >= 0)
@@ -228,15 +228,15 @@ public class SpriteImageBuilder
         final String mergedImageFile = getImageFile(spriteImageOccurrence.cssFile,
             resolvedImagePath);
 
-        OutputStream spriteImageOuputStream = null;
+        OutputStream spriteImageOutputStream = null;
         try
         {
             messageLog.info(MessageType.WRITING_SPRITE_IMAGE, mergedImage.getWidth(),
                 mergedImage.getHeight(), spriteImageDirective.spriteId, mergedImageFile);
-            spriteImageOuputStream = resourceHandler
+            spriteImageOutputStream = resourceHandler
                 .getResourceAsOutputStream(mergedImageFile);
 
-            spriteImageOuputStream.write(spriteImageBytes);
+            spriteImageOutputStream.write(spriteImageBytes);
         }
         catch (final IOException e)
         {
@@ -245,7 +245,7 @@ public class SpriteImageBuilder
         }
         finally
         {
-            Closeables.close(spriteImageOuputStream, true);
+            Closeables.close(spriteImageOutputStream, true);
         }
     }
 
@@ -290,12 +290,12 @@ public class SpriteImageBuilder
             .entrySet())
         {
             final BufferedImage image = entry.getValue();
-            final SpriteReferenceOccurrence spriteReferenceOcurrence = entry.getKey();
+            final SpriteReferenceOccurrence spriteReferenceOccurrence = entry.getKey();
 
             // Compute dimensions
             dimension = Math.max(dimension,
-                vertical ? spriteReferenceOcurrence.getRequiredWidth(image, layout)
-                    : spriteReferenceOcurrence.getRequiredHeight(image, layout));
+                vertical ? spriteReferenceOccurrence.getRequiredWidth(image, layout)
+                    : spriteReferenceOccurrence.getRequiredHeight(image, layout));
         }
 
         // Correct for least common multiple

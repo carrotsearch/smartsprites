@@ -77,16 +77,14 @@ public class PathUtils {
         if ( ( toPath.startsWith( ":", 1 ) && fromPath.startsWith( ":", 1 ) )
                         && ( !toPath.substring( 0, 1 ).equals( fromPath.substring( 0, 1 ) ) ) )
         {
-            // they both have drive path element but they dont match, no
-            // relative path
+            // they both have drive path element but they don't match, no relative path
             return null;
         }
 
         if ( ( toPath.startsWith( ":", 1 ) && !fromPath.startsWith( ":", 1 ) )
                         || ( !toPath.startsWith( ":", 1 ) && fromPath.startsWith( ":", 1 ) ) )
         {
-            // one has a drive path element and the other doesnt, no relative
-            // path.
+            // one has a drive path element and the other doesn't, no relative path.
             return null;
         }
 
@@ -106,25 +104,25 @@ public class PathUtils {
 
     private static final String buildRelativePath( String toPath,  String fromPath, final char separatorChar )
     {
-        // use tokeniser to traverse paths and for lazy checking
-        StringTokenizer toTokeniser = new StringTokenizer( toPath, String.valueOf( separatorChar ) );
-        StringTokenizer fromTokeniser = new StringTokenizer( fromPath, String.valueOf( separatorChar ) );
+        // use tokenizer to traverse paths and for lazy checking
+        StringTokenizer toTokenizer = new StringTokenizer( toPath, String.valueOf( separatorChar ) );
+        StringTokenizer fromTokenizer = new StringTokenizer( fromPath, String.valueOf( separatorChar ) );
 
         int count = 0;
 
         // walk along the to path looking for divergence from the from path
-        while ( toTokeniser.hasMoreTokens() && fromTokeniser.hasMoreTokens() )
+        while ( toTokenizer.hasMoreTokens() && fromTokenizer.hasMoreTokens() )
         {
             if ( separatorChar == '\\' )
             {
-                if ( !fromTokeniser.nextToken().equalsIgnoreCase( toTokeniser.nextToken() ) )
+                if ( !fromTokenizer.nextToken().equalsIgnoreCase( toTokenizer.nextToken() ) )
                 {
                     break;
                 }
             }
             else
             {
-                if ( !fromTokeniser.nextToken().equals( toTokeniser.nextToken() ) )
+                if ( !fromTokenizer.nextToken().equals( toTokenizer.nextToken() ) )
                 {
                     break;
                 }
@@ -133,44 +131,44 @@ public class PathUtils {
             count++;
         }
 
-        // reinitialise the tokenisers to count positions to retrieve the
+        // reinitialise the tokenizers to count positions to retrieve the
         // gobbled token
 
-        toTokeniser = new StringTokenizer( toPath, String.valueOf( separatorChar ) );
-        fromTokeniser = new StringTokenizer( fromPath, String.valueOf( separatorChar ) );
+        toTokenizer = new StringTokenizer( toPath, String.valueOf( separatorChar ) );
+        fromTokenizer = new StringTokenizer( fromPath, String.valueOf( separatorChar ) );
 
         while ( count-- > 0 )
         {
-            fromTokeniser.nextToken();
-            toTokeniser.nextToken();
+            fromTokenizer.nextToken();
+            toTokenizer.nextToken();
         }
 
         StringBuilder relativePath = new StringBuilder();
 
         // add back refs for the rest of from location.
-        while ( fromTokeniser.hasMoreTokens() )
+        while ( fromTokenizer.hasMoreTokens() )
         {
-            fromTokeniser.nextToken();
+            fromTokenizer.nextToken();
 
             relativePath.append("..");
 
-            if ( fromTokeniser.hasMoreTokens() )
+            if ( fromTokenizer.hasMoreTokens() )
             {
                 relativePath.append(separatorChar);
             }
         }
 
-        if ( relativePath.length() != 0 && toTokeniser.hasMoreTokens() )
+        if ( relativePath.length() != 0 && toTokenizer.hasMoreTokens() )
         {
             relativePath.append(separatorChar);
         }
 
         // add fwd fills for whatevers left of newPath.
-        while ( toTokeniser.hasMoreTokens() )
+        while ( toTokenizer.hasMoreTokens() )
         {
-            relativePath.append(toTokeniser.nextToken());
+            relativePath.append(toTokenizer.nextToken());
 
-            if ( toTokeniser.hasMoreTokens() )
+            if ( toTokenizer.hasMoreTokens() )
             {
                 relativePath.append(separatorChar);
             }
