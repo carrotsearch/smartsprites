@@ -469,7 +469,7 @@ public class SpriteImageBuilder
             final BufferedImage other = ((BufferedImageEqualsWrapper) obj).image;
 
             boolean equal = other.getWidth() == image.getWidth()
-                && other.getHeight() == other.getHeight()
+                && other.getHeight() == image.getHeight()
                 && other.getType() == image.getType();
 
             if (equal)
