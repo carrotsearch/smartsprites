@@ -20,7 +20,13 @@ import com.google.common.base.Strings;
  */
 public class PathUtils {
 
-	/**
+
+    private PathUtils()
+    {
+        // Prevent Instantiation
+    }
+
+    /**
      * This method can calculate the relative path between two pathes on a file system.
      * <br/>
      * <pre>

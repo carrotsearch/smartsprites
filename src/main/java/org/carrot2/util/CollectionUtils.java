@@ -7,6 +7,12 @@ import java.util.Collection;
  */
 public class CollectionUtils
 {
+
+    private CollectionUtils()
+    {
+        // Prevent Instantiation
+    }
+
     /**
      * Converts a {@link Collection} to a {@link String} separating entries by
      * <code>, </code>.

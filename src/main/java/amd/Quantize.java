@@ -258,6 +258,11 @@ public class Quantize {
         }
     }
 
+    private Quantize()
+    {
+        // Prevent Instantiation
+    }
+
     /**
      * Reduce the image to the given number of colors. The pixels are
      * reduced in place.

@@ -14,6 +14,12 @@ import com.google.common.collect.Lists;
  */
 public class FileUtils
 {
+
+    private FileUtils()
+    {
+        // Prevent Instantiation
+    }
+
     /**
      * Creates a new {@link File} from the provided path and attempts to execute
      * {@link File#getCanonicalFile()}. In case of a failure, returns the result 

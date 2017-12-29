@@ -14,6 +14,11 @@ public class ColorQuantizer
     /** Maximum number of colors in an indexed image, leaving one for transparency */
     public static final int MAX_INDEXED_COLORS = 255;
 
+    private ColorQuantizer()
+    {
+        // Prevent Instantiation
+    }
+
     /**
      * Quantizes the image to {@link #MAX_INDEXED_COLORS} with white matte for areas with
      * partial transparency (full transparency will be preserved).
