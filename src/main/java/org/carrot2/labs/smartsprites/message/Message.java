@@ -61,7 +61,7 @@ public class Message implements Serializable
             this.level = level;
         }
 
-        public final static Comparator<MessageLevel> COMPARATOR = new Comparator<MessageLevel>()
+        public static final Comparator<MessageLevel> COMPARATOR = new Comparator<MessageLevel>()
         {
             public int compare(MessageLevel levelA, MessageLevel levelB)
             {

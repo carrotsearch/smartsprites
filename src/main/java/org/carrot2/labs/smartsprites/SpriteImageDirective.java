@@ -227,19 +227,19 @@ public class SpriteImageDirective
     /**
      * Pattern for a simple syntactic check of the image path.
      */
-    private final static Pattern IMAGE_PATH_PATTERN = Pattern
+    private static final Pattern IMAGE_PATH_PATTERN = Pattern
         .compile("([^${}]*|\\$\\{[^}]*\\})*");
 
     /**
      * Pattern for extracting variables from image path.
      */
-    private final static Pattern IMAGE_PATH_VARIABLE_PATTERN = Pattern
+    private static final Pattern IMAGE_PATH_VARIABLE_PATTERN = Pattern
         .compile("\\$\\{([a-z]*)\\}");
 
     /**
      * Variable names allowed in image path.
      */
-    private final static Set<String> ALLOWED_VARIABLES = ImmutableSet.of("sprite",
+    private static final Set<String> ALLOWED_VARIABLES = ImmutableSet.of("sprite",
         SpriteUidType.DATE.toString(), SpriteUidType.MD5.toString());
 
     public SpriteImageDirective(String id, String imageUrl, SpriteImageLayout layout,

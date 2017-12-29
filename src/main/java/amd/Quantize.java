@@ -236,11 +236,11 @@ public class Quantize {
 %
 */
     
-    final static boolean QUICK = false;
+    static final boolean QUICK = false;
     
-    final static int MAX_RGB = 255;
-    final static int MAX_NODES = 266817;
-    final static int MAX_TREE_DEPTH = 8;
+    static final int MAX_RGB = 255;
+    static final int MAX_NODES = 266817;
+    static final int MAX_TREE_DEPTH = 8;
 
     // these are precomputed in advance
     static int SQUARES[];
@@ -670,7 +670,7 @@ public class Quantize {
             /**
              * Figure out the distance between this node and som color.
              */
-            final static int distance(int color, int r, int g, int b) {
+            static final int distance(int color, int r, int g, int b) {
                 return (SQUARES[((color >> 16) & 0xFF) - r + MAX_RGB] +
                         SQUARES[((color >>  8) & 0xFF) - g + MAX_RGB] +
                         SQUARES[((color >>  0) & 0xFF) - b + MAX_RGB]);

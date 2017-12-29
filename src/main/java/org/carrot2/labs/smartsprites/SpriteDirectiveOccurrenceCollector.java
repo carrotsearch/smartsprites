@@ -26,11 +26,11 @@ import com.google.common.io.Closeables;
 public class SpriteDirectiveOccurrenceCollector
 {
     /** A regular expression for extracting sprite image directives */
-    private final static Pattern SPRITE_IMAGE_DIRECTIVE = Pattern
+    private static final Pattern SPRITE_IMAGE_DIRECTIVE = Pattern
         .compile("/\\*+\\s+(sprite:[^*]*)\\*+/");
 
     /** A regular expression for extracting sprite reference directives */
-    private final static Pattern SPRITE_REFERENCE_DIRECTIVE = Pattern
+    private static final Pattern SPRITE_REFERENCE_DIRECTIVE = Pattern
         .compile("/\\*+\\s+(sprite-ref:[^*]*)\\*+/");
 
     /** This builder's message log */
