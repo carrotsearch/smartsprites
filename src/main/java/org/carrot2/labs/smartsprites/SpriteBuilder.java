@@ -3,7 +3,6 @@ package org.carrot2.labs.smartsprites;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -82,7 +81,7 @@ public class SpriteBuilder
      * Performs processing for this builder's parameters. This method resolves all paths
      * against the local file system.
      */
-    public void buildSprites() throws FileNotFoundException, IOException
+    public void buildSprites() throws IOException
     {
         if (!parameters.validate(messageLog))
         {
@@ -170,8 +169,7 @@ public class SpriteBuilder
      *            relative to the current working directory. Both platform-specific and
      *            '/' as the file separator are supported.
      */
-    public void buildSprites(Collection<String> filePaths) throws FileNotFoundException,
-        IOException
+    public void buildSprites(Collection<String> filePaths) throws IOException
     {
         final long start = System.currentTimeMillis();
 
@@ -397,13 +395,11 @@ public class SpriteBuilder
             originalCssFile.substring(0, originalCssFile.lastIndexOf('/')),
             declaringCssPath.substring(0, declaringCssPath.lastIndexOf('/'))).replace(
             File.separatorChar, '/');
-        final String imagePathRelativeToReplacement = FileUtils
-            .canonicalize(
+        return FileUtils.canonicalize(
                 (Strings.isNullOrEmpty(declarationReplacementRelativePath)
                     || originalCssFile.equals(declaringCssPath) ? ""
                     : declarationReplacementRelativePath + '/')
                     + imagePath, "/");
-        return imagePathRelativeToReplacement;
     }
 
     /**

@@ -99,7 +99,7 @@ public class SmartSpritesTask extends Task
     }
 
     @Override
-    public void execute() throws BuildException
+    public void execute()
     {
         final SmartSpritesParameters parameters = new SmartSpritesParameters(rootDir,
             cssFiles, outputDir, documentRootDir, logLevel, cssFileSuffix,
@@ -114,10 +114,6 @@ public class SmartSpritesTask extends Task
             try
             {
                 new SpriteBuilder(parameters, log).buildSprites();
-            }
-            catch (FileNotFoundException e)
-            {
-                throw new BuildException(e);
             }
             catch (IOException e)
             {

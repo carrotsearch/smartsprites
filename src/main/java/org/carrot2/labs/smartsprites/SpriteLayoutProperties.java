@@ -33,7 +33,7 @@ public class SpriteLayoutProperties
     /**
      * Alignment of the individual image within the sprite image.
      */
-    public static enum SpriteAlignment
+    public enum SpriteAlignment
     {
         /**
          * To the left edge of a vertical sprite.

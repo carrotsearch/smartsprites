@@ -1,7 +1,6 @@
 package org.carrot2.labs.smartsprites;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -54,7 +53,7 @@ public class SpriteDirectiveOccurrenceCollector
      * Collects {@link SpriteImageOccurrence}s from a single CSS file.
      */
     Collection<SpriteImageOccurrence> collectSpriteImageOccurrences(String cssFile)
-        throws FileNotFoundException, IOException
+        throws IOException
     {
         final Collection<SpriteImageOccurrence> occurrences = Lists.newArrayList();
         final BufferedReader reader = new BufferedReader(resourceHandler
@@ -102,7 +101,7 @@ public class SpriteDirectiveOccurrenceCollector
      */
     Collection<SpriteReferenceOccurrence> collectSpriteReferenceOccurrences(
         String cssFile, Map<String, SpriteImageDirective> spriteImageDirectives)
-        throws FileNotFoundException, IOException
+        throws IOException
     {
         final Collection<SpriteReferenceOccurrence> directives = Lists.newArrayList();
 
@@ -158,7 +157,7 @@ public class SpriteDirectiveOccurrenceCollector
      * Collects {@link SpriteImageOccurrence}s from the provided CSS files.
      */
     Multimap<String, SpriteImageOccurrence> collectSpriteImageOccurrences(
-        Collection<String> filePaths) throws FileNotFoundException, IOException
+        Collection<String> filePaths) throws IOException
     {
         final Multimap<String, SpriteImageOccurrence> spriteImageOccurrencesByFile = LinkedListMultimap
             .create();
@@ -179,7 +178,7 @@ public class SpriteDirectiveOccurrenceCollector
     Multimap<String, SpriteReferenceOccurrence> collectSpriteReferenceOccurrences(
         Collection<String> files,
         final Map<String, SpriteImageDirective> spriteImageDirectivesBySpriteId)
-        throws FileNotFoundException, IOException
+        throws IOException
     {
         final Multimap<String, SpriteReferenceOccurrence> spriteEntriesByFile = LinkedListMultimap
             .create();
@@ -291,7 +290,7 @@ public class SpriteDirectiveOccurrenceCollector
 
         final Collection<CssProperty> rules = CssSyntaxUtils
             .extractProperties(noDirective);
-        if (rules.size() == 0)
+        if (rules.isEmpty())
         {
             messageLog.warning(
                 MessageType.NO_BACKGROUND_IMAGE_RULE_NEXT_TO_SPRITE_REFERENCE_DIRECTIVE,

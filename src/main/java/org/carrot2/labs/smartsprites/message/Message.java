@@ -21,7 +21,7 @@ public class Message implements Serializable
     /**
      * The importance of the message.
      */
-    public static enum MessageLevel
+    public enum MessageLevel
     {
         /**
          * Information message, can be ignored.
@@ -54,7 +54,7 @@ public class Message implements Serializable
         STATUS(6);
 
         /** Numeric level for comparisons */
-        final private int level;
+        private final int level;
 
         private MessageLevel(int level)
         {
@@ -269,7 +269,7 @@ public class Message implements Serializable
     /**
      * Additional arguments to this message, used to format the human-readable string.
      */
-    public final Object [] arguments;
+    public final Object[] arguments;
 
     /**
      * Creates a new message, see field descriptions for details.

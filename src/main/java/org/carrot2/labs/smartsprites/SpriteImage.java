@@ -39,7 +39,7 @@ public class SpriteImage
      * Indicates whether this sprite has been also generated in an alpha/color degraded
      * version for IE6;
      */
-    public boolean hasReducedForIe6 = false;
+    public boolean hasReducedForIe6;
 
     /**
      * The {@link SpriteImageDirective#imagePath} with variables resolved.
@@ -142,19 +142,19 @@ public class SpriteImage
 
             int lastFoundIndex = 0;
 
-            final int lastSlashIndex = spritePath.lastIndexOf("/");
+            final int lastSlashIndex = spritePath.lastIndexOf('/');
             if (lastSlashIndex >= 0)
             {
                 ie6Path.append(spritePath, lastFoundIndex, lastSlashIndex + 1);
                 lastFoundIndex = lastSlashIndex + 1;
             }
 
-            int lastDotIndex = spritePath.lastIndexOf(".");
+            int lastDotIndex = spritePath.lastIndexOf('.');
             if (lastDotIndex < lastFoundIndex)
             {
                 lastDotIndex = -1;
             }
-            final int firstQuestionMarkIndex = spritePath.indexOf("?", lastFoundIndex);
+            final int firstQuestionMarkIndex = spritePath.indexOf('?', lastFoundIndex);
 
             if (lastDotIndex >= 0
                 && (lastDotIndex < firstQuestionMarkIndex || firstQuestionMarkIndex < 0))
@@ -190,7 +190,8 @@ public class SpriteImage
         {
             final byte [] buffer = new byte [4069];
             final MessageDigest digest = MessageDigest.getInstance("MD5");
-            InputStream is = null, digestInputStream = null;
+            InputStream is = null;
+            InputStream digestInputStream = null;
             try
             {
                 is = new ByteArrayInputStream(image);
