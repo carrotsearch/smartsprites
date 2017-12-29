@@ -239,7 +239,7 @@ public class SpriteImageDirective
     /**
      * Variable names allowed in image path.
      */
-    private static final Set<String> ALLOWED_VARIABLES = ImmutableSet.of("sprite",
+    private static final Set<String> ALLOWED_VARIABLES = ImmutableSet.of(PROPERTY_SPRITE_ID,
         SpriteUidType.DATE.toString(), SpriteUidType.MD5.toString());
 
     public SpriteImageDirective(String id, String imageUrl, SpriteImageLayout layout,

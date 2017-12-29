@@ -308,7 +308,7 @@ public class Quantize {
             root = new Node(this);
         }
 
-        /*
+        /**
          * Procedure Classification begins by initializing a color
          * description tree of sufficient depth to represent each
          * possible input color in a leaf. However, it is impractical

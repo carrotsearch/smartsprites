@@ -14,8 +14,6 @@ import java.util.regex.Pattern;
 
 import org.carrot2.labs.smartsprites.SpriteImageDirective.SpriteUidType;
 
-import com.google.common.io.Closeables;
-
 /**
  * A merged sprite image consisting of a number of individual images.
  */
@@ -190,12 +188,9 @@ public class SpriteImage
         {
             final byte [] buffer = new byte [4069];
             final MessageDigest digest = MessageDigest.getInstance("MD5");
-            InputStream is = null;
-            InputStream digestInputStream = null;
-            try
+            try (InputStream is = new ByteArrayInputStream(image);
+                    InputStream digestInputStream = new DigestInputStream(is, digest);)
             {
-                is = new ByteArrayInputStream(image);
-                digestInputStream = new DigestInputStream(is, digest);
                 while (digestInputStream.read(buffer) >= 0)
                 {
                 }
@@ -209,8 +204,6 @@ public class SpriteImage
             }
             finally
             {
-                Closeables.close(is, true);
-                Closeables.close(digestInputStream, true);
                 digest.reset();
             }
         }
