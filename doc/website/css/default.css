@@ -160,6 +160,9 @@ code strong,
 .other-language.es {
   background-image: url(../img/es.png); /** sprite-ref: vert; sprite-margin-top: 10px; sprite-margin-left: 4px; */
 }
+.other-language.pt {
+  background-image: url(../img/pt.png); /** sprite-ref: vert; sprite-margin-top: 10px; sprite-margin-left: 4px; */
+}
 
 /* Menu */
 ul.menu {

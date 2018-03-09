@@ -163,6 +163,10 @@ code strong,
   background-image: url('../img/vert.png');
   background-position: left -267px;
 }
+.other-language.pt {
+  background-image: url('../img/vert.png');
+  background-position: left -288px;
+}
 
 /* Menu */
 ul.menu {
@@ -177,7 +181,7 @@ ul.menu li {
   margin: 0;
   background-color: #000;
   background-image: url('../img/vert.png');
-  background-position: left -288px;
+  background-position: left -309px;
   background-repeat: repeat-x;
 	border-right: 1px solid #222;
 	border-top: 1px solid #1A1A1A;
@@ -281,28 +285,28 @@ div.build-info {
 
 #donate-10 {
   background-image: url('../img/vert.png');
-  background-position: left -328px;
+  background-position: left -349px;
 }
 
 #donate-25 {
   background-image: url('../img/vert.png');
-  background-position: left -366px;
+  background-position: left -387px;
 }
 
 #donate-50 {
   background-image: url('../img/vert.png');
-  background-position: left -404px;
+  background-position: left -425px;
 }
 
 #donate-other {
   background-image: url('../img/vert.png');
-  background-position: left -442px;
+  background-position: left -463px;
 }
 
 .item {
   background-color: #030303;
   background-image: url('../img/vert.png');
-  background-position: left -480px;
+  background-position: left -501px;
 	background-repeat: repeat-x;
 	padding: 8px 10px;
 }
