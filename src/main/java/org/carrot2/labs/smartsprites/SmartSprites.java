@@ -1,6 +1,5 @@
 package org.carrot2.labs.smartsprites;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.carrot2.labs.smartsprites.message.MessageLog;
@@ -17,7 +16,7 @@ public class SmartSprites
     /**
      * Entry point to SmartSprites. All parameters are passed as JVM properties.
      */
-    public static void main(String [] args) throws FileNotFoundException, IOException
+    public static void main(String [] args) throws IOException
     {
         final SmartSpritesParameters parameters = new SmartSpritesParameters();
 

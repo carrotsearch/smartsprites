@@ -5,6 +5,12 @@ package org.carrot2.util;
  */
 public class EnumUtils
 {
+
+    private EnumUtils()
+    {
+        // Prevent Instantiation
+    }
+
     /**
      * Returns the enum instance corresponding to the provided <code>name</code> or
      * <code>defaultValue</code> if no enum value corresponds to <code>name</code>.

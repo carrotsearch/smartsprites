@@ -132,7 +132,6 @@ public class SpriteImageRenderer
             matte = Color.WHITE;
         }
 
-        final BufferedImage quantized = ColorQuantizer.quantize(sprite, matte);
-        return quantized;
+        return ColorQuantizer.quantize(sprite, matte);
     }
 }

@@ -25,6 +25,11 @@ public class CssSyntaxUtils
 
     private static final Pattern IMPORTANT_PATTERN = Pattern.compile("!\\s*important");
 
+    private CssSyntaxUtils()
+    {
+        // Prevent Instantiation
+    }
+
     /**
      * Extracts CSS properties from the provided {@link String}.
      */

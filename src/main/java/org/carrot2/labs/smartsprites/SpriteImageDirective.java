@@ -39,7 +39,7 @@ public class SpriteImageDirective
     /**
      * Defines the layout of this sprite.
      */
-    public static enum SpriteImageLayout
+    public enum SpriteImageLayout
     {
         /**
          * Vertical layout, images stacked on each other.
@@ -74,7 +74,7 @@ public class SpriteImageDirective
     /**
      * Defines the UID Generation Mode of this sprite.
      */
-    public static enum SpriteUidType
+    public enum SpriteUidType
     {
         /**
          * No UID extension.
@@ -117,7 +117,7 @@ public class SpriteImageDirective
     /**
      * Defines supported image file formats.
      */
-    public static enum SpriteImageFormat
+    public enum SpriteImageFormat
     {
         PNG, GIF, JPG;
 
@@ -149,7 +149,7 @@ public class SpriteImageDirective
     /**
      * Defines supported IE6 support options.
      */
-    public static enum Ie6Mode
+    public enum Ie6Mode
     {
         /** No IE6-friendly image will be created for this sprite, even if needed */
         NONE,
@@ -227,19 +227,19 @@ public class SpriteImageDirective
     /**
      * Pattern for a simple syntactic check of the image path.
      */
-    private final static Pattern IMAGE_PATH_PATTERN = Pattern
+    private static final Pattern IMAGE_PATH_PATTERN = Pattern
         .compile("([^${}]*|\\$\\{[^}]*\\})*");
 
     /**
      * Pattern for extracting variables from image path.
      */
-    private final static Pattern IMAGE_PATH_VARIABLE_PATTERN = Pattern
+    private static final Pattern IMAGE_PATH_VARIABLE_PATTERN = Pattern
         .compile("\\$\\{([a-z]*)\\}");
 
     /**
      * Variable names allowed in image path.
      */
-    private final static Set<String> ALLOWED_VARIABLES = ImmutableSet.of("sprite",
+    private static final Set<String> ALLOWED_VARIABLES = ImmutableSet.of(PROPERTY_SPRITE_ID,
         SpriteUidType.DATE.toString(), SpriteUidType.MD5.toString());
 
     public SpriteImageDirective(String id, String imageUrl, SpriteImageLayout layout,
