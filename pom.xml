@@ -62,7 +62,7 @@
   <developers>
     <developer>
       <id>stanislaw.osinski</id>
-      <name>Stanis≥aw OsiÒski</name>
+      <name>Stanis≈Çaw Osi≈Ñski</name>
       <email>stanislaw.osinski@carrotsearch.com</email>
     </developer>
 
@@ -399,7 +399,7 @@
                   <goal>jar</goal>
                 </goals>
                 <configuration>
-                  <additionalparam>-Xdoclint:none</additionalparam>
+                  <!-- <doclint>none</doclint> -->
                 </configuration>
               </execution>
             </executions>
@@ -416,7 +416,6 @@
                   <goal>jar</goal>
                 </goals>
                 <configuration>
-                  <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
               </execution>
             </executions>

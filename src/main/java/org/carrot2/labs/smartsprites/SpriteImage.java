@@ -189,13 +189,14 @@ public class SpriteImage
             final byte [] buffer = new byte [4069];
             final MessageDigest digest = MessageDigest.getInstance("MD5");
             try (InputStream is = new ByteArrayInputStream(image);
-                    InputStream digestInputStream = new DigestInputStream(is, digest);)
+                 InputStream digestInputStream = new DigestInputStream(is, digest))
             {
                 while (digestInputStream.read(buffer) >= 0)
                 {
                 }
 
-                return new BigInteger(1, digest.digest()).toString(16);
+                byte [] bytes = digest.digest();
+                return new BigInteger(1, bytes).toString(16);
             }
             catch (IOException e)
             {

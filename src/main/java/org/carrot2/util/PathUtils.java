@@ -9,7 +9,7 @@ import com.google.common.base.Strings;
  * This class defines utilities methods helping to determine path-related
  * information such as relative paths.
  * 
- * The original code comes from <b>org.codehaus.plexus.util.PathTool<b>.
+ * The original code comes from <b>org.codehaus.plexus.util.PathTool</b>.
  * 
  * @author Ibrahim Chaehoi
  * 
@@ -28,7 +28,7 @@ public class PathUtils {
 
     /**
      * This method can calculate the relative path between two pathes on a file system.
-     * <br/>
+     *
      * <pre>
      * PathUtils.getRelativeFilePath( null, null )                                   = ""
      * PathUtils.getRelativeFilePath( null, "/usr/local/java/bin" )                  = ""

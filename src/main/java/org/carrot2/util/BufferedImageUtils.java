@@ -176,7 +176,7 @@ public class BufferedImageUtils
     }
 
     /**
-     * Draws <code>image<code> on the <code>canvas</code> placing the top left corner of
+     * Draws <code>image</code> on the <code>canvas</code> placing the top left corner of
      * <code>image</code> at <code>x</code> / <code>y</code> offset from the top left
      * corner of <code>canvas</code>.
      */
