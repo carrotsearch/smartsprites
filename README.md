@@ -1,7 +1,11 @@
+Heads up, discontinued software!
+--------------------------------
+
+Since the modern web does not rely on small bitmaps any more, SmartSprites becomes irrelevant. We're not planning any new releases, but feel free to fork and use the code if you find it useful.
+
+
 SmartSprites: CSS Sprite Generator Done Right
 =============================================
-
-[![Build Status](https://travis-ci.org/carrotsearch/smartsprites.svg?branch=master)](https://travis-ci.org/carrotsearch/smartsprites)
 
 CSS Sprites Generator Done Right. SmartSprites maintains CSS sprites in your
 designs, fully automatically. No tedious copying and pasting to your CSS when
@@ -26,7 +30,7 @@ Documentation
 For more instructions on using SmartSprites and a detailed 
 syntax reference, please see:
 
-http://csssprites.org
+https://github.com/carrotsearch/smartsprites/wiki/Documentation
 
 
 Bug tracker
